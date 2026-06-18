@@ -725,16 +725,14 @@ uint32 WorldSession::getDialogStatus(Player* player, Object* questgiver, uint32 
         if (!sConditionMgr->IsObjectMeetToConditions(player, conditions))
             continue;
 
-        conditions = sConditionMgr->GetConditionsForNotGroupedEntry(CONDITION_SOURCE_TYPE_QUEST_ACCEPT, quest->GetQuestId());
-        if (!sConditionMgr->IsObjectMeetToConditions(player, conditions))
-            continue;
-
         QuestStatus status = player->GetQuestStatus(quest_id);
         //no need there add autocomplete quest as it's fail. autocomplete should be added first.
         if (status == QUEST_STATUS_COMPLETE && !player->GetQuestRewardStatus(quest_id))
         {
             if (quest->IsAutoComplete() && quest->IsRepeatable())
                 result2 = DIALOG_STATUS_REWARD_REP;
+            else if (player->getLevel() > ((quest->Level > 0) ? quest->Level : player->getLevel()) + sWorld->getIntConfig(CONFIG_QUEST_LOW_LEVEL_HIDE_DIFF))
+                result2 = DIALOG_STATUS_LOW_LEVEL_REWARD_REP;
             else
                 result2 = DIALOG_STATUS_REWARD;
         }
@@ -770,7 +768,7 @@ uint32 WorldSession::getDialogStatus(Player* player, Object* questgiver, uint32 
                 {
                     if (quest->IsAutoComplete() || (quest->IsRepeatable() && player->IsQuestRewarded(quest_id)))
                         result2 = DIALOG_STATUS_REWARD_REP;
-                    else if (player->getLevel() <= ((player->GetQuestLevel(quest) == -1) ? player->getLevel() : player->GetQuestLevel(quest) + sWorld->getIntConfig(CONFIG_QUEST_LOW_LEVEL_HIDE_DIFF)))
+                    else if (player->getLevel() <= ((quest->Level > 0) ? quest->Level : player->getLevel()) + sWorld->getIntConfig(CONFIG_QUEST_LOW_LEVEL_HIDE_DIFF))
                         result2 = quest->IsDailyOrWeekly() ? DIALOG_STATUS_AVAILABLE_REP : DIALOG_STATUS_AVAILABLE;
                     else
                         result2 = DIALOG_STATUS_LOW_LEVEL_AVAILABLE;
