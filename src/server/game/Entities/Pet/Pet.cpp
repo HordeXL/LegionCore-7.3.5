@@ -406,8 +406,8 @@ void Pet::SavePetToDB(bool isDelete)
     // not save pet as current if another pet temporary unsummoned
     if (owner->GetTemporaryUnsummonedPetNumber() && owner->GetTemporaryUnsummonedPetNumber() != m_charmInfo->GetPetNumber())
     {
-        // pet will lost anyway at restore temporary unsummoned
-        if (getPetType() == HUNTER_PET)
+        // hunter pets each have their own slot, safe to save
+        if (getPetType() != HUNTER_PET)
             return;
     }
 
@@ -1371,7 +1371,7 @@ bool TempSummon::addSpell(uint32 spellId, ActiveStates active /*= ACT_DECIDE*/, 
         if (spellInfo->IsPassive() && (!spellInfo->AuraRestrictions.CasterAuraState || HasAuraState(AuraStateType(spellInfo->AuraRestrictions.CasterAuraState))))
             CastSpell(this, spellId, true);
         else
-            m_charmInfo->AddSpellToActionBar(spellInfo);
+            m_charmInfo->AddSpellToActionBar(spellInfo, active);
     }
     else
     {
@@ -1753,7 +1753,7 @@ void TempSummon::CastPetAuras(bool apply, uint32 spellId)
                             uint32 _spellId = abs(itr.spellId);
                             _caster->AddDelayedEvent(bp0, [_caster, _spellId, targetGUID]() -> void
                             {
-                                if (_caster)
+                                if (!_caster)
                                     return;
 
                                 if (Unit* target = ObjectAccessor::GetUnit(*_caster, targetGUID))
@@ -1836,7 +1836,7 @@ void TempSummon::CastPetAuras(bool apply, uint32 spellId)
                             uint32 _spellId = abs(itr.spellId);
                             _caster->AddDelayedEvent(bp0, [_caster, _spellId, targetGUID]() -> void
                             {
-                                if (_caster)
+                                if (!_caster)
                                     return;
 
                                 if (Unit* target = ObjectAccessor::GetUnit(*_caster, targetGUID))
@@ -1964,7 +1964,7 @@ void TempSummon::CastPetAuras(bool apply, uint32 spellId)
                         uint32 _spellId = abs(itr.spellId);
                         _caster->AddDelayedEvent(bp0, [_caster, _spellId, targetGUID]() -> void
                         {
-                            if (_caster)
+                            if (!_caster)
                                 return;
 
                             if (Unit* target = ObjectAccessor::GetUnit(*_caster, targetGUID))
@@ -2031,7 +2031,7 @@ void TempSummon::CastPetAuras(bool apply, uint32 spellId)
                         uint32 _spellId = abs(itr.spellId);
                         _caster->AddDelayedEvent(bp0, [_caster, _spellId, targetGUID]() -> void
                         {
-                            if (_caster)
+                            if (!_caster)
                                 return;
 
                             if (Unit* target = ObjectAccessor::GetUnit(*_caster, targetGUID))
@@ -2187,8 +2187,6 @@ void Pet::ProhibitSpellSchool(SpellSchoolMask idSchoolMask, uint32 unTimeMs)
 
 void Pet::SetGroupUpdateFlag(uint32 flag)
 {
-    return;
-
     Player* player = GetOwner()->ToPlayer();
     if (!player)
         return;
@@ -2202,7 +2200,6 @@ void Pet::SetGroupUpdateFlag(uint32 flag)
 
 void Pet::ResetGroupUpdateFlag()
 {
-    return;
     m_groupUpdateMask = GROUP_UPDATE_FLAG_PET_NONE;
 
     if (Player* player = GetOwner()->ToPlayer())

@@ -4622,19 +4622,22 @@ void Spell::EffectTameCreature(SpellEffIndex /*effIndex*/)
     // prepare visual effect for levelup
     pet->SetLevel(level - 1);
 
+    // caster have pet now — MUST set minion BEFORE adding to map
+    m_caster->SetMinion(pet, true);
+
     // add to world
     pet->GetMap()->AddToMap(pet->ToCreature());
+    pet->setActive(true);
 
     // visual effect for levelup
     pet->SetLevel(level);
     pet->SetEffectiveLevel(m_caster->GetEffectiveLevel());
 
-    // caster have pet now
-    m_caster->SetMinion(pet, true);
-
     pet->SavePetToDB();
-    player->PetSpellInitialize();
+    pet->CastPetAuras(true);
+    player->SendTalentsInfoData(true);
     player->GetSession()->SendStablePet();
+    player->PetSpellInitialize();
 }
 
 void Spell::EffectSummonPet(SpellEffIndex effIndex)

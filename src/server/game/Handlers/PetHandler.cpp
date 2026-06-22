@@ -330,7 +330,7 @@ void WorldSession::HandlePetSpellAutocast(WorldPackets::PetPackets::PetSpellAuto
     }
 
     SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(packet.SpellID);
-    if (!pet->HasSpell(packet.SpellID) || spellInfo->IsAutocastable())
+    if (!pet->HasSpell(packet.SpellID) || !spellInfo->IsAutocastable())
         return;
 
     CharmInfo* charmInfo = pet->GetCharmInfo();
@@ -499,7 +499,7 @@ void WorldSession::HanleSetPetSlot(WorldPackets::PetPackets::SetPetSlot& packet)
     stmt->setUInt64(0, _player->GetGUIDLow());
     stmt->setUInt32(1, packet.PetIndex);
 
-    _queryProcessor.AddQuery(CharacterDatabase.AsyncQuery(stmt).WithPreparedCallback(std::bind(&WorldSession::HandleStableChangeSlotCallback, this, std::placeholders::_1, packet.PetIndex)));
+    _queryProcessor.AddQuery(CharacterDatabase.AsyncQuery(stmt).WithPreparedCallback(std::bind(&WorldSession::HandleStableChangeSlotCallback, this, std::placeholders::_1, packet.NewSlot)));
 }
 
 void WorldSession::HandleStableChangeSlotCallback(PreparedQueryResult const& result, uint8 new_slot)
@@ -531,7 +531,7 @@ void WorldSession::HandleStableChangeSlotCallback(PreparedQueryResult const& res
     if (!creatureInfo || !creatureInfo->isTameable(_player))
     {
         // if problem in exotic pet
-        if (creatureInfo && creatureInfo->isTameable(_player))
+        if (creatureInfo && (creatureInfo->TypeFlags[0] & CREATURE_TYPEFLAGS_EXOTIC))
             SendStableResult(STABLE_ERR_EXOTIC);
         else
             SendStableResult(STABLE_ERR_STABLE);
@@ -541,11 +541,28 @@ void WorldSession::HandleStableChangeSlotCallback(PreparedQueryResult const& res
     // Update if its a Hunter pet
     if (new_slot != 100)
     {
+        // Determine if this is an extract (stable -> active) or stable/swap within stable
+        bool isExtract = new_slot <= PET_SLOT_HUNTER_LAST;
+
         // We need to remove and add the new pet to there diffrent slots
         GetPlayer()->SwapPetSlot(slot, static_cast<PetSlot>(new_slot));
-    }
 
-    SendStableResult(STABLE_SUCCESS_STABLE);
+        // If extracting to an active slot, summon the pet
+        if (isExtract)
+        {
+            if (Player* player = GetPlayer())
+            {
+                player->m_currentSummonedSlot = static_cast<PetSlot>(new_slot);
+                Pet* newPet = new Pet(player, HUNTER_PET);
+                if (!newPet->LoadPetFromDB(player, 0, 0))
+                    delete newPet;
+            }
+        }
+
+        SendStableResult(isExtract ? STABLE_SUCCESS_UNSTABLE : STABLE_SUCCESS_STABLE);
+    }
+    else
+        SendStableResult(STABLE_SUCCESS_STABLE);
 }
 
 void WorldSession::SendStableResult(StableResultCode res)
@@ -775,13 +792,14 @@ void WorldSession::SendPetNameInvalid(uint32 error, ObjectGuid const& guid, std:
     SendPacket(petNameInvalid.Write());
 }
 
-void WorldSession::SendStablePet(ObjectGuid const& /*guid*/ /*= ObjectGuid::Empty*/)
+void WorldSession::SendStablePet(ObjectGuid const& guid /*= ObjectGuid::Empty*/)
 {
     Player* player = GetPlayer();
     if (!player)
         return;
 
     WorldPackets::PetPackets::StableList list;
+    list.StableMaster = guid;
 
     std::set<uint32> stableNumber;
     PetInfoDataMap* petMap = player->GetPetInfoData();

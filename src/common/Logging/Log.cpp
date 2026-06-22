@@ -29,6 +29,7 @@
 
 #include <cstdarg>
 #include <sstream>
+#include <boost/asio/bind_executor.hpp>
 #include "StringFormat.h"
 
 Log::Log() : _ioService(nullptr), _strand(nullptr)
@@ -63,7 +64,7 @@ Log* Log::instance(boost::asio::io_service* ioService)
     if (ioService != nullptr)
     {
         instance._ioService = ioService;
-        instance._strand = new boost::asio::strand(*ioService);
+        instance._strand = new boost::asio::io_service::strand(*ioService);
     }
 
     return &instance;
@@ -314,7 +315,7 @@ void Log::write(std::unique_ptr<LogMessage>&& msg)
     if (_ioService)
     {
         auto logOperation = std::make_shared<LogOperation>(logger, std::move(msg));
-        _ioService->post(_strand->wrap([logOperation]() { logOperation->call(); }));
+        _ioService->post(boost::asio::bind_executor(*_strand, [logOperation]() { logOperation->call(); }));
     }
     else
         logger->write(msg.get());

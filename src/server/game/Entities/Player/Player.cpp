@@ -2561,7 +2561,7 @@ void Player::ZoneTeleport(uint32 zoneId)
     if (InstanceScript* data_s = GetInstanceScript())
         data_s->OnPlayerLeaveForScript(this);
 
-    // UnsummonPetTemporaryIfAny();
+    UnsummonPetTemporaryIfAny();
     UnsummonCurrentBattlePetIfAny(true);
 
     // remove all dyn objects
@@ -2664,7 +2664,7 @@ void Player::ZoneTeleport(uint32 zoneId)
                 {
                     if (!player->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_TAXI_FLIGHT))
                     {
-                        // player->ResummonPetTemporaryUnSummonedIfAny();
+                        player->ResummonPetTemporaryUnSummonedIfAny();
                         player->SummonLastSummonedBattlePet();
                         player->RestoreAllControlled();
                     }
@@ -18343,6 +18343,7 @@ void Player::OnGossipSelect(WorldObject* source, uint32 gossipListId, uint32 men
             GetSession()->SendListInventory(guid);
             break;
         case GOSSIP_OPTION_STABLEPET:
+            PlayerTalkClass->SendCloseGossip();
             GetSession()->SendStablePet(guid);
             break;
         case GOSSIP_OPTION_TRAINER:

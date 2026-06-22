@@ -20,49 +20,13 @@
 
 namespace boost
 {
-    namespace posix_time
-    {
-        class ptime;
-    }
-
     namespace asio
     {
         namespace ip
         {
             class address;
-
-            class tcp;
-
-            template <typename InternetProtocol>
-            class basic_endpoint;
-
-            typedef basic_endpoint<tcp> tcp_endpoint;
-
-            template <typename InternetProtocol>
-            class resolver_service;
-
-            template <typename InternetProtocol, typename ResolverService>
-            class basic_resolver;
-
-            typedef basic_resolver<tcp, resolver_service<tcp>> tcp_resolver;
         }
-
-        template <typename Time>
-        struct time_traits;
-
-        template <typename TimeType, typename TimeTraits>
-        class deadline_timer_service;
-
-        template <typename Time, typename TimeTraits, typename TimerService>
-        class basic_deadline_timer;
-
-        typedef basic_deadline_timer<posix_time::ptime, time_traits<posix_time::ptime>, deadline_timer_service<posix_time::ptime, time_traits<posix_time::ptime>>> deadline_timer;
     }
-}
-
-namespace Trinity
-{
-    class AsioStrand;
 }
 
 #endif // AsioHacksFwd_h__

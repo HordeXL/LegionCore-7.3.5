@@ -731,8 +731,6 @@ uint32 WorldSession::getDialogStatus(Player* player, Object* questgiver, uint32 
         {
             if (quest->IsAutoComplete() && quest->IsRepeatable())
                 result2 = DIALOG_STATUS_REWARD_REP;
-            else if (player->getLevel() > ((quest->Level > 0) ? quest->Level : player->getLevel()) + sWorld->getIntConfig(CONFIG_QUEST_LOW_LEVEL_HIDE_DIFF))
-                result2 = DIALOG_STATUS_LOW_LEVEL_REWARD_REP;
             else
                 result2 = DIALOG_STATUS_REWARD;
         }

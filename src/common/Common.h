@@ -83,6 +83,9 @@
 #define finite(X) _finite(X)
 #define llabs _abs64
 
+// Boost 1.75 workaround: _snprintf is not in std namespace
+namespace std { using ::_snprintf; }
+
 #else
 
 #define stricmp strcasecmp
