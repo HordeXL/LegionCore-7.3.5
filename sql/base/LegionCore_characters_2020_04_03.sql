@@ -1,10 +1,10 @@
-/*
+﻿/*
 SQLyog Community v13.1.5  (64 bit)
 MySQL - 5.6.47 : Database - characters
 *********************************************************************
 */
 
-/*!40101 SET NAMES utf8 */;
+/*!40101 SET NAMES utf8mb4 */;
 
 /*!40101 SET SQL_MODE=''*/;
 
@@ -22,7 +22,7 @@ CREATE TABLE `account_achievement` (
   `achievement` int(11) unsigned NOT NULL,
   `date` int(11) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`account`,`achievement`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `account_achievement` */
 
@@ -41,7 +41,7 @@ CREATE TABLE `account_achievement_progress` (
   KEY `account` (`account`) USING BTREE,
   KEY `criteria` (`criteria`) USING BTREE,
   KEY `achievID` (`achievID`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `account_achievement_progress` */
 
@@ -53,7 +53,7 @@ CREATE TABLE `account_ban_attempts` (
   `accountId` int(11) unsigned NOT NULL DEFAULT '0',
   `banAttempts` smallint(5) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`accountId`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `account_ban_attempts` */
 
@@ -86,7 +86,7 @@ CREATE TABLE `account_battlepet` (
   `declinedPrepositional` varchar(50) NOT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   KEY `account` (`account`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `account_battlepet` */
 
@@ -99,7 +99,7 @@ CREATE TABLE `account_bot_detected` (
   `playerName` varchar(12) NOT NULL DEFAULT '',
   `botName` varchar(12) NOT NULL DEFAULT '',
   PRIMARY KEY (`accountId`,`playerName`,`botName`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `account_bot_detected` */
 
@@ -113,7 +113,7 @@ CREATE TABLE `account_data` (
   `time` int(10) unsigned NOT NULL DEFAULT '0',
   `data` blob NOT NULL,
   PRIMARY KEY (`accountId`,`type`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `account_data` */
 
@@ -127,7 +127,7 @@ CREATE TABLE `account_flagged` (
   `bannedby` varchar(50) NOT NULL,
   `banreason` varchar(255) NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `account_flagged` */
 
@@ -140,7 +140,7 @@ CREATE TABLE `account_heirlooms` (
   `itemId` int(11) unsigned NOT NULL DEFAULT '0',
   `flags` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`accountId`,`itemId`) USING BTREE
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 ROW_FORMAT=FIXED;
 
 /*Data for the table `account_heirlooms` */
 
@@ -152,7 +152,7 @@ CREATE TABLE `account_item_favorite_appearances` (
   `battlenetAccountId` int(10) unsigned NOT NULL,
   `itemModifiedAppearanceId` int(10) unsigned NOT NULL,
   PRIMARY KEY (`battlenetAccountId`,`itemModifiedAppearanceId`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `account_item_favorite_appearances` */
 
@@ -167,7 +167,7 @@ CREATE TABLE `account_mounts` (
   PRIMARY KEY (`account`,`spell`) USING BTREE,
   KEY `account` (`account`) USING BTREE,
   KEY `spell` (`spell`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `account_mounts` */
 
@@ -181,7 +181,7 @@ CREATE TABLE `account_progress` (
   `leveltime` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`account`) USING BTREE,
   KEY `account` (`account`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `account_progress` */
 
@@ -196,7 +196,7 @@ CREATE TABLE `account_toys` (
   PRIMARY KEY (`accountId`,`itemId`) USING BTREE,
   KEY `accountId` (`accountId`) USING BTREE,
   KEY `itemId` (`itemId`) USING BTREE
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 ROW_FORMAT=FIXED;
 
 /*Data for the table `account_toys` */
 
@@ -210,7 +210,7 @@ CREATE TABLE `account_transmogs` (
   `ModelID` int(10) unsigned NOT NULL DEFAULT '0',
   `Condition` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`account`,`ModelID`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `account_transmogs` */
 
@@ -229,7 +229,7 @@ CREATE TABLE `account_tutorial` (
   `tut6` int(10) unsigned NOT NULL DEFAULT '0',
   `tut7` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`accountId`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `account_tutorial` */
 
@@ -241,7 +241,7 @@ CREATE TABLE `addons` (
   `name` varchar(120) NOT NULL DEFAULT '',
   `crc` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`name`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='Addons';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='Addons';
 
 /*Data for the table `addons` */
 
@@ -262,7 +262,7 @@ CREATE TABLE `auctionhouse` (
   `deposit` bigint(20) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `item_guid` (`itemguid`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `auctionhouse` */
 
@@ -279,7 +279,7 @@ CREATE TABLE `bad_sentences` (
   `output` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`hash`) USING BTREE,
   KEY `hash` (`hash`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `bad_sentences` */
 
@@ -294,7 +294,7 @@ CREATE TABLE `blackmarket_auctions` (
   `numBids` int(10) NOT NULL DEFAULT '0',
   `bidder` bigint(20) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`marketId`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `blackmarket_auctions` */
 
@@ -313,7 +313,7 @@ CREATE TABLE `calendar_events` (
   `Flags` int(10) unsigned NOT NULL DEFAULT '0',
   `LockDate` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`EventID`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `calendar_events` */
 
@@ -331,7 +331,7 @@ CREATE TABLE `calendar_invites` (
   `ModerationRank` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `Note` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`InviteID`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `calendar_invites` */
 
@@ -352,7 +352,7 @@ CREATE TABLE `challenge` (
   `ChestID` int(10) NOT NULL DEFAULT '0',
   PRIMARY KEY (`ID`) USING BTREE,
   KEY `mapID` (`MapID`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `challenge` */
 
@@ -373,7 +373,7 @@ CREATE TABLE `challenge_key` (
   PRIMARY KEY (`guid`) USING BTREE,
   KEY `guid` (`guid`) USING BTREE,
   KEY `timeReset` (`timeReset`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `challenge_key` */
 
@@ -393,7 +393,7 @@ CREATE TABLE `challenge_member` (
   KEY `Date` (`Date`) USING BTREE,
   KEY `ChallengeLevel` (`ChallengeLevel`) USING BTREE,
   KEY `ChestID` (`ChestID`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8_unicode_ci ROW_FORMAT=COMPACT;
 
 /*Data for the table `challenge_member` */
 
@@ -407,7 +407,7 @@ CREATE TABLE `challenge_oplote_loot` (
   `date` int(10) NOT NULL DEFAULT '0',
   `ChallengeLevel` int(10) NOT NULL DEFAULT '0',
   PRIMARY KEY (`guid`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `challenge_oplote_loot` */
 
@@ -426,7 +426,7 @@ CREATE TABLE `channels` (
   PRIMARY KEY (`name`,`team`) USING BTREE,
   KEY `name` (`name`) USING BTREE,
   KEY `team` (`team`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='Channel System';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='Channel System';
 
 /*Data for the table `channels` */
 
@@ -440,7 +440,7 @@ CREATE TABLE `character_account_data` (
   `time` int(10) unsigned NOT NULL DEFAULT '0',
   `data` blob NOT NULL,
   PRIMARY KEY (`guid`,`type`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `character_account_data` */
 
@@ -454,7 +454,7 @@ CREATE TABLE `character_achievement` (
   `date` int(11) unsigned NOT NULL,
   PRIMARY KEY (`guid`,`achievement`) USING BTREE,
   KEY `achievement` (`achievement`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `character_achievement` */
 
@@ -473,7 +473,7 @@ CREATE TABLE `character_achievement_progress` (
   KEY `criteria` (`criteria`) USING BTREE,
   KEY `guid` (`guid`) USING BTREE,
   KEY `achievID` (`achievID`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `character_achievement_progress` */
 
@@ -488,7 +488,7 @@ CREATE TABLE `character_action` (
   `action` int(10) unsigned NOT NULL DEFAULT '0',
   `type` tinyint(3) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`guid`,`spec`,`button`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `character_action` */
 
@@ -502,7 +502,7 @@ CREATE TABLE `character_adventure_quest` (
   PRIMARY KEY (`guid`) USING BTREE,
   KEY `guid` (`guid`) USING BTREE,
   KEY `questID` (`questID`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `character_adventure_quest` */
 
@@ -516,7 +516,7 @@ CREATE TABLE `character_archaeology` (
   `counts` text NOT NULL,
   `projects` text NOT NULL,
   PRIMARY KEY (`guid`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='Archaeology System';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='Archaeology System';
 
 /*Data for the table `character_archaeology` */
 
@@ -530,7 +530,7 @@ CREATE TABLE `character_archaeology_finds` (
   `count` int(11) NOT NULL,
   `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`guid`,`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `character_archaeology_finds` */
 
@@ -549,7 +549,7 @@ CREATE TABLE `character_army_training_info` (
   `opened_brave` tinyint(1) NOT NULL DEFAULT '0',
   `opened_chests` varchar(255) NOT NULL,
   PRIMARY KEY (`guid`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `character_army_training_info` */
 
@@ -575,7 +575,7 @@ CREATE TABLE `character_aura` (
   KEY `item_guid` (`item_guid`) USING BTREE,
   KEY `spell` (`spell`) USING BTREE,
   KEY `effect_mask` (`effect_mask`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='Player System';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='Player System';
 
 /*Data for the table `character_aura` */
 
@@ -593,7 +593,7 @@ CREATE TABLE `character_aura_effect` (
   KEY `guid` (`guid`) USING BTREE,
   KEY `slot` (`slot`) USING BTREE,
   KEY `effect` (`effect`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `character_aura_effect` */
 
@@ -613,7 +613,7 @@ CREATE TABLE `character_banned` (
   KEY `bandate` (`bandate`) USING BTREE,
   KEY `unbandate` (`unbandate`) USING BTREE,
   KEY `active` (`active`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='Ban List';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='Ban List';
 
 /*Data for the table `character_banned` */
 
@@ -636,7 +636,7 @@ CREATE TABLE `character_battleground_data` (
   `lastActiveSpec` smallint(6) DEFAULT NULL,
   PRIMARY KEY (`guid`) USING BTREE,
   KEY `guid` (`guid`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='Player System';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='Player System';
 
 /*Data for the table `character_battleground_data` */
 
@@ -655,7 +655,7 @@ CREATE TABLE `character_battleground_random` (
   `brawl` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `brawlArena` tinyint(3) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`guid`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `character_battleground_random` */
 
@@ -682,7 +682,7 @@ CREATE TABLE `character_brackets_info` (
   `bestWeekLast` mediumint(9) NOT NULL DEFAULT '0',
   PRIMARY KEY (`guid`,`bracket`) USING BTREE,
   KEY `BracketID` (`bracket`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `character_brackets_info` */
 
@@ -696,7 +696,7 @@ CREATE TABLE `character_chat_logos` (
   `active` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`guid`,`buyed_logo`) USING BTREE,
   KEY `guid` (`guid`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `character_chat_logos` */
 
@@ -722,7 +722,7 @@ CREATE TABLE `character_cuf_profiles` (
   PRIMARY KEY (`guid`,`profileId`) USING BTREE,
   KEY `profileId` (`profileId`) USING BTREE,
   KEY `guid` (`guid`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `character_cuf_profiles` */
 
@@ -739,7 +739,7 @@ CREATE TABLE `character_currency` (
   `flags` int(11) DEFAULT '0',
   `curentcap` int(11) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`guid`,`currency`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `character_currency` */
 
@@ -753,7 +753,7 @@ CREATE TABLE `character_custom_event_reapeter` (
   `repeat_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`guid`,`event`,`repeat_id`) USING BTREE,
   KEY `select` (`guid`,`event`,`repeat_id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `character_custom_event_reapeter` */
 
@@ -770,7 +770,7 @@ CREATE TABLE `character_deathmatch` (
   `matches` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`guid`) USING BTREE,
   KEY `guid` (`guid`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `character_deathmatch` */
 
@@ -784,7 +784,7 @@ CREATE TABLE `character_deathmatch_products` (
   `product` varchar(255) NOT NULL,
   `cost` int(11) NOT NULL,
   PRIMARY KEY (`product`,`type`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `character_deathmatch_products` */
 
@@ -799,7 +799,7 @@ CREATE TABLE `character_deathmatch_store` (
   `buyed_morphs` varchar(255) NOT NULL,
   PRIMARY KEY (`guid`) USING BTREE,
   KEY `guid` (`guid`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `character_deathmatch_store` */
 
@@ -815,7 +815,7 @@ CREATE TABLE `character_declinedname` (
   `instrumental` varchar(15) NOT NULL DEFAULT '',
   `prepositional` varchar(15) NOT NULL DEFAULT '',
   PRIMARY KEY (`guid`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `character_declinedname` */
 
@@ -839,7 +839,7 @@ CREATE TABLE `character_donate` (
   KEY `itemguid` (`itemguid`) USING BTREE,
   KEY `itemEntry` (`itemEntry`) USING BTREE,
   KEY `state` (`state`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `character_donate` */
 
@@ -877,7 +877,7 @@ CREATE TABLE `character_equipmentsets` (
   PRIMARY KEY (`setguid`) USING BTREE,
   UNIQUE KEY `idx_set` (`guid`,`setguid`,`setindex`) USING BTREE,
   KEY `Idx_setindex` (`setindex`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `character_equipmentsets` */
 
@@ -895,7 +895,7 @@ CREATE TABLE `character_garrison` (
   `_MissionGen` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`CharacterGuid`,`SiteLevelId`,`GarrTypeId`) USING BTREE,
   KEY `guid` (`CharacterGuid`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `character_garrison` */
 
@@ -910,7 +910,7 @@ CREATE TABLE `character_garrison_blueprints` (
   PRIMARY KEY (`guid`,`buildingId`,`GarrTypeId`) USING BTREE,
   KEY `guid` (`guid`) USING BTREE,
   KEY `buildingId` (`buildingId`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `character_garrison_blueprints` */
 
@@ -929,7 +929,7 @@ CREATE TABLE `character_garrison_buildings` (
   PRIMARY KEY (`guid`,`GarrTypeId`,`plotInstanceId`) USING BTREE,
   KEY `guid` (`guid`) USING BTREE,
   KEY `plotInstanceId` (`plotInstanceId`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `character_garrison_buildings` */
 
@@ -947,7 +947,7 @@ CREATE TABLE `character_garrison_follower_abilities` (
   KEY `dbId` (`dbId`) USING BTREE,
   KEY `abilityId` (`abilityId`) USING BTREE,
   KEY `slot` (`slot`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `character_garrison_follower_abilities` */
 
@@ -971,7 +971,7 @@ CREATE TABLE `character_garrison_followers` (
   `status` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`dbId`) USING BTREE,
   KEY `idx_guid_id` (`guid`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `character_garrison_followers` */
 
@@ -996,7 +996,7 @@ CREATE TABLE `character_garrison_missions` (
   KEY `dbId` (`dbId`) USING BTREE,
   KEY `guid` (`guid`) USING BTREE,
   KEY `missionRecID` (`missionRecID`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `character_garrison_missions` */
 
@@ -1014,7 +1014,7 @@ CREATE TABLE `character_garrison_shipment` (
   PRIMARY KEY (`dbId`) USING BTREE,
   KEY `dbId` (`dbId`) USING BTREE,
   KEY `guid` (`guid`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `character_garrison_shipment` */
 
@@ -1029,7 +1029,7 @@ CREATE TABLE `character_garrison_talents` (
   `orderTime` int(11) NOT NULL,
   `flags` int(11) NOT NULL,
   PRIMARY KEY (`guid`,`GarrTypeId`,`talentID`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `character_garrison_talents` */
 
@@ -1044,7 +1044,7 @@ CREATE TABLE `character_gifts` (
   `flags` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`item_guid`) USING BTREE,
   KEY `idx_guid` (`guid`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `character_gifts` */
 
@@ -1059,7 +1059,7 @@ CREATE TABLE `character_glyphs` (
   PRIMARY KEY (`guid`,`talentGroup`,`glyphId`) USING BTREE,
   KEY `guid` (`guid`) USING BTREE,
   KEY `talentGroup` (`talentGroup`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `character_glyphs` */
 
@@ -1076,7 +1076,7 @@ CREATE TABLE `character_homebind` (
   `posZ` float NOT NULL DEFAULT '0',
   PRIMARY KEY (`guid`) USING BTREE,
   KEY `guid` (`guid`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='Player System';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='Player System';
 
 /*Data for the table `character_homebind` */
 
@@ -1090,7 +1090,7 @@ CREATE TABLE `character_honor` (
   `HonorLevel` smallint(5) NOT NULL DEFAULT '0',
   `PrestigeLevel` smallint(5) NOT NULL DEFAULT '0',
   PRIMARY KEY (`Guid`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='Honor info system';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='Honor info system';
 
 /*Data for the table `character_honor` */
 
@@ -1111,7 +1111,7 @@ CREATE TABLE `character_instance` (
   PRIMARY KEY (`guid`,`instance`) USING BTREE,
   KEY `instance` (`instance`) USING BTREE,
   KEY `guid` (`guid`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `character_instance` */
 
@@ -1130,7 +1130,7 @@ CREATE TABLE `character_inventory` (
   KEY `bag` (`bag`) USING BTREE,
   KEY `slot` (`slot`) USING BTREE,
   KEY `item` (`item`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='Player System';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='Player System';
 
 /*Data for the table `character_inventory` */
 
@@ -1146,7 +1146,7 @@ CREATE TABLE `character_kill` (
   KEY `guid` (`guid`) USING BTREE,
   KEY `victim_guid` (`victim_guid`) USING BTREE,
   KEY `count` (`count`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='Kills Yesterday';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='Kills Yesterday';
 
 /*Data for the table `character_kill` */
 
@@ -1159,7 +1159,7 @@ CREATE TABLE `character_lfg_cooldown` (
   `dungeonId` int(10) NOT NULL DEFAULT '0',
   `respawnTime` int(10) DEFAULT '0',
   PRIMARY KEY (`guid`,`dungeonId`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `character_lfg_cooldown` */
 
@@ -1177,7 +1177,7 @@ CREATE TABLE `character_loot_cooldown` (
   KEY `entry` (`entry`) USING BTREE,
   KEY `respawnTime` (`respawnTime`) USING BTREE,
   KEY `guid` (`guid`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `character_loot_cooldown` */
 
@@ -1206,7 +1206,7 @@ CREATE TABLE `character_pet` (
   KEY `owner` (`owner`) USING BTREE,
   KEY `id` (`id`) USING BTREE,
   KEY `entry` (`entry`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='Pet System';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='Pet System';
 
 /*Data for the table `character_pet` */
 
@@ -1224,7 +1224,7 @@ CREATE TABLE `character_pet_declinedname` (
   `prepositional` varchar(12) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`) USING BTREE,
   KEY `owner_key` (`owner`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `character_pet_declinedname` */
 
@@ -1240,7 +1240,7 @@ CREATE TABLE `character_pvp_talent` (
   KEY `guid` (`guid`) USING BTREE,
   KEY `talent` (`talent`) USING BTREE,
   KEY `spec` (`spec`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `character_pvp_talent` */
 
@@ -1255,7 +1255,7 @@ CREATE TABLE `character_queststatus` (
   `status` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `timer` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`guid`,`quest`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='Player System';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='Player System';
 
 /*Data for the table `character_queststatus` */
 
@@ -1271,7 +1271,7 @@ CREATE TABLE `character_queststatus_daily` (
   PRIMARY KEY (`guid`,`quest`) USING BTREE,
   KEY `idx_guid` (`guid`) USING BTREE,
   KEY `account` (`account`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='Player System';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='Player System';
 
 /*Data for the table `character_queststatus_daily` */
 
@@ -1289,7 +1289,7 @@ CREATE TABLE `character_queststatus_objectives` (
   KEY `guid` (`guid`) USING BTREE,
   KEY `account` (`account`) USING BTREE,
   KEY `quest` (`quest`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='Player System';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='Player System';
 
 /*Data for the table `character_queststatus_objectives` */
 
@@ -1303,7 +1303,7 @@ CREATE TABLE `character_queststatus_rewarded` (
   `quest` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'Quest Identifier',
   PRIMARY KEY (`guid`,`quest`) USING BTREE,
   KEY `account` (`account`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='Player System';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='Player System';
 
 /*Data for the table `character_queststatus_rewarded` */
 
@@ -1319,7 +1319,7 @@ CREATE TABLE `character_queststatus_seasonal` (
   PRIMARY KEY (`guid`,`quest`) USING BTREE,
   KEY `idx_guid` (`guid`) USING BTREE,
   KEY `account` (`account`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='Player System';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='Player System';
 
 /*Data for the table `character_queststatus_seasonal` */
 
@@ -1334,7 +1334,7 @@ CREATE TABLE `character_queststatus_weekly` (
   PRIMARY KEY (`guid`,`quest`) USING BTREE,
   KEY `idx_guid` (`guid`) USING BTREE,
   KEY `account` (`account`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='Player System';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='Player System';
 
 /*Data for the table `character_queststatus_weekly` */
 
@@ -1349,7 +1349,7 @@ CREATE TABLE `character_queststatus_world` (
   `resetTime` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`guid`,`quest`) USING BTREE,
   KEY `resetTime` (`resetTime`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `character_queststatus_world` */
 
@@ -1361,7 +1361,7 @@ CREATE TABLE `character_rates` (
   `guid` bigint(20) NOT NULL DEFAULT '0',
   `rate` tinyint(2) DEFAULT '0',
   PRIMARY KEY (`guid`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `character_rates` */
 
@@ -1378,7 +1378,7 @@ CREATE TABLE `character_reputation` (
   KEY `guid` (`guid`) USING BTREE,
   KEY `faction` (`faction`) USING BTREE,
   KEY `standing` (`standing`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='Player System';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='Player System';
 
 /*Data for the table `character_reputation` */
 
@@ -1394,7 +1394,7 @@ CREATE TABLE `character_reward` (
   `count` int(11) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`guid`) USING BTREE,
   KEY `owner_guid` (`owner_guid`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `character_reward` */
 
@@ -1410,7 +1410,7 @@ CREATE TABLE `character_skills` (
   PRIMARY KEY (`guid`,`skill`) USING BTREE,
   KEY `guid` (`guid`) USING BTREE,
   KEY `skill` (`skill`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='Player System';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='Player System';
 
 /*Data for the table `character_skills` */
 
@@ -1425,7 +1425,7 @@ CREATE TABLE `character_social` (
   `note` varchar(48) NOT NULL DEFAULT '' COMMENT 'Friend Note',
   PRIMARY KEY (`guid`,`friend`,`flags`) USING BTREE,
   KEY `friend` (`friend`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='Player System';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='Player System';
 
 /*Data for the table `character_social` */
 
@@ -1441,7 +1441,7 @@ CREATE TABLE `character_spell` (
   PRIMARY KEY (`guid`,`spell`) USING BTREE,
   KEY `guid` (`guid`) USING BTREE,
   KEY `spell` (`spell`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='Player System';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='Player System';
 
 /*Data for the table `character_spell` */
 
@@ -1455,7 +1455,7 @@ CREATE TABLE `character_spell_cooldown` (
   `item` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'Item Identifier',
   `time` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`guid`,`spell`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `character_spell_cooldown` */
 
@@ -1471,7 +1471,7 @@ CREATE TABLE `character_stat_kill_creature` (
   PRIMARY KEY (`guid`,`entry`) USING BTREE,
   KEY `guid` (`guid`) USING BTREE,
   KEY `entry` (`entry`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `character_stat_kill_creature` */
 
@@ -1487,7 +1487,7 @@ CREATE TABLE `character_talent` (
   KEY `guid` (`guid`) USING BTREE,
   KEY `spec` (`spec`) USING BTREE,
   KEY `talent` (`talent`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `character_talent` */
 
@@ -1526,7 +1526,7 @@ CREATE TABLE `character_transmog_outfits` (
   PRIMARY KEY (`setguid`) USING BTREE,
   UNIQUE KEY `idx_set` (`guid`,`setguid`,`setindex`) USING BTREE,
   KEY `Idx_setindex` (`setindex`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `character_transmog_outfits` */
 
@@ -1551,7 +1551,7 @@ CREATE TABLE `character_visuals` (
   `tabard` int(11) unsigned NOT NULL DEFAULT '0',
   `shirt` int(11) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`guid`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `character_visuals` */
 
@@ -1573,7 +1573,7 @@ CREATE TABLE `character_void_storage` (
   UNIQUE KEY `idx_player_slot` (`playerGuid`,`slot`) USING BTREE,
   KEY `idx_player` (`playerGuid`) USING BTREE,
   KEY `randomProperty` (`randomProperty`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `character_void_storage` */
 
@@ -1665,7 +1665,7 @@ CREATE TABLE `characters` (
   KEY `online` (`online`) USING BTREE,
   KEY `name` (`name`) USING BTREE,
   KEY `guid` (`guid`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='Player System';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='Player System';
 
 /*Data for the table `characters` */
 
@@ -1696,7 +1696,7 @@ CREATE TABLE `corpse` (
   KEY `idx_instance` (`instanceId`) USING BTREE,
   KEY `idx_player` (`guid`) USING BTREE,
   KEY `idx_time` (`time`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='Death System';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='Death System';
 
 /*Data for the table `corpse` */
 
@@ -1715,7 +1715,7 @@ CREATE TABLE `creature_respawn` (
   KEY `guid` (`guid`) USING BTREE,
   KEY `mapId` (`mapId`) USING BTREE,
   KEY `all` (`guid`,`respawnTime`,`mapId`,`instanceId`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='Grid Loading System';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='Grid Loading System';
 
 /*Data for the table `creature_respawn` */
 
@@ -1728,7 +1728,7 @@ CREATE TABLE `game_event_condition_save` (
   `condition_id` int(10) unsigned NOT NULL DEFAULT '0',
   `done` float DEFAULT '0',
   PRIMARY KEY (`eventEntry`,`condition_id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `game_event_condition_save` */
 
@@ -1741,7 +1741,7 @@ CREATE TABLE `game_event_save` (
   `state` tinyint(3) unsigned NOT NULL DEFAULT '1',
   `next_start` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`eventEntry`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `game_event_save` */
 
@@ -1759,7 +1759,7 @@ CREATE TABLE `gameobject_respawn` (
   KEY `guid` (`guid`) USING BTREE,
   KEY `mapId` (`mapId`) USING BTREE,
   KEY `respawnTime` (`respawnTime`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='Grid Loading System';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='Grid Loading System';
 
 /*Data for the table `gameobject_respawn` */
 
@@ -1773,7 +1773,7 @@ CREATE TABLE `gm_subsurveys` (
   `rank` int(10) unsigned NOT NULL DEFAULT '0',
   `comment` text NOT NULL,
   PRIMARY KEY (`surveyId`,`subsurveyId`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='Player System';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='Player System';
 
 /*Data for the table `gm_subsurveys` */
 
@@ -1788,7 +1788,7 @@ CREATE TABLE `gm_surveys` (
   `overallComment` longtext NOT NULL,
   `createTime` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`surveyId`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='Player System';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='Player System';
 
 /*Data for the table `gm_surveys` */
 
@@ -1814,7 +1814,7 @@ CREATE TABLE `gm_tickets` (
   `escalated` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `viewed` tinyint(3) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`ticketId`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='Player System';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='Player System';
 
 /*Data for the table `gm_tickets` */
 
@@ -1834,7 +1834,7 @@ CREATE TABLE `group_instance` (
   PRIMARY KEY (`guid`,`instance`) USING BTREE,
   KEY `instance` (`instance`) USING BTREE,
   KEY `guid` (`guid`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `group_instance` */
 
@@ -1851,7 +1851,7 @@ CREATE TABLE `group_member` (
   PRIMARY KEY (`memberGuid`) USING BTREE,
   KEY `guid` (`guid`) USING BTREE,
   KEY `memberGuid` (`memberGuid`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='Groups';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='Groups';
 
 /*Data for the table `group_member` */
 
@@ -1880,7 +1880,7 @@ CREATE TABLE `groups` (
   PRIMARY KEY (`guid`) USING BTREE,
   KEY `leaderGuid` (`leaderGuid`) USING BTREE,
   KEY `guid` (`guid`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='Groups';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='Groups';
 
 /*Data for the table `groups` */
 
@@ -1905,7 +1905,7 @@ CREATE TABLE `guild` (
   `level` int(10) unsigned DEFAULT '1',
   PRIMARY KEY (`guildid`) USING BTREE,
   KEY `guildid` (`guildid`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='Guild System';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='Guild System';
 
 /*Data for the table `guild` */
 
@@ -1919,7 +1919,7 @@ CREATE TABLE `guild_achievement` (
   `date` int(11) unsigned NOT NULL DEFAULT '0',
   `guids` text NOT NULL,
   PRIMARY KEY (`guildId`,`achievement`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `guild_achievement` */
 
@@ -1936,7 +1936,7 @@ CREATE TABLE `guild_achievement_progress` (
   `achievID` int(10) unsigned NOT NULL,
   `completed` int(3) NOT NULL DEFAULT '0',
   PRIMARY KEY (`guildId`,`criteria`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `guild_achievement_progress` */
 
@@ -1958,7 +1958,7 @@ CREATE TABLE `guild_bank_eventlog` (
   KEY `guildid_key` (`guildId`) USING BTREE,
   KEY `Idx_PlayerGuid` (`PlayerGuid`) USING BTREE,
   KEY `Idx_LogGuid` (`LogGuid`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `guild_bank_eventlog` */
 
@@ -1974,7 +1974,7 @@ CREATE TABLE `guild_bank_item` (
   PRIMARY KEY (`guildId`,`TabId`,`SlotId`) USING BTREE,
   KEY `guildid_key` (`guildId`) USING BTREE,
   KEY `Idx_item_guid` (`item_guid`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `guild_bank_item` */
 
@@ -1990,7 +1990,7 @@ CREATE TABLE `guild_bank_right` (
   `SlotPerDay` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`guildId`,`TabId`,`rid`) USING BTREE,
   KEY `guildid_key` (`guildId`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `guild_bank_right` */
 
@@ -2006,7 +2006,7 @@ CREATE TABLE `guild_bank_tab` (
   `TabText` varchar(500) DEFAULT NULL,
   PRIMARY KEY (`guildId`,`TabId`) USING BTREE,
   KEY `guildid_key` (`guildId`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `guild_bank_tab` */
 
@@ -2019,7 +2019,7 @@ CREATE TABLE `guild_challenges` (
   `ChallengeType` int(1) NOT NULL DEFAULT '0',
   `ChallengeCount` int(1) DEFAULT NULL,
   PRIMARY KEY (`GuildId`,`ChallengeType`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `guild_challenges` */
 
@@ -2039,7 +2039,7 @@ CREATE TABLE `guild_eventlog` (
   KEY `Idx_PlayerGuid1` (`PlayerGuid1`) USING BTREE,
   KEY `Idx_PlayerGuid2` (`PlayerGuid2`) USING BTREE,
   KEY `Idx_LogGuid` (`LogGuid`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='Guild Eventlog';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='Guild Eventlog';
 
 /*Data for the table `guild_eventlog` */
 
@@ -2056,7 +2056,7 @@ CREATE TABLE `guild_finder_applicant` (
   `comment` varchar(255) DEFAULT NULL,
   `submitTime` int(10) unsigned DEFAULT NULL,
   UNIQUE KEY `guildId` (`guildId`,`playerGuid`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `guild_finder_applicant` */
 
@@ -2073,7 +2073,7 @@ CREATE TABLE `guild_finder_guild_settings` (
   `listed` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `comment` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`guildId`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `guild_finder_guild_settings` */
 
@@ -2121,7 +2121,7 @@ CREATE TABLE `guild_member` (
   KEY `guildid_rank_key` (`guildId`,`rank`) USING BTREE,
   KEY `guildId` (`guildId`) USING BTREE,
   KEY `guid` (`guid`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='Guild System';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='Guild System';
 
 /*Data for the table `guild_member` */
 
@@ -2143,7 +2143,7 @@ CREATE TABLE `guild_newslog` (
   KEY `Idx_PlayerGuid` (`PlayerGuid`) USING BTREE,
   KEY `Idx_LogGuid` (`LogGuid`) USING BTREE,
   KEY `TimeStamp` (`TimeStamp`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `guild_newslog` */
 
@@ -2159,7 +2159,7 @@ CREATE TABLE `guild_rank` (
   `BankMoneyPerDay` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`guildId`,`rid`) USING BTREE,
   KEY `Idx_rid` (`rid`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='Guild System';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='Guild System';
 
 /*Data for the table `guild_rank` */
 
@@ -2208,7 +2208,7 @@ CREATE TABLE `item_instance` (
   KEY `contextID` (`contextID`) USING BTREE,
   KEY `dungeonEncounterID` (`dungeonEncounterID`) USING BTREE,
   KEY `createdTime` (`createdTime`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='Item System';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='Item System';
 
 /*Data for the table `item_instance` */
 
@@ -2229,7 +2229,7 @@ CREATE TABLE `item_instance_artifact` (
   KEY `itemEntry` (`itemEntry`) USING BTREE,
   KEY `tier` (`tier`) USING BTREE,
   KEY `char_guid` (`char_guid`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `item_instance_artifact` */
 
@@ -2249,7 +2249,7 @@ CREATE TABLE `item_instance_artifact_powers` (
   KEY `itemEntry` (`itemEntry`) USING BTREE,
   KEY `char_guid` (`char_guid`) USING BTREE,
   KEY `artifactPowerId` (`artifactPowerId`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `item_instance_artifact_powers` */
 
@@ -2273,7 +2273,7 @@ CREATE TABLE `item_instance_gems` (
   `gemScalingLevel3` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`itemGuid`) USING BTREE,
   KEY `itemGuid` (`itemGuid`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `item_instance_gems` */
 
@@ -2287,7 +2287,7 @@ CREATE TABLE `item_instance_modifiers` (
   `artifactKnowledgeLevel` int(10) unsigned DEFAULT '0',
   PRIMARY KEY (`itemGuid`) USING BTREE,
   KEY `itemGuid` (`itemGuid`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `item_instance_modifiers` */
 
@@ -2302,7 +2302,7 @@ CREATE TABLE `item_instance_relics` (
   `second_relic` text NOT NULL,
   `third_relic` text NOT NULL,
   PRIMARY KEY (`itemGuid`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `item_instance_relics` */
 
@@ -2324,7 +2324,7 @@ CREATE TABLE `item_instance_transmog` (
   `spellItemEnchantmentSpec4` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`itemGuid`) USING BTREE,
   KEY `itemGuid` (`itemGuid`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `item_instance_transmog` */
 
@@ -2340,7 +2340,7 @@ CREATE TABLE `item_refund_instance` (
   PRIMARY KEY (`item_guid`,`player_guid`) USING BTREE,
   KEY `item_guid` (`item_guid`) USING BTREE,
   KEY `player_guid` (`player_guid`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='Item Refund System';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='Item Refund System';
 
 /*Data for the table `item_refund_instance` */
 
@@ -2353,7 +2353,7 @@ CREATE TABLE `item_soulbound_trade_data` (
   `allowedPlayers` text NOT NULL COMMENT 'Space separated GUID list of players who can receive this item in trade',
   PRIMARY KEY (`itemGuid`) USING BTREE,
   KEY `itemGuid` (`itemGuid`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='Item Refund System';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='Item Refund System';
 
 /*Data for the table `item_soulbound_trade_data` */
 
@@ -2367,7 +2367,7 @@ CREATE TABLE `lfg_data` (
   `state` tinyint(3) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`guid`) USING BTREE,
   KEY `guid` (`guid`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='LFG Data';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='LFG Data';
 
 /*Data for the table `lfg_data` */
 
@@ -2383,7 +2383,7 @@ CREATE TABLE `log_faction_change` (
   `NewRace` int(11) NOT NULL,
   `date` datetime NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=MyISAM AUTO_INCREMENT=3901 DEFAULT CHARSET=latin1 ROW_FORMAT=FIXED;
+) ENGINE=MyISAM AUTO_INCREMENT=3901 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=FIXED;
 
 /*Data for the table `log_faction_change` */
 
@@ -2399,7 +2399,7 @@ CREATE TABLE `log_rename` (
   KEY `guid` (`guid`) USING BTREE,
   KEY `oldName` (`oldName`(50)) USING BTREE,
   KEY `newName` (`newName`(50)) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `log_rename` */
 
@@ -2427,7 +2427,7 @@ CREATE TABLE `mail` (
   KEY `checked` (`checked`) USING BTREE,
   KEY `deliver_time` (`deliver_time`) USING BTREE,
   KEY `expire_time` (`expire_time`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='Mail System';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='Mail System';
 
 /*Data for the table `mail` */
 
@@ -2442,7 +2442,7 @@ CREATE TABLE `mail_items` (
   PRIMARY KEY (`item_guid`) USING BTREE,
   KEY `idx_receiver` (`receiver`) USING BTREE,
   KEY `idx_mail_id` (`mail_id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `mail_items` */
 
@@ -2463,7 +2463,7 @@ CREATE TABLE `mailbox_queue` (
   `item_count` int(10) unsigned NOT NULL DEFAULT '0',
   `store_history` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `mailbox_queue` */
 
@@ -2484,7 +2484,7 @@ CREATE TABLE `pet_aura` (
   `remaincharges` tinyint(3) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`guid`,`spell`,`effect_mask`) USING BTREE,
   KEY `guid` (`guid`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='Pet System';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='Pet System';
 
 /*Data for the table `pet_aura` */
 
@@ -2500,7 +2500,7 @@ CREATE TABLE `pet_aura_effect` (
   `baseamount` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`guid`,`slot`,`effect`) USING BTREE,
   KEY `guid` (`guid`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `pet_aura_effect` */
 
@@ -2515,7 +2515,7 @@ CREATE TABLE `pet_spell` (
   PRIMARY KEY (`guid`,`spell`) USING BTREE,
   KEY `guid` (`guid`) USING BTREE,
   KEY `spell` (`spell`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='Pet System';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='Pet System';
 
 /*Data for the table `pet_spell` */
 
@@ -2528,7 +2528,7 @@ CREATE TABLE `pet_spell_cooldown` (
   `spell` mediumint(8) unsigned NOT NULL DEFAULT '0' COMMENT 'Spell Identifier',
   `time` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`guid`,`spell`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `pet_spell_cooldown` */
 
@@ -2543,7 +2543,7 @@ CREATE TABLE `petition` (
   `type` tinyint(3) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`ownerguid`,`type`) USING BTREE,
   UNIQUE KEY `index_ownerguid_petitionguid` (`ownerguid`,`petitionguid`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='Guild System';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='Guild System';
 
 /*Data for the table `petition` */
 
@@ -2560,7 +2560,7 @@ CREATE TABLE `petition_sign` (
   PRIMARY KEY (`petitionguid`,`playerguid`) USING BTREE,
   KEY `Idx_playerguid` (`playerguid`) USING BTREE,
   KEY `Idx_ownerguid` (`ownerguid`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='Guild System';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='Guild System';
 
 /*Data for the table `petition_sign` */
 
@@ -2572,7 +2572,7 @@ CREATE TABLE `pool_quest_save` (
   `pool_id` int(10) unsigned NOT NULL DEFAULT '0',
   `quest_id` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`pool_id`,`quest_id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 /*Data for the table `pool_quest_save` */
 
@@ -2589,7 +2589,7 @@ CREATE TABLE `report_bugreport` (
   `PosY` float NOT NULL,
   `PosZ` float NOT NULL,
   PRIMARY KEY (`ID`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='Bug report system';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='Bug report system';
 
 /*Data for the table `report_bugreport` */
 
@@ -2608,7 +2608,7 @@ CREATE TABLE `report_complaints` (
   `TimeSinceOffence` int(10) unsigned NOT NULL DEFAULT '0',
   `MessageLog` longtext NOT NULL,
   `JustBanned` int(1) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='Spam report system';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='Spam report system';
 
 /*Data for the table `report_complaints` */
 
@@ -2619,7 +2619,7 @@ DROP TABLE IF EXISTS `reserved_name`;
 CREATE TABLE `reserved_name` (
   `name` varchar(12) NOT NULL DEFAULT '',
   PRIMARY KEY (`name`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='Player Reserved Names';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='Player Reserved Names';
 
 /*Data for the table `reserved_name` */
 
@@ -2631,7 +2631,7 @@ CREATE TABLE `version` (
   `core_version` varchar(120) DEFAULT NULL COMMENT 'Core revision dumped at startup.',
   `core_revision` varchar(120) DEFAULT NULL,
   `db_version` varchar(120) DEFAULT NULL COMMENT 'Version of characters DB.'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED COMMENT='Version Notes';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 ROW_FORMAT=FIXED COMMENT='Version Notes';
 
 /*Data for the table `version` */
 
@@ -2658,7 +2658,7 @@ CREATE TABLE `world_quest` (
   `ItemList` longtext NOT NULL,
   PRIMARY KEY (`QuestID`) USING BTREE,
   KEY `ResetTime` (`ResetTime`) USING BTREE
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
 
 /*Data for the table `world_quest` */
 
@@ -2675,7 +2675,7 @@ CREATE TABLE `worldstate_data` (
   `Value` int(10) unsigned NOT NULL DEFAULT '0',
   `RenewTime` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'Time of last renew of WorldState',
   PRIMARY KEY (`VariableID`,`InstanceID`,`Type`,`ConditionID`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='WorldState data storage';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='WorldState data storage';
 
 /*Data for the table `worldstate_data` */
 
@@ -2688,7 +2688,7 @@ CREATE TABLE `worldstates` (
   `value` int(10) unsigned NOT NULL DEFAULT '0',
   `comment` tinytext,
   PRIMARY KEY (`entry`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='Variable Saves';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT COMMENT='Variable Saves';
 
 /*Data for the table `worldstates` */
 
