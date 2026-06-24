@@ -13,6 +13,7 @@ if(WIN32)
 			  ${BOOST_ROOT}/lib${PLATFORM}-msvc-14.0 )
 		else()
 			list(APPEND BOOST_LIBRARYDIR
+			  ${BOOST_ROOT}/stage/lib
 			  ${BOOST_ROOT}/lib${PLATFORM}-msvc-14.2
 			  ${BOOST_ROOT}/lib${PLATFORM}-msvc-14.1 )
 		endif()
@@ -61,7 +62,5 @@ target_include_directories(boost
 
 target_compile_definitions(boost
   INTERFACE
-    -DBOOST_DATE_TIME_NO_LIB
-    -DBOOST_REGEX_NO_LIB
-    -DBOOST_CHRONO_NO_LIB
+    -DBOOST_ALL_NO_LIB
     ${OPTIONAL_BOOST_NO_SCOPED_ENUMS})

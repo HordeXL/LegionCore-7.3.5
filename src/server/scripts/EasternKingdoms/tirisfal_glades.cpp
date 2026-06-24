@@ -95,6 +95,20 @@ struct npc_deathguard_saltain : public ScriptedAI
         me->SetReactState(REACT_PASSIVE);
     }
 
+    void OnQuestAccept(Player* player, Quest const* quest) override
+    {
+        if (quest->GetQuestId() == 26800)
+        {
+            // Remove any existing Darnel summons first to prevent duplicates
+            auto cList = player->GetSummonList(49337);
+            for (GuidList::const_iterator iter = cList->begin(); iter != cList->end(); ++iter)
+            {
+                if (auto darnel = ObjectAccessor::GetCreature(*player, (*iter)))
+                    darnel->DespawnOrUnsummon(100);
+            }
+        }
+    }
+
     void OnQuestReward(Player* player, Quest const* quest) override
     {
         if (quest->GetQuestId() == 26800)
