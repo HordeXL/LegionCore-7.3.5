@@ -23,3 +23,5 @@ cmake-build-*/
 .vs
 *.user
 /.reasonix
+mysql_mcp_config.json
+reasonix.toml
