@@ -3926,7 +3926,15 @@ void Player::GiveLevel(uint8 level)
 
     // update level to hunter/summon pet
     if (Pet* pet = GetPet())
+    {
         pet->SynchronizeLevelWithOwner();
+        if (pet->isHunterPet() && pet->isAlive())
+        {
+            pet->SetFullHealth();
+            pet->SetPower(pet->getPowerType(), pet->GetMaxPower(pet->getPowerType()));
+            AddPetInfo(pet);
+        }
+    }
 
     if (MailLevelReward const* mailReward = sObjectMgr->GetMailLevelReward(level, getRaceMask()))
     {
@@ -4617,7 +4625,15 @@ void Player::InitStatsForLevel(bool reapplyMods)
 
     // update level to hunter/summon pet
     if (Pet* pet = GetPet())
+    {
         pet->SynchronizeLevelWithOwner();
+        if (pet->isHunterPet() && pet->isAlive())
+        {
+            pet->SetFullHealth();
+            pet->SetPower(pet->getPowerType(), pet->GetMaxPower(pet->getPowerType()));
+            AddPetInfo(pet);
+        }
+    }
 }
 
 void Player::SendKnownSpells()
@@ -6130,7 +6146,8 @@ bool Player::ResetTalents(bool no_cost)
         }
     }
 
-    RemovePet(NULL);
+    if (!no_cost)
+        RemovePet(NULL);
 
     for (TalentEntry const* talentInfo : sTalentStore)
         if (talentInfo->ClassID == getClass() && talentInfo->SpellID)
@@ -31870,7 +31887,7 @@ void PetInfoData::UpdateData(Pet* pet)
     name = pet->GetName();
     renamed = pet->HasByteFlag(UNIT_FIELD_BYTES_2, UNIT_BYTES_2_OFFSET_PET_FLAGS, UNIT_CAN_BE_RENAMED) ? 0 : 1;
     curhealth = pet->GetHealth();
-    curmana = pet->GetPower(POWER_MANA);
+    curmana = pet->GetPower(pet->getPowerType());
     std::ostringstream ss;
     ss.str("");
     for (uint32 i = ACTION_BAR_INDEX_START; i < ACTION_BAR_INDEX_END; ++i)

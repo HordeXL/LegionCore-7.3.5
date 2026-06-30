@@ -287,8 +287,17 @@ bool Pet::LoadPetFromDB(Player* owner, uint32 petentry, uint32 petnumber)
         setDeathState(JUST_DIED);
     else if (getPetType() == HUNTER_PET)
     {
-        SetHealth(savedhealth > GetMaxHealth() ? GetMaxHealth() : savedhealth);
-        SetPower(getPowerType(), savedmana > uint32(GetMaxPower(getPowerType())) ? GetMaxPower(getPowerType()) : savedmana);
+        uint32 maxHealth = GetMaxHealth();
+        if (savedhealth > maxHealth)
+            savedhealth = maxHealth;
+        else if (savedhealth == 0 && isAlive())
+            savedhealth = maxHealth;
+        SetHealth(savedhealth);
+
+        uint32 maxPower = GetMaxPower(getPowerType());
+        if (savedmana > maxPower)
+            savedmana = maxPower;
+        SetPower(getPowerType(), savedmana);
     }
 
     SetTratsport(owner->GetTransport());
@@ -412,7 +421,7 @@ void Pet::SavePetToDB(bool isDelete)
     }
 
     uint32 curhealth = GetHealth();
-    uint32 curmana = GetPower(POWER_MANA);
+    uint32 curmana = GetPower(getPowerType());
 
     SQLTransaction trans = CharacterDatabase.BeginTransaction();
     // save auras before possibly removing them
@@ -860,7 +869,7 @@ bool Guardian::InitStatsForLevel(uint8 petlevel, bool initSpells)
     {
         SetCreateHealth(stats->BaseHealth[cinfo->RequiredExpansion]);
         SetCreateMana(stats->BaseMana);
-        SetPower(POWER_MANA, GetMaxPower(POWER_MANA));
+        SetPower(getPowerType(), GetMaxPower(getPowerType()));
     }
 
     if(owner && (owner->getClass() == CLASS_HUNTER || owner->getClass() == CLASS_WARLOCK))

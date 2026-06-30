@@ -95,7 +95,7 @@ struct npc_deathguard_saltain : public ScriptedAI
         me->SetReactState(REACT_PASSIVE);
     }
 
-    void OnQuestAccept(Player* player, Quest const* quest) override
+    void OnQuestAccept(Player* player, Quest const* quest)
     {
         if (quest->GetQuestId() == 26800)
         {
@@ -109,7 +109,7 @@ struct npc_deathguard_saltain : public ScriptedAI
         }
     }
 
-    void OnQuestReward(Player* player, Quest const* quest) override
+    void OnQuestReward(Player* player, Quest const* quest)
     {
         if (quest->GetQuestId() == 26800)
         {
