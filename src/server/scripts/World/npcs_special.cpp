@@ -3330,6 +3330,7 @@ public:
                     case 73899:
                     case 100787:
                     case 118215:
+                    case 193455: // Cobra Shot (hunter starting ability)
                     {
                         player->KilledMonsterCredit(44175, ObjectGuid::Empty);
                         break;
