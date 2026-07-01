@@ -7158,8 +7158,14 @@ void Spell::EffectSummonDeadPet(SpellEffIndex /*effIndex*/)
     pet->ClearUnitState(uint32(UNIT_STATE_ALL_STATE));
     pet->SetHealth(pet->CountPctFromMaxHealth(damage));
 
-    //pet->AIM_Initialize();
-    //player->PetSpellInitialize();
+    pet->AIM_Initialize();
+
+    // Reposition pet at follow distance so follow AI triggers
+    Position pos;
+    player->GetFirstCollisionPosition(pos, PET_FOLLOW_DIST, PET_FOLLOW_ANGLE);
+    pet->UpdatePosition(pos.m_positionX, pos.m_positionY, pos.m_positionZ, pos.m_orientation);
+    pet->GetMotionMaster()->MoveFollow(player, PET_FOLLOW_DIST, PET_FOLLOW_ANGLE);
+
     pet->SavePetToDB();
 }
 
