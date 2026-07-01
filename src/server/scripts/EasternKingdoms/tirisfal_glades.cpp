@@ -25,6 +25,7 @@ struct npc_darnel_q26800 : public ScriptedAI
                 if (auto pass = me->GetVehicleKit()->GetPassenger(i))
                     pass->ExitVehicle();
             }
+            me->DespawnOrUnsummon(2000);
         }
     }
 
