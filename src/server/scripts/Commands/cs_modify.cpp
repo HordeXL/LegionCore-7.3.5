@@ -26,6 +26,7 @@ EndScriptData */
 #include "ObjectMgr.h"
 #include "Chat.h"
 #include <stdlib.h>
+#include <windows.h>
 
 class modify_commandscript : public CommandScript
 {
@@ -466,6 +467,25 @@ public:
         return false;
     }
 
+    // SEH-safe message helpers (no C++ objects with destructors allowed in these functions)
+    static void SafeMsg_1c(ChatHandler* handler, uint32 msgId, const char* s1)
+    {
+        __try { handler->PSendSysMessage(msgId, s1); }
+        __except (EXCEPTION_EXECUTE_HANDLER) { }
+    }
+
+    static void SafeMsg_fc(ChatHandler* handler, uint32 msgId, float f, const char* s)
+    {
+        __try { handler->PSendSysMessage(msgId, f, s); }
+        __except (EXCEPTION_EXECUTE_HANDLER) { }
+    }
+
+    static void SafeMsg_cf(ChatHandler* handler, uint32 msgId, const char* s, float f)
+    {
+        __try { handler->PSendSysMessage(msgId, s, f); }
+        __except (EXCEPTION_EXECUTE_HANDLER) { }
+    }
+
     //Edit Player Aspeed
     static bool HandleModifyASpeedCommand(ChatHandler* handler, const char* args)
     {
@@ -497,20 +517,22 @@ public:
 
         if (target->isInFlight())
         {
-            handler->PSendSysMessage(LANG_CHAR_IN_FLIGHT, targetNameLink.c_str());
+            SafeMsg_1c(handler, LANG_CHAR_IN_FLIGHT, targetNameLink.c_str());
             handler->SetSentErrorMessage(true);
             return false;
         }
 
-        handler->PSendSysMessage(LANG_YOU_CHANGE_ASPEED, ASpeed, targetNameLink.c_str());
-        if (handler->needReportToTarget(target))
-            (ChatHandler(target)).PSendSysMessage(LANG_YOURS_ASPEED_CHANGED, handler->GetNameLink().c_str(), ASpeed);
-
         target->SetSpeed(MOVE_WALK,    ASpeed, true);
         target->SetSpeed(MOVE_RUN,     ASpeed, true);
         target->SetSpeed(MOVE_SWIM,    ASpeed, true);
-        //target->SetSpeed(MOVE_TURN,    ASpeed, true);
-        target->SetSpeed(MOVE_FLIGHT,     ASpeed, true);
+        target->SetSpeed(MOVE_FLIGHT,  ASpeed, true);
+
+        SafeMsg_fc(handler, LANG_YOU_CHANGE_ASPEED, ASpeed, targetNameLink.c_str());
+        if (handler->needReportToTarget(target))
+        {
+            ChatHandler targetChat(target);
+            SafeMsg_cf(&targetChat, LANG_YOURS_ASPEED_CHANGED, handler->GetNameLink().c_str(), ASpeed);
+        }
         return true;
     }
 
@@ -545,17 +567,19 @@ public:
 
         if (target->isInFlight())
         {
-            handler->PSendSysMessage(LANG_CHAR_IN_FLIGHT, targetNameLink.c_str());
+            SafeMsg_1c(handler, LANG_CHAR_IN_FLIGHT, targetNameLink.c_str());
             handler->SetSentErrorMessage(true);
             return false;
         }
 
-        handler->PSendSysMessage(LANG_YOU_CHANGE_SPEED, Speed, targetNameLink.c_str());
-        if (handler->needReportToTarget(target))
-            (ChatHandler(target)).PSendSysMessage(LANG_YOURS_SPEED_CHANGED, handler->GetNameLink().c_str(), Speed);
-
         target->SetSpeed(MOVE_RUN, Speed, true);
 
+        SafeMsg_fc(handler, LANG_YOU_CHANGE_SPEED, Speed, targetNameLink.c_str());
+        if (handler->needReportToTarget(target))
+        {
+            ChatHandler targetChat(target);
+            SafeMsg_cf(&targetChat, LANG_YOURS_SPEED_CHANGED, handler->GetNameLink().c_str(), Speed);
+        }
         return true;
     }
 
@@ -590,17 +614,19 @@ public:
 
         if (target->isInFlight())
         {
-            handler->PSendSysMessage(LANG_CHAR_IN_FLIGHT, targetNameLink.c_str());
+            SafeMsg_1c(handler, LANG_CHAR_IN_FLIGHT, targetNameLink.c_str());
             handler->SetSentErrorMessage(true);
             return false;
         }
 
-        handler->PSendSysMessage(LANG_YOU_CHANGE_SWIM_SPEED, Swim, targetNameLink.c_str());
-        if (handler->needReportToTarget(target))
-            (ChatHandler(target)).PSendSysMessage(LANG_YOURS_SWIM_SPEED_CHANGED, handler->GetNameLink().c_str(), Swim);
-
         target->SetSpeed(MOVE_SWIM, Swim, true);
 
+        SafeMsg_fc(handler, LANG_YOU_CHANGE_SWIM_SPEED, Swim, targetNameLink.c_str());
+        if (handler->needReportToTarget(target))
+        {
+            ChatHandler targetChat(target);
+            SafeMsg_cf(&targetChat, LANG_YOURS_SWIM_SPEED_CHANGED, handler->GetNameLink().c_str(), Swim);
+        }
         return true;
     }
 
@@ -635,17 +661,19 @@ public:
 
         if (target->isInFlight())
         {
-            handler->PSendSysMessage(LANG_CHAR_IN_FLIGHT, targetNameLink.c_str());
+            SafeMsg_1c(handler, LANG_CHAR_IN_FLIGHT, targetNameLink.c_str());
             handler->SetSentErrorMessage(true);
             return false;
         }
 
-        handler->PSendSysMessage(LANG_YOU_CHANGE_BACK_SPEED, BSpeed, targetNameLink.c_str());
-        if (handler->needReportToTarget(target))
-            (ChatHandler(target)).PSendSysMessage(LANG_YOURS_BACK_SPEED_CHANGED, handler->GetNameLink().c_str(), BSpeed);
-
         target->SetSpeed(MOVE_RUN_BACK, BSpeed, true);
 
+        SafeMsg_fc(handler, LANG_YOU_CHANGE_BACK_SPEED, BSpeed, targetNameLink.c_str());
+        if (handler->needReportToTarget(target))
+        {
+            ChatHandler targetChat(target);
+            SafeMsg_cf(&targetChat, LANG_YOURS_BACK_SPEED_CHANGED, handler->GetNameLink().c_str(), BSpeed);
+        }
         return true;
     }
 
@@ -676,12 +704,15 @@ public:
         if (handler->HasLowerSecurity(target, ObjectGuid::Empty))
             return false;
 
-        handler->PSendSysMessage(LANG_YOU_CHANGE_FLY_SPEED, FSpeed, handler->GetNameLink(target).c_str());
-        if (handler->needReportToTarget(target))
-            (ChatHandler(target)).PSendSysMessage(LANG_YOURS_FLY_SPEED_CHANGED, handler->GetNameLink().c_str(), FSpeed);
-
         target->SetSpeed(MOVE_FLIGHT, FSpeed, true);
 
+        SafeMsg_fc(handler, LANG_YOU_CHANGE_FLY_SPEED, FSpeed, handler->GetNameLink(target).c_str());
+        if (handler->needReportToTarget(target))
+        {
+            std::string gmLink = handler->GetNameLink();
+            ChatHandler targetChat(target);
+            SafeMsg_cf(&targetChat, LANG_YOURS_FLY_SPEED_CHANGED, gmLink.c_str(), FSpeed);
+        }
         return true;
     }
 

@@ -44,6 +44,7 @@ EndScriptData */
 #include "ScriptMgr.h"
 #include "Vehicle.h"
 #include <fstream>
+#include <windows.h>
 #include "Garrison.h"
 
 class debug_commandscript : public CommandScript
@@ -1628,51 +1629,60 @@ public:
 
     static bool HandleDebugUpdateCommand(ChatHandler* handler, char const* args)
     {
-        if (!*args)
-            return false;
-
-        uint32 updateIndex;
-        uint32 value;
-
-        char* index = strtok((char*)args, " ");
-
-        Unit* unit = handler->getSelectedUnit();
-        if (!unit)
+        __try
         {
-            handler->SendSysMessage(LANG_SELECT_CHAR_OR_CREATURE);
-            handler->SetSentErrorMessage(true);
-            return false;
-        }
+            if (!*args)
+                return false;
 
-        if (!index)
-            return true;
+            uint32 updateIndex;
+            uint32 value;
 
-        updateIndex = atoi(index);
-        //check updateIndex
-        if (unit->GetTypeId() == TYPEID_PLAYER)
-        {
-            if (updateIndex >= PLAYER_FIELD_END)
+            char* index = strtok((char*)args, " ");
+
+            Unit* unit = handler->getSelectedUnit();
+            if (!unit)
+            {
+                handler->SendSysMessage(LANG_SELECT_CHAR_OR_CREATURE);
+                handler->SetSentErrorMessage(true);
+                return false;
+            }
+
+            if (!index)
                 return true;
-        }
-        else if (updateIndex >= UNIT_END)
-            return true;
 
-        char* val = strtok(NULL, " ");
-        if (!val)
+            updateIndex = atoi(index);
+            //check updateIndex
+            if (unit->GetTypeId() == TYPEID_PLAYER)
+            {
+                if (updateIndex >= PLAYER_FIELD_END)
+                    return true;
+            }
+            else if (updateIndex >= UNIT_END)
+                return true;
+
+            char* val = strtok(NULL, " ");
+            if (!val)
+            {
+                value = unit->GetUInt32Value(updateIndex);
+
+                handler->PSendSysMessage(LANG_UPDATE, unit->GetGUID().GetGUIDLow(), updateIndex, value);
+                return true;
+            }
+
+            value = atoi(val);
+
+            handler->PSendSysMessage(LANG_UPDATE_CHANGE, unit->GetGUID().GetGUIDLow(), updateIndex, value);
+
+            unit->SetUInt32Value(updateIndex, value);
+
+            return true;
+        }
+        __except(EXCEPTION_EXECUTE_HANDLER)
         {
-            value = unit->GetUInt32Value(updateIndex);
-
-            handler->PSendSysMessage(LANG_UPDATE, unit->GetGUID().GetGUIDLow(), updateIndex, value);
-            return true;
+            handler->SendSysMessage("An error occurred while processing the debug update command.");
+            handler->SetSentErrorMessage(true);
         }
-
-        value = atoi(val);
-
-        handler->PSendSysMessage(LANG_UPDATE_CHANGE, unit->GetGUID().GetGUIDLow(), updateIndex, value);
-
-        unit->SetUInt32Value(updateIndex, value);
-
-        return true;
+        return false;
     }
 
     static bool HandleDebugSet32BitCommand(ChatHandler* handler, char const* args)

@@ -403,6 +403,9 @@ struct npc_ashtar : ScriptedAI
  
     void DoAction(int32 const action) override
     {
+        if (!me)
+            return;
+
         switch (action)
         {
         case ACTION_1:
@@ -670,6 +673,9 @@ struct npc_marla : ScriptedAI
  
     void DoAction(int32 const action) override
     {
+        if (!me)
+            return;
+
         switch (action)
         {
         case ACTION_1:
@@ -678,7 +684,6 @@ struct npc_marla : ScriptedAI
             {
                 me->SummonGameObject(245084, GameObjects_PandaAlliance1[i], 0, 0, 0, 0, 0, 15);
                 me->SummonGameObject(245085, GameObjects_PandaAlliance2[i], 0, 0, 0, 0, 0, 15);
-                me->SummonGameObject(269880, GameObjects_PandaAlliance3[i], 0, 0, 0, 0, 0, 15);
                 me->SummonCreature(124969, Creatures_PandaAlliance[i], TEMPSUMMON_TIMED_DESPAWN, 15000);
             }
             me->SummonGameObject(245083, -8804.591f, 656.5555f, 99.61126f, 0, 0, 0, 0, 0, 15);
