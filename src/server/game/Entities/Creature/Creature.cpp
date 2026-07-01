@@ -715,30 +715,33 @@ bool Creature::UpdateEntry(uint32 entry, uint32 team, const CreatureData* data)
         SetSheath(SHEATH_STATE_MELEE);
 
     uint32 SandboxScalingID = 0;
-    if (!GetMap()->IsDungeon() || GetMap()->IsCanScale() || cInfo->RequiredExpansion < EXPANSION_LEGION)
+    if (sWorld->getBoolConfig(CONFIG_DYNAMIC_LEVEL_ENABLED))
     {
-        SandboxScalingID = cInfo->SandboxScalingID;
-
-        // Need before set level
-        if (cInfo->ScaleLevelMin)
-            ScaleLevelMin = cInfo->ScaleLevelMin;
-        if (cInfo->ScaleLevelMax)
-            ScaleLevelMax = cInfo->ScaleLevelMax;
-        else
-            SandboxScalingID = GetScalingID();
-    }
-
-    // TODO: This should probably be reworked, in which cases should a creature being summoned/charmed/owned
-    // mean that level scaling is not applied? Maybe only in case of GetOwner() != NULL?
-    // Without this exception the NPCs summoned in quest 40604 (Disturbing the Past) do not get lvl scaled.
-    if (entry != 100735)
-    {
-        if (Unit* owner = GetAnyOwner())
+        if (!GetMap()->IsDungeon() || GetMap()->IsCanScale() || cInfo->RequiredExpansion < EXPANSION_LEGION)
         {
-            if (owner->IsPlayer())
+            SandboxScalingID = cInfo->SandboxScalingID;
+
+            // Need before set level
+            if (cInfo->ScaleLevelMin)
+                ScaleLevelMin = cInfo->ScaleLevelMin;
+            if (cInfo->ScaleLevelMax)
+                ScaleLevelMax = cInfo->ScaleLevelMax;
+            else
+                SandboxScalingID = GetScalingID();
+        }
+
+        // TODO: This should probably be reworked, in which cases should a creature being summoned/charmed/owned
+        // mean that level scaling is not applied? Maybe only in case of GetOwner() != NULL?
+        // Without this exception the NPCs summoned in quest 40604 (Disturbing the Past) do not get lvl scaled.
+        if (entry != 100735)
+        {
+            if (Unit* owner = GetAnyOwner())
             {
-                ScaleLevelMin = 0;
-                ScaleLevelMax = 0;
+                if (owner->IsPlayer())
+                {
+                    ScaleLevelMin = 0;
+                    ScaleLevelMax = 0;
+                }
             }
         }
     }

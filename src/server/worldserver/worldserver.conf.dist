@@ -866,6 +866,15 @@ Custom.GainHonorOnGuardKill = 1
 
 Custom.GainHonorOnEliteKill = 1
 
+#
+#     DynamicLevel.Enabled
+#        Description: Set it to 1 to enable dynamic level scaling for creatures.
+#                     Set it to 0 to disable scaling and use creature base levels.
+#        Default:     1 (enabled)
+#
+
+DynamicLevel.Enabled = 1
+
 #   Player.ControlGuardianPets
 #       Whether uncontrolled temporary pets will be controlled or not
 #       Example: Dire beast attacking the players current target when switching. Enabled by default

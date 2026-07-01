@@ -1506,6 +1506,7 @@ void World::LoadConfigSettings(bool reload)
 	// Honor for elites and guards
 	m_bool_configs[CONFIG_GAIN_HONOR_GUARD] = sConfigMgr->GetBoolDefault("Custom.GainHonorOnGuardKill", true);
 	m_bool_configs[CONFIG_GAIN_HONOR_ELITE] = sConfigMgr->GetBoolDefault("Custom.GainHonorOnEliteKill", true);
+	m_bool_configs[CONFIG_DYNAMIC_LEVEL_ENABLED] = sConfigMgr->GetBoolDefault("DynamicLevel.Enabled", true);
 
     // Legion patch configuration
     m_int_configs[CONFIG_LEGION_ENABLED_PATCH] = sConfigMgr->GetIntDefault("Game.Patch", 3);
