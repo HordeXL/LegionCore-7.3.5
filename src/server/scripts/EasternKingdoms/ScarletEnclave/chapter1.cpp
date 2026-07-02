@@ -706,6 +706,46 @@ public:
 };
 
 /*######
+## npc_dk_shadow_realm_initiate
+## Quest 12687 - Into the Realm of Shadows
+######*/
+class npc_dk_shadow_realm_initiate : public CreatureScript
+{
+public:
+    npc_dk_shadow_realm_initiate() : CreatureScript("npc_dk_shadow_realm_initiate") { }
+
+    bool OnQuestAccept(Player* player, Creature* creature, Quest const* quest) override
+    {
+        if (quest->GetQuestId() == 12687)
+            player->CastSpell(player, 52693, true);
+        return true;
+    }
+
+    bool OnGossipHello(Player* player, Creature* creature) override
+    {
+        if (creature->isQuestGiver())
+            player->PrepareQuestMenu(creature->GetGUID());
+
+        if (player->GetQuestStatus(12687) == QUEST_STATUS_INCOMPLETE && !player->HasAura(52693))
+            player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Salanar, I must return to the Realm of Shadows.", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);
+
+        player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+        return true;
+    }
+
+    bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
+    {
+        player->PlayerTalkClass->ClearMenus();
+        if (action == GOSSIP_ACTION_INFO_DEF)
+        {
+            player->CLOSE_GOSSIP_MENU();
+            player->CastSpell(player, 52693, true);
+        }
+        return true;
+    }
+};
+
+/*######
 ## npc_ros_dark_rider
 ######*/
 
@@ -1205,4 +1245,5 @@ void AddSC_the_scarlet_enclave_c1()
     new npc_scarlet_miner();
     new npc_scarlet_miner_cart();
     new npc_eye_of_acherus();
+    new npc_dk_shadow_realm_initiate();
 }
