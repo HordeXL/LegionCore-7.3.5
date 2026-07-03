@@ -78,17 +78,12 @@ class npc_panda_announcer : public CreatureScript
 
         }
 
-        void Reset()
-        {
-            text = TEXT_GENERIC_0;
-            targetGUID.Clear();
-        }
-
         enum events
         {
-            EVENT_1            = 1,
-            EVENT_2_ANNOUNCER6 = 2,
-            EVENT_CLEAR        = 3,
+            EVENT_1                = 1,
+            EVENT_2_ANNOUNCER6     = 2,
+            EVENT_CLEAR            = 3,
+            EVENT_VISIBILITY_CHECK = 4,
         };
 
         uint32 text;
@@ -143,6 +138,11 @@ class npc_panda_announcer : public CreatureScript
                 case NPC_ANNOUNCER_8:
                     eTimer = 13000;
                     break;
+                case NPC_ANNOUNCER_7:
+                    // Master Shang Xi - hide interaction during quest 29790 "Passing Wisdom"
+                    if (who->ToPlayer()->GetQuestStatus(QUEST_PASSING_WISDOM) == QUEST_STATUS_INCOMPLETE)
+                        return;
+                    break;
                 default:
                     break;
             }
@@ -151,6 +151,14 @@ class npc_panda_announcer : public CreatureScript
             events.RescheduleEvent(EVENT_1, eTimer);
             events.RescheduleEvent(EVENT_CLEAR, 300000);
             targetGUID = who->GetGUID();
+        }
+
+        void Reset()
+        {
+            text = TEXT_GENERIC_0;
+            targetGUID.Clear();
+            if (me->GetEntry() == NPC_ANNOUNCER_7)
+                events.RescheduleEvent(EVENT_VISIBILITY_CHECK, 1000);
         }
 
         void UpdateAI(uint32 diff)
@@ -174,6 +182,35 @@ class npc_panda_announcer : public CreatureScript
                     case EVENT_CLEAR:
                         m_player_for_event.clear();
                         break;
+                    case EVENT_VISIBILITY_CHECK:
+                    {
+                        // Per-player visibility for Master Shang Xi during quest 29790
+                        // Uses player's GetPhaseMask for per-player phase control
+                        bool hasIncompletePlayer = false;
+                        bool hasOtherPlayer = false;
+                        Map::PlayerList const& players = me->GetMap()->GetPlayers();
+                        for (auto const& ref : players)
+                        {
+                            Player* player = ref.GetSource();
+                            if (!player || !player->IsInWorld() || !me->IsWithinDistInMap(player, 50.0f))
+                                continue;
+
+                            QuestStatus status = player->GetQuestStatus(QUEST_PASSING_WISDOM);
+                            if (status == QUEST_STATUS_INCOMPLETE)
+                                hasIncompletePlayer = true;
+                            else
+                                hasOtherPlayer = true;
+                        }
+
+                        // Only hide when ALL nearby players have quest incomplete
+                        // Show when at least one player doesn't have the quest or has completed it
+                        uint32 newPhase = (hasIncompletePlayer && !hasOtherPlayer) ? 0 : 1;
+                        if (me->GetPhaseMask() != newPhase)
+                            me->SetPhaseMask(newPhase, true);
+
+                        events.RescheduleEvent(EVENT_VISIBILITY_CHECK, 2000);
+                        break;
+                    }
                 }
             }
         }
@@ -5191,7 +5228,7 @@ public:
             events.RescheduleEvent(EVENT_6, t += 1000);            //18:12:55.000
             events.RescheduleEvent(EVENT_7, t += 2000);            //18:12:57.000
             events.RescheduleEvent(EVENT_8, t += 9000);            //18:13:06.000
-            events.RescheduleEvent(EVENT_CZI_0, t += 3000);        //18:13:09.000 Message: Да, вождь.
+            events.RescheduleEvent(EVENT_CZI_0, t += 3000);        //18:13:09.000 Message: Да, вожд„1¤7.
             events.RescheduleEvent(EVENT_9, t += 3000);            //18:13:12.000
             events.RescheduleEvent(EVENT_10, t += 3000);           //18:13:15.000
             events.RescheduleEvent(EVENT_11, t += 8000);           //18:13:23.000
@@ -5200,7 +5237,7 @@ public:
             events.RescheduleEvent(EVENT_14, t += 13000);          //18:13:47.000
             events.RescheduleEvent(EVENT_15, t += 5000);           //18:13:52.000 
             events.RescheduleEvent(EVENT_16, t += 11000);          //18:14:03.000
-            events.RescheduleEvent(EVENT_CZI_1, t += 3000);        //18:14:06.000 Message: Да... Да, конечно...
+            events.RescheduleEvent(EVENT_CZI_1, t += 3000);        //18:14:06.000 Message: Да... Да, конечн„1¤7...
             events.RescheduleEvent(EVENT_17, t += 4000);           //18:14:10.000
             events.RescheduleEvent(EVENT_18, t += 1000);           //18:14:11.000
             events.RescheduleEvent(EVENT_19, t += 2000);           //18:14:13.000
