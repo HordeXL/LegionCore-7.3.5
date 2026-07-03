@@ -8185,6 +8185,28 @@ void SpellMgr::LoadSpellCustomAttr()
 		spellInfo->GetMisc()->Duration.MaxDuration = 8;
 	});*/
 
+	// Quest 12701 - Massacre at Light's Point: Scarlet Cannon (28833) gunner seat
+	// Original WotLK: 52435 (Trigger Missile -> 52436 for School Damage 13613, 12yd).
+	// 52436 likely missing from Legion DBC, so make 52435 deal direct area damage at target.
+	ApplySpellFix({ 52435 }, [](SpellInfo* spellInfo)
+	{
+		spellInfo->GetMisc()->MiscData.Attributes[2] |= SPELL_ATTR2_CAN_TARGET_NOT_IN_LOS;
+		spellInfo->SetRangeIndex(6); // 100 yards
+
+		spellInfo->Effects[EFFECT_0]->Effect = SPELL_EFFECT_SCHOOL_DAMAGE;
+		spellInfo->Effects[EFFECT_0]->BasePoints = 13613;
+		spellInfo->Effects[EFFECT_0]->TargetA = TARGET_DEST_TARGET_ENEMY;    // sets Dst to targeted unit's position
+		spellInfo->Effects[EFFECT_0]->TargetB = TARGET_UNIT_DEST_AREA_ENEMY; // selects all enemies in radius around Dst
+		spellInfo->Effects[EFFECT_0]->RadiusEntry = sSpellRadiusStore.LookupEntry(32); // 12 yards
+		spellInfo->Effects[EFFECT_0]->TriggerSpell = 0;
+	});
+
+	ApplySpellFix({ 52436, 52576 }, [](SpellInfo* spellInfo)
+	{
+		spellInfo->GetMisc()->MiscData.Attributes[2] |= SPELL_ATTR2_CAN_TARGET_NOT_IN_LOS;
+		spellInfo->SetRangeIndex(6); // 100 yards
+	});
+
     for (uint32 i = 0; i < GetSpellInfoStoreSize(); ++i)
     {
         auto const& spellInfo = mSpellInfoMap[i];
