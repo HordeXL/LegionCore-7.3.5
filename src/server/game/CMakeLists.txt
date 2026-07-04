@@ -14,6 +14,14 @@ CollectSourceFiles(
   # Exclude
   ${CMAKE_CURRENT_SOURCE_DIR}/PrecompiledHeaders)
 
+# Add Eluna Lua Engine sources
+file(GLOB_RECURSE ELUNA_SOURCES
+  ${CMAKE_SOURCE_DIR}/dep/eluna/*.cpp
+  ${CMAKE_SOURCE_DIR}/dep/eluna/hooks/*.cpp
+  ${CMAKE_SOURCE_DIR}/dep/eluna/methods/Methods.cpp
+)
+list(APPEND PRIVATE_SOURCES ${ELUNA_SOURCES})
+
 if (USE_COREPCH)
   set(PRIVATE_PCH_HEADER PrecompiledHeaders/gamePCH.h)
 endif ()
@@ -34,11 +42,28 @@ target_include_directories(game
   PUBLIC
     ${PUBLIC_INCLUDES}
   PRIVATE
-    ${CMAKE_CURRENT_BINARY_DIR})
+    ${CMAKE_CURRENT_BINARY_DIR}
+    ${CMAKE_SOURCE_DIR}/dep/eluna
+    ${CMAKE_SOURCE_DIR}/dep/eluna/hooks
+    ${CMAKE_SOURCE_DIR}/dep/eluna/methods/TrinityCore
+    ${CMAKE_SOURCE_DIR}/dep/lua52/src
+    ${CMAKE_SOURCE_DIR}/src/common
+    ${CMAKE_SOURCE_DIR}/src/common/Configuration
+    ${CMAKE_SOURCE_DIR}/src/common/Database)
+
+target_compile_features(game PUBLIC cxx_std_17)
+
+target_compile_definitions(game
+  PRIVATE
+    ELUNA_TRINITY
+    ELUNA_EXPANSION=6
+    TC_GAME_API=
+)
 
 target_link_libraries(game
   PRIVATE
     trinity-core-interface
+    lua52
   PUBLIC
     shared
     Detour)

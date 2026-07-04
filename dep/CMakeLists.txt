@@ -24,6 +24,8 @@ add_subdirectory(gsoap)
 add_subdirectory(rapidjson)
 add_subdirectory(cds)
 add_subdirectory(protobuf)
+add_subdirectory(lua52)
+add_subdirectory(eluna)
 
 if(TOOLS)
   add_subdirectory(bzip2)
