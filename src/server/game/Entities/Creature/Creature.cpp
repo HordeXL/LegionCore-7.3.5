@@ -2577,6 +2577,12 @@ void Creature::setDeathState(DeathState s)
         if (GetCreatureData() && GetPhaseMask() != GetCreatureData()->phaseMask)
             SetPhaseMask(GetCreatureData()->phaseMask, false);
         Unit::setDeathState(ALIVE);
+
+        if (sObjectMgr->IsCreatureSpawnDead(GetEntry()))
+        {
+            setDeathState(JUST_DIED);
+            SetHealth(0);
+        }
     }
 }
 

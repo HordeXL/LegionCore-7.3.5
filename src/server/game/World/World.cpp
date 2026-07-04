@@ -1857,6 +1857,7 @@ void World::SetInitialWorldSettings()
 
     TC_LOG_INFO(LOG_FILTER_SERVER_LOADING, "Loading Creature Addon Data...");
     sObjectMgr->LoadCreatureAddons();                            // must be after LoadCreatureTemplates() and LoadCreatures()
+    sObjectMgr->LoadCreatureSpawnDeadData();
     sObjectMgr->LoadCreatureActionData();
 
     TC_LOG_INFO(LOG_FILTER_SERVER_LOADING, "Loading Display Choice Data...");

@@ -651,6 +651,7 @@ class ObjectMgr
         EquipmentInfo const* GetEquipmentInfo(uint32 entry, int8& id);
         CreatureAddon const* GetCreatureAddon(ObjectGuid::LowType const& lowguid);
         CreatureAddon const* GetCreatureTemplateAddon(uint32 entry);
+        bool IsCreatureSpawnDead(uint32 entry) const;
         ItemTemplate const* GetItemTemplate(uint32 entry);
         ItemTemplateContainer const* GetItemTemplateStore() const { return &_itemTemplateStore; }
 
@@ -746,6 +747,7 @@ class ObjectMgr
     void LoadLinkedRespawn();
         bool SetCreatureLinkedRespawn(ObjectGuid::LowType const& guid, ObjectGuid::LowType const& linkedGuid);
         void LoadCreatureAddons();
+        void LoadCreatureSpawnDeadData();
         void LoadCreatureModelInfo();
         void LoadEquipmentTemplates();
         void LoadGameObjectLocales();
@@ -1136,6 +1138,7 @@ class ObjectMgr
         CreatureModelContainer _creatureModelStore;
         CreatureAddonContainer _creatureAddonStore;
         CreatureTemplateAddonContainer _creatureTemplateAddonStore;
+        std::set<uint32> _creatureSpawnDeadStore;
         CreatureAIInstanceContainer _creatureAIInstance;
         EquipmentInfoContainer _equipmentInfoStore;
         LinkedRespawnContainer _linkedRespawnStore;

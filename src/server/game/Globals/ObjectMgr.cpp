@@ -1241,6 +1241,36 @@ void ObjectMgr::LoadCreatureAddons()
     TC_LOG_INFO(LOG_FILTER_SERVER_LOADING, ">> Loaded %u creature addons in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
 }
 
+void ObjectMgr::LoadCreatureSpawnDeadData()
+{
+    uint32 oldMSTime = getMSTime();
+
+    QueryResult result = WorldDatabase.Query("SELECT entry FROM creature_spawn_dead");
+
+    if (!result)
+    {
+        TC_LOG_INFO(LOG_FILTER_SERVER_LOADING, ">> Loaded 0 creature spawn dead entries. DB table `creature_spawn_dead` is empty.");
+        return;
+    }
+
+    uint32 count = 0;
+    do
+    {
+        Field* fields = result->Fetch();
+        uint32 entry = fields[0].GetUInt32();
+        _creatureSpawnDeadStore.insert(entry);
+        ++count;
+    }
+    while (result->NextRow());
+
+    TC_LOG_INFO(LOG_FILTER_SERVER_LOADING, ">> Loaded %u creature spawn dead entries in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
+}
+
+bool ObjectMgr::IsCreatureSpawnDead(uint32 entry) const
+{
+    return _creatureSpawnDeadStore.find(entry) != _creatureSpawnDeadStore.end();
+}
+
 CreatureAddon const* ObjectMgr::GetCreatureAddon(ObjectGuid::LowType const& lowguid)
 {
     return Trinity::Containers::MapGetValuePtr(_creatureAddonStore, lowguid);
