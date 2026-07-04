@@ -399,6 +399,8 @@ public:
                     case 8921:
                     {
                         player->KilledMonsterCredit(44175, ObjectGuid::Empty);
+                        if (player->GetQuestStatus(14266) == QUEST_STATUS_INCOMPLETE)
+                            player->KilledMonsterCredit(35118, ObjectGuid::Empty);
                         break;
                     }
                     default:

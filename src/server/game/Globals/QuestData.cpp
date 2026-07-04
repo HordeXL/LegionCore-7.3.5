@@ -687,6 +687,15 @@ void QuestDataStoreMgr::LoadQuests()
         if (qinfo->Type >= MAX_QUEST_TYPES)
             TC_LOG_ERROR(LOG_FILTER_SQL, "LoadQuests() >> Quest %u has `Method` = %u, expected values are 0, 1 or 2.", qinfo->GetQuestId(), qinfo->Type);
 
+        // Quest 14266 fix: start script has 7 SCRIPT_COMMAND_QUEST_EXPLORED that auto-complete on accept.
+        // Clear StartScript and EXPLORATION_OR_EVENT flag so objectives work normally.
+        if (qinfo->GetQuestId() == 14266)
+        {
+            qinfo->StartScript = 0;
+            qinfo->SpecialFlags &= ~QUEST_SPECIAL_FLAGS_EXPLORATION_OR_EVENT;
+            TC_LOG_ERROR(LOG_FILTER_SQL, "LoadQuests() >> Quest 14266 auto-complete start script cleared. This is a server-side fix.");
+        }
+
         if (qinfo->SpecialFlags & ~QUEST_SPECIAL_FLAGS_DB_ALLOWED)
         {
             TC_LOG_ERROR(LOG_FILTER_SQL, "LoadQuests() >> Quest %u has `SpecialFlags` = %u > max allowed value. Correct `SpecialFlags` to value <= %u", qinfo->GetQuestId(), qinfo->SpecialFlags, QUEST_SPECIAL_FLAGS_DB_ALLOWED);
