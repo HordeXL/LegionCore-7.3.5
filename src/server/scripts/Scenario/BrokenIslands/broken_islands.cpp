@@ -15,7 +15,7 @@ The Broken Islands Scenario
 #include "CreatureGroups.h"
 // #include "PrecompiledHeaders/ScriptPCH.h"
 
-#define GOSSIP_ACCEPT_DUEL      "Let''s duel"
+#define GOSSIP_ACCEPT_DUEL      "来决斗吧"
 #define EVENT_SPECIAL 20
 
 enum eDuelEnums
