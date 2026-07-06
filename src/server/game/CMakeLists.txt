@@ -14,10 +14,19 @@ CollectSourceFiles(
   # Exclude
   ${CMAKE_CURRENT_SOURCE_DIR}/PrecompiledHeaders)
 
-# Add Eluna Lua Engine sources
-file(GLOB_RECURSE ELUNA_SOURCES
-  ${CMAKE_SOURCE_DIR}/dep/eluna/*.cpp
-  ${CMAKE_SOURCE_DIR}/dep/eluna/hooks/*.cpp
+# Add Eluna Lua Engine sources (Phase A: only core files + ServerHooks)
+file(GLOB ELUNA_SOURCES
+  ${CMAKE_SOURCE_DIR}/dep/eluna/LuaValue.cpp
+  ${CMAKE_SOURCE_DIR}/dep/eluna/lmarshal.cpp
+  ${CMAKE_SOURCE_DIR}/dep/eluna/LuaEngine.cpp
+  ${CMAKE_SOURCE_DIR}/dep/eluna/ElunaConfig.cpp
+  ${CMAKE_SOURCE_DIR}/dep/eluna/ElunaEventMgr.cpp
+  ${CMAKE_SOURCE_DIR}/dep/eluna/ElunaUtility.cpp
+  ${CMAKE_SOURCE_DIR}/dep/eluna/ElunaTemplate.cpp
+  ${CMAKE_SOURCE_DIR}/dep/eluna/ElunaSpellWrapper.cpp
+  ${CMAKE_SOURCE_DIR}/dep/eluna/ElunaInstanceAI.cpp
+  ${CMAKE_SOURCE_DIR}/dep/eluna/ElunaLoader.cpp
+  ${CMAKE_SOURCE_DIR}/dep/eluna/hooks/ServerHooks.cpp
   ${CMAKE_SOURCE_DIR}/dep/eluna/methods/Methods.cpp
 )
 list(APPEND PRIVATE_SOURCES ${ELUNA_SOURCES})
@@ -51,7 +60,17 @@ target_include_directories(game
     ${CMAKE_SOURCE_DIR}/src/common/Configuration
     ${CMAKE_SOURCE_DIR}/src/common/Database)
 
-target_compile_features(game PUBLIC cxx_std_17)
+# LuaValue.cpp uses std::variant (C++17); other Eluna files compile at C++14 (default).
+# Must disable PCH (/Y- on MSVC) to avoid "/std:c++" flag mismatch.
+if(MSVC)
+  set_source_files_properties(
+    ${CMAKE_SOURCE_DIR}/dep/eluna/LuaValue.cpp
+    PROPERTIES COMPILE_FLAGS "/std:c++17 /Y-")
+else()
+  set_source_files_properties(
+    ${CMAKE_SOURCE_DIR}/dep/eluna/LuaValue.cpp
+    PROPERTIES COMPILE_FLAGS "-std=c++17")
+endif()
 
 target_compile_definitions(game
   PRIVATE
