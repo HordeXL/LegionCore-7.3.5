@@ -14,7 +14,7 @@ CollectSourceFiles(
   # Exclude
   ${CMAKE_CURRENT_SOURCE_DIR}/PrecompiledHeaders)
 
-# Add Eluna Lua Engine sources (Phase A: only core files + ServerHooks)
+# Add Eluna Lua Engine sources
 file(GLOB ELUNA_SOURCES
   ${CMAKE_SOURCE_DIR}/dep/eluna/LuaValue.cpp
   ${CMAKE_SOURCE_DIR}/dep/eluna/lmarshal.cpp
@@ -26,9 +26,16 @@ file(GLOB ELUNA_SOURCES
   ${CMAKE_SOURCE_DIR}/dep/eluna/ElunaSpellWrapper.cpp
   ${CMAKE_SOURCE_DIR}/dep/eluna/ElunaInstanceAI.cpp
   ${CMAKE_SOURCE_DIR}/dep/eluna/ElunaLoader.cpp
-  ${CMAKE_SOURCE_DIR}/dep/eluna/hooks/ServerHooks.cpp
+  ${CMAKE_SOURCE_DIR}/dep/eluna/ElunaMgr.cpp
+  ${CMAKE_SOURCE_DIR}/dep/eluna/ElunaCompat.cpp
   ${CMAKE_SOURCE_DIR}/dep/eluna/methods/Methods.cpp
 )
+
+# Eluna hook files (Phase D)
+file(GLOB ELUNA_HOOK_SOURCES
+  ${CMAKE_SOURCE_DIR}/dep/eluna/hooks/*.cpp
+)
+list(APPEND ELUNA_SOURCES ${ELUNA_HOOK_SOURCES})
 list(APPEND PRIVATE_SOURCES ${ELUNA_SOURCES})
 
 if (USE_COREPCH)

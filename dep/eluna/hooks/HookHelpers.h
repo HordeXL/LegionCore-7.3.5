@@ -112,21 +112,24 @@ void Eluna::ReplaceArgument(T value, int index)
  * indices[i] = stack index captured BEFORE SetupStack() inserts event_id.
  * If indices[i] == 0, we won't ReplaceArgument for that output.
  */
+template<size_t I, typename... Outs>
+void Eluna::ApplyOneReturn(int r, std::tuple<Outs&...>& outs, const std::array<int, sizeof...(Outs)>& indices)
+{
+    using T = std::remove_reference_t<std::tuple_element_t<I, std::tuple<Outs&...>>>;
+    const int idx = r + static_cast<int>(I);
+    if (LuaRet<T>::Is(L, idx))
+    {
+        std::get<I>(outs) = LuaRet<T>::Get(this, L, idx);
+        if (indices[I] != 0)
+            ReplaceArgument(std::get<I>(outs), indices[I]);
+    }
+}
+
 template<typename... Outs, size_t... Is>
 void Eluna::ApplyMultiReturnsImpl(int r, std::tuple<Outs&...>& outs, const std::array<int, sizeof...(Outs)>& indices, std::index_sequence<Is...>)
 {
-    ( [&] {
-        using T = std::remove_reference_t<std::tuple_element_t<Is, std::tuple<Outs&...>>>;
-        const int idx = r + static_cast<int>(Is);
-
-        if (LuaRet<T>::Is(L, idx))
-        {
-            std::get<Is>(outs) = LuaRet<T>::Get(this, L, idx);
-
-            if (indices[Is] != 0)
-                ReplaceArgument(std::get<Is>(outs), indices[Is]);
-        }
-    }(), ... );
+    int dummy[] = { 0, (ApplyOneReturn<Is>(r, outs, indices), 0)... };
+    (void)dummy;
 }
 
 /*

@@ -283,7 +283,6 @@ void Eluna::OnEffectCalcAbsorb(Spell* pSpell, DamageInfo const& damageInfo, uint
     HookPush(static_cast<uint32>(damageInfo.GetSchoolMask()));
     HookPush(static_cast<uint32>(damageInfo.GetDamageType()));
     HookPush(static_cast<uint32>(damageInfo.GetAttackType()));
-    HookPush(damageInfo.GetHitMask());
     HookPush(resistAmount);
     int resistIndex = lua_gettop(L);
     HookPush(absorbAmount);

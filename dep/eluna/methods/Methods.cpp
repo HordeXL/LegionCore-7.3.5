@@ -24,6 +24,7 @@
 #include "QuestMethods.h"
 #include "MapMethods.h"
 #include "WorldObjectMethods.h"
+#include "GlobalMethods.h"
 
 void RegisterMethods(Eluna* E)
 {
@@ -68,4 +69,7 @@ void RegisterMethods(Eluna* E)
     // Phase B-11: WorldObject (48 bindings, 3 event+Data disabled)
     ElunaTemplate<WorldObject>::Register(E, "WorldObject");
     ElunaTemplate<WorldObject>::SetMethods(E, LuaWorldObject::WorldObjectMethods);
+
+    // Phase B-12: Global functions (108 bindings)
+    ElunaTemplate<>::SetMethods(E, LuaGlobalFunctions::GlobalMethods);
 }

@@ -65,7 +65,7 @@ bool Eluna::OnUse(Player* pPlayer, Item* pItem, SpellCastTargets const& targets)
 
     // Send equip error that shows no message
     // This is a hack fix to stop spell casting visual bug when a spell is not cast on use
-    pPlayer->SendEquipError(EQUIP_ERR_NONE, pItem, nullptr);
+    pPlayer->SendEquipError(EQUIP_ERR_OK, pItem, nullptr);
     return false;
 }
 
@@ -105,9 +105,9 @@ bool Eluna::OnItemUse(Player* pPlayer, Item* pItem, SpellCastTargets const& targ
 
 bool Eluna::OnExpire(Player* pPlayer, ItemTemplate const* pProto)
 {
-    START_HOOK_WITH_RETVAL(ITEM_EVENT_ON_EXPIRE, pProto->ItemId, false);
+    START_HOOK_WITH_RETVAL(ITEM_EVENT_ON_EXPIRE, pProto->GetId(), false);
     HookPush(pPlayer);
-    HookPush(pProto->ItemId);
+    HookPush(pProto->GetId());
     return CallAllFunctionsBool(binding, key);
 }
 

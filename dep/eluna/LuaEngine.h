@@ -222,6 +222,7 @@ private:
     template<typename K1, typename K2> void CallAllFunctions(BindingMap<K1>* bindings1, BindingMap<K2>* bindings2, const K1& key1, const K2& key2);
     template<typename K1, typename K2> bool CallAllFunctionsBool(BindingMap<K1>* bindings1, BindingMap<K2>* bindings2, const K1& key1, const K2& key2, bool default_value = false);
     template<typename K1, typename K2> int32 CallAllFunctionsInt(BindingMap<K1>* bindings1, BindingMap<K2>* bindings2, const K1& key1, const K2& key2, int32 default_value = 0);
+    template<size_t I, typename... Outs> void ApplyOneReturn(int r, std::tuple<Outs&...>& outs, const std::array<int, sizeof...(Outs)>& indices);
     template<typename... Outs, size_t... Is> void ApplyMultiReturnsImpl(int r, std::tuple<Outs&...>& outs, const std::array<int, sizeof...(Outs)>& indices, std::index_sequence<Is...>);
     template<typename K1, typename K2, typename... Outs> void CallAllFunctionsMultiReturn(BindingMap<K1>* bindings1, BindingMap<K2>* bindings2, const K1& key1, const K2& key2, std::tuple<Outs&...> outs, const std::array<int, sizeof...(Outs)>& out_arg_indices);
     template<typename K1, typename K2, typename T>
