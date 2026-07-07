@@ -59,7 +59,7 @@ namespace LuaMap
      */
     int IsEmpty(Eluna* E, Map* map)
     {
-        E->Push(map->isEmpty());
+        E->Push(!map->HavePlayers());
         return 1;
     }
 
@@ -109,11 +109,11 @@ namespace LuaMap
     {
         float x = E->CHECKVAL<float>(2);
         float y = E->CHECKVAL<float>(3);
-        uint32 phasemask = E->CHECKVAL<uint32>(4, 1);
+        float z = E->CHECKVAL<float>(4, MAX_HEIGHT);
 
-        float z = map->GetHeight(phasemask, x, y, MAX_HEIGHT);
-        if (z != INVALID_HEIGHT)
-            E->Push(z);
+        float height = map->GetHeight(x, y, z, true, MAX_HEIGHT);
+        if (height != INVALID_HEIGHT)
+            E->Push(height);
         return 1;
     }
 
@@ -126,7 +126,7 @@ namespace LuaMap
      */
     int GetDifficulty(Eluna* E, Map* map)
     {
-        E->Push(map->GetDifficulty());
+        E->Push(map->GetDifficultyID());
         return 1;
     }
 
@@ -177,9 +177,8 @@ namespace LuaMap
         float x = E->CHECKVAL<float>(2);
         float y = E->CHECKVAL<float>(3);
         float z = E->CHECKVAL<float>(4);
-        float phasemask = E->CHECKVAL<uint32>(5, PHASEMASK_NORMAL);
 
-        E->Push(map->GetAreaId(phasemask, x, y, z));
+        E->Push(map->GetAreaId(x, y, z));
         return 1;
     }
 
@@ -195,26 +194,25 @@ namespace LuaMap
 
         switch (guid.GetHigh())
         {
-            case HIGHGUID_PLAYER:
-                E->Push(eObjectAccessor()GetPlayer(map, guid));
+            case HighGuid::Player:
+                E->Push(ObjectAccessor::FindPlayer(map, guid));
                 break;
-            case HIGHGUID_TRANSPORT:
-            case HIGHGUID_MO_TRANSPORT:
-            case HIGHGUID_GAMEOBJECT:
+            case HighGuid::Transport:
+            case HighGuid::GameObject:
                 E->Push(map->GetGameObject(guid));
                 break;
-            case HIGHGUID_VEHICLE:
-            case HIGHGUID_UNIT:
+            case HighGuid::Vehicle:
+            case HighGuid::Creature:
                 E->Push(map->GetCreature(guid));
                 break;
-            case HIGHGUID_PET:
-                E->Push(map->GetPet(guid));
+            case HighGuid::Pet:
+                // needs WorldObject ref
                 break;
-            case HIGHGUID_DYNAMICOBJECT:
+            case HighGuid::DynamicObject:
                 E->Push(map->GetDynamicObject(guid));
                 break;
-            case HIGHGUID_CORPSE:
-                E->Push(map->GetCorpse(guid));
+            case HighGuid::Corpse:
+                // needs WorldObject ref
                 break;
             default:
                 break;
@@ -311,7 +309,7 @@ namespace LuaMap
         Map::PlayerList const& players = map->GetPlayers();
         for (Map::PlayerList::const_iterator itr = players.begin(); itr != players.end(); ++itr)
         {
-            Player* player = itr->GetSource();
+            Player* player = itr->getSource();
             if (!player)
                 continue;
 

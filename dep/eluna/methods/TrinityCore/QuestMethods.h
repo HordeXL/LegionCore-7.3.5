@@ -47,7 +47,7 @@ namespace LuaQuest
     {
         uint32 flag = E->CHECKVAL<uint32>(2);
 
-        E->Push(quest->HasFlag(static_cast<QuestFlags>(flag)));
+        E->Push(quest->HasFlag(flag));
         return 1;
     }
 
@@ -91,7 +91,7 @@ namespace LuaQuest
      */
     int GetLevel(Eluna* E, Quest* quest)
     {
-        E->Push(quest->GetQuestLevel());
+        E->Push(static_cast<uint32>(quest->Level));
         return 1;
     }
 
@@ -102,7 +102,7 @@ namespace LuaQuest
      */
     int GetMinLevel(Eluna* E, Quest* quest)
     {
-        E->Push(quest->GetMinLevel());
+        E->Push(quest->MinLevel);
         return 1;
     }
 
@@ -113,7 +113,7 @@ namespace LuaQuest
      */
     int GetNextQuestId(Eluna* E, Quest* quest)
     {
-        E->Push(quest->GetNextQuestId());
+        E->Push(static_cast<uint32>(quest->NextQuestID));
         return 1;
     }
 
@@ -124,7 +124,7 @@ namespace LuaQuest
      */
     int GetPrevQuestId(Eluna* E, Quest* quest)
     {
-        E->Push(quest->GetPrevQuestId());
+        E->Push(static_cast<uint32>(quest->PrevQuestID));
         return 1;
     }
 
@@ -135,7 +135,7 @@ namespace LuaQuest
      */
     int GetNextQuestInChain(Eluna* E, Quest* quest)
     {
-        E->Push(quest->GetNextQuestInChain());
+        E->Push(quest->NextQuestIdChain);
         return 1;
     }
 
@@ -146,7 +146,7 @@ namespace LuaQuest
      */
     int GetFlags(Eluna* E, Quest* quest)
     {
-        E->Push(quest->GetFlags());
+        E->Push(quest->Flags);
         return 1;
     }
 
@@ -173,7 +173,7 @@ namespace LuaQuest
      */
     int GetType(Eluna* E, Quest* quest)
     {
-        E->Push(quest->GetQuestInfoID());
+        E->Push(quest->QuestInfoID);
         return 1;
     }
 
@@ -184,7 +184,7 @@ namespace LuaQuest
      */
     int GetMaxLevel(Eluna* E, Quest* quest)
     {
-        E->Push(quest->GetMaxLevel());
+        E->Push(quest->MaxLevel);
         return 1;
     }
 

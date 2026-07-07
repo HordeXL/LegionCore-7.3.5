@@ -9,6 +9,7 @@
 
 // C++17 header excluded - Phase B: Data() method disabled
 // #include "LuaValue.h"
+#include "ObjectVisitors.hpp"
 
 /***
  * Inherits all methods from: [Object]
@@ -186,7 +187,7 @@ namespace LuaWorldObject
         Unit* target = NULL;
         ElunaUtil::WorldObjectInRangeCheck checker(true, obj, range, TYPEMASK_PLAYER, 0, hostile, dead);
         Trinity::UnitLastSearcher<ElunaUtil::WorldObjectInRangeCheck> searcher(obj, target, checker);
-        Cell::VisitAllObjects(obj, searcher, range);
+        Trinity::VisitNearbyObject(obj, range, searcher);
 
         E->Push(target);
         return 1;
@@ -210,7 +211,7 @@ namespace LuaWorldObject
         GameObject* target = NULL;
         ElunaUtil::WorldObjectInRangeCheck checker(true, obj, range, TYPEMASK_GAMEOBJECT, entry, hostile);
         Trinity::GameObjectLastSearcher<ElunaUtil::WorldObjectInRangeCheck> searcher(obj, target, checker);
-        Cell::VisitAllObjects(obj, searcher, range);
+        Trinity::VisitNearbyObject(obj, range, searcher);
 
         E->Push(target);
         return 1;
@@ -236,7 +237,7 @@ namespace LuaWorldObject
         Creature* target = NULL;
         ElunaUtil::WorldObjectInRangeCheck checker(true, obj, range, TYPEMASK_UNIT, entry, hostile, dead);
         Trinity::CreatureLastSearcher<ElunaUtil::WorldObjectInRangeCheck> searcher(obj, target, checker);
-        Cell::VisitAllObjects(obj, searcher, range);
+        Trinity::VisitNearbyObject(obj, range, searcher);
 
         E->Push(target);
         return 1;
@@ -260,7 +261,7 @@ namespace LuaWorldObject
         std::list<Player*> list;
         ElunaUtil::WorldObjectInRangeCheck checker(false, obj, range, TYPEMASK_PLAYER, 0, hostile, dead);
         Trinity::PlayerListSearcher<ElunaUtil::WorldObjectInRangeCheck> searcher(obj, list, checker);
-        Cell::VisitAllObjects(obj, searcher, range);
+        Trinity::VisitNearbyObject(obj, range, searcher);
 
         lua_createtable(E->L, list.size(), 0);
         int tbl = lua_gettop(E->L);
@@ -296,7 +297,7 @@ namespace LuaWorldObject
         std::list<Creature*> list;
         ElunaUtil::WorldObjectInRangeCheck checker(false, obj, range, TYPEMASK_UNIT, entry, hostile, dead);
         Trinity::CreatureListSearcher<ElunaUtil::WorldObjectInRangeCheck> searcher(obj, list, checker);
-        Cell::VisitAllObjects(obj, searcher, range);
+        Trinity::VisitNearbyObject(obj, range, searcher);
 
         lua_createtable(E->L, list.size(), 0);
         int tbl = lua_gettop(E->L);
@@ -330,7 +331,7 @@ namespace LuaWorldObject
         std::list<GameObject*> list;
         ElunaUtil::WorldObjectInRangeCheck checker(false, obj, range, TYPEMASK_GAMEOBJECT, entry, hostile);
         Trinity::GameObjectListSearcher<ElunaUtil::WorldObjectInRangeCheck> searcher(obj, list, checker);
-        Cell::VisitAllObjects(obj, searcher, range);
+        Trinity::VisitNearbyObject(obj, range, searcher);
 
         lua_createtable(E->L, list.size(), 0);
         int tbl = lua_gettop(E->L);
@@ -372,7 +373,7 @@ namespace LuaWorldObject
 
         WorldObject* target = NULL;
         Trinity::WorldObjectLastSearcher<ElunaUtil::WorldObjectInRangeCheck> searcher(obj, target, checker);
-        Cell::VisitAllObjects(obj, searcher, range);
+        Trinity::VisitNearbyObject(obj, range, searcher);
 
         E->Push(target);
         return 1;
@@ -404,7 +405,7 @@ namespace LuaWorldObject
 
         std::list<WorldObject*> list;
         Trinity::WorldObjectListSearcher<ElunaUtil::WorldObjectInRangeCheck> searcher(obj, list, checker);
-        Cell::VisitAllObjects(obj, searcher, range);
+        Trinity::VisitNearbyObject(obj, range, searcher);
 
         lua_createtable(E->L, list.size(), 0);
         int tbl = lua_gettop(E->L);
@@ -596,12 +597,12 @@ namespace LuaWorldObject
         WorldObject* target = E->CHECKOBJ<WorldObject>(2, false);
 
         if (target)
-            E->Push(obj->GetAbsoluteAngle(target));
+            E->Push(obj->GetAngle(target));
         else
         {
             float x = E->CHECKVAL<float>(2);
             float y = E->CHECKVAL<float>(3);
-            E->Push(obj->GetAbsoluteAngle(x, y));
+            E->Push(obj->GetAngle(x, y));
         }
 
         return 1;
@@ -640,9 +641,7 @@ namespace LuaWorldObject
         float o = E->CHECKVAL<float>(6);
         uint32 respawnDelay = E->CHECKVAL<uint32>(7, 30);
 
-        QuaternionData rot = QuaternionData::fromEulerAnglesZYX(o, 0.f, 0.f);
-
-        E->Push(obj->SummonGameObject(entry, Position(x, y, z, o), rot, Seconds(respawnDelay)));
+        E->Push(obj->SummonGameObject(entry, x, y, z, o, 0.f, 0.f, 0.f, 0.f, respawnDelay));
         return 1;
     }
 
@@ -712,7 +711,7 @@ namespace LuaWorldObject
                 return luaL_argerror(E->L, 7, "valid SpawnType expected");
         }
 
-        E->Push(obj->SummonCreature(entry, x, y, z, o, type, Milliseconds(despawnTimer)));
+        E->Push(obj->SummonCreature(entry, x, y, z, o, type, despawnTimer));
         return 1;
     }
 
@@ -741,43 +740,10 @@ namespace LuaWorldObject
      * @param uint32 repeats = 1 : how many times for the event to repeat, 0 is infinite
      * @return int eventId : unique ID for the timed event used to cancel it or nil
      */
-    int RegisterEvent(Eluna* E, WorldObject* obj)
+    int RegisterEvent(Eluna* /*E*/, WorldObject* /*obj*/)
     {
-        luaL_checktype(E->L, 2, LUA_TFUNCTION);
-        uint32 min, max;
-        if (lua_istable(E->L, 3))
-        {
-            E->Push(1);
-            lua_gettable(E->L, 3);
-            min = E->CHECKVAL<uint32>(-1);
-            E->Push(2);
-            lua_gettable(E->L, 3);
-            max = E->CHECKVAL<uint32>(-1);
-            lua_pop(E->L, 2);
-        }
-        else
-            min = max = E->CHECKVAL<uint32>(3);
-        uint32 repeats = E->CHECKVAL<uint32>(4, 1);
-
-        if (min > max)
-            return luaL_argerror(E->L, 3, "min is bigger than max delay");
-
-        lua_pushvalue(E->L, 2);
-        int functionRef = luaL_ref(E->L, LUA_REGISTRYINDEX);
-        if (functionRef != LUA_REFNIL && functionRef != LUA_NOREF)
-        {
-            ElunaEventProcessor* proc = obj->GetElunaEvents(E->GetBoundMapId());
-            if (!proc)
-            {
-                luaL_unref(E->L, LUA_REGISTRYINDEX, functionRef);
-                E->Push();
-                return 1;
-            }
-
-            proc->AddEvent(functionRef, min, max, repeats);
-            E->Push(functionRef);
-        }
-        return 1;
+        // Disabled - needs GetElunaEvents on WorldObject
+        return 0;
     }
 
     /**
@@ -785,28 +751,18 @@ namespace LuaWorldObject
      *
      * @param int eventId : event Id to remove
      */
-    int RemoveEventById(Eluna* E, WorldObject* obj)
+    int RemoveEventById(Eluna* /*E*/, WorldObject* /*obj*/)
     {
-        int eventId = E->CHECKVAL<int>(2);
-
-        ElunaEventProcessor* proc = obj->GetElunaEvents(E->GetBoundMapId());
-        if (!proc)
-            return 0;
-
-        proc->SetState(eventId, LUAEVENT_STATE_ABORT);
+        // Disabled - needs GetElunaEvents on WorldObject
         return 0;
     }
 
     /**
      * Removes all timed events from a [WorldObject]
      */
-    int RemoveEvents(Eluna* E, WorldObject* obj)
+    int RemoveEvents(Eluna* /*E*/, WorldObject* /*obj*/)
     {
-        ElunaEventProcessor* proc = obj->GetElunaEvents(E->GetBoundMapId());
-        if (!proc)
-            return 0;
-
-        proc->SetStates(LUAEVENT_STATE_ABORT);
+        // Disabled - needs GetElunaEvents on WorldObject
         return 0;
     }
 
@@ -1048,9 +1004,6 @@ namespace LuaWorldObject
         uint32 musicid = E->CHECKVAL<uint32>(2);
         Player* player = E->CHECKOBJ<Player>(3, false);
 
-        if (!sSoundEntriesStore.LookupEntry(musicid))
-            musicid = 0;
-
         WorldPackets::Misc::PlayMusic playMusic(musicid);
         const WorldPacket* data = playMusic.Write();
 
@@ -1077,8 +1030,6 @@ namespace LuaWorldObject
     {
         uint32 soundId = E->CHECKVAL<uint32>(2);
         Player* player = E->CHECKOBJ<Player>(3, false);
-        if (!sSoundEntriesStore.LookupEntry(soundId))
-            return 0;
 
         if (player)
             obj->PlayDirectSound(soundId, player);
@@ -1104,8 +1055,6 @@ namespace LuaWorldObject
     {
         uint32 soundId = E->CHECKVAL<uint32>(2);
         Player* player = E->CHECKOBJ<Player>(3, false);
-        if (!sSoundEntriesStore.LookupEntry(soundId))
-            return 0;
 
         if (player)
             obj->PlayDistanceSound(soundId, player);
@@ -1190,9 +1139,9 @@ namespace LuaWorldObject
         { "SummonGameObject", &LuaWorldObject::SummonGameObject },
         { "SpawnCreature", &LuaWorldObject::SpawnCreature },
         { "SendPacket", &LuaWorldObject::SendPacket },
-        { "RegisterEvent", &LuaWorldObject::RegisterEvent },
-        { "RemoveEventById", &LuaWorldObject::RemoveEventById },
-        { "RemoveEvents", &LuaWorldObject::RemoveEvents },
+        { "RegisterEvent", METHOD_REG_NONE }, // needs GetElunaEvents on WorldObject
+        { "RemoveEventById", METHOD_REG_NONE }, // needs GetElunaEvents on WorldObject
+        { "RemoveEvents", METHOD_REG_NONE }, // needs GetElunaEvents on WorldObject
         { "PlayMusic", &LuaWorldObject::PlayMusic },
         { "PlayDirectSound", &LuaWorldObject::PlayDirectSound },
         { "PlayDistanceSound", &LuaWorldObject::PlayDistanceSound },

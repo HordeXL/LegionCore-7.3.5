@@ -271,62 +271,10 @@ namespace LuaQuery
      *
      * @return table rowData : table filled with row columns and data where `T[column] = data`
      */
-    int GetRow(Eluna* E, ElunaQuery* result)
+    int GetRow(Eluna* /*E*/, ElunaQuery* /*result*/)
     {
-        uint32 col = RESULT->GetFieldCount();
-        Field* row = RESULT->Fetch();
-
-        lua_createtable(E->L, 0, col);
-        int tbl = lua_gettop(E->L);
-
-        for (uint32 i = 0; i < col; ++i)
-        {
-            QueryResultFieldMetadata const& fieldMetadata = RESULT->GetFieldMetadata(i);
-
-            E->Push(fieldMetadata.Alias);
-
-            if (row[i].IsNull())
-                E->Push();
-            else
-            {
-                switch (fieldMetadata.Type)
-                {
-                    case DatabaseFieldTypes::UInt8:
-                    case DatabaseFieldTypes::UInt16:
-                    case DatabaseFieldTypes::UInt32:
-                        E->Push(row[i].GetUInt32());
-                        break;
-                    case DatabaseFieldTypes::Int8:
-                    case DatabaseFieldTypes::Int16:
-                    case DatabaseFieldTypes::Int32:
-                        E->Push(row[i].GetInt32());
-                        break;
-                    case DatabaseFieldTypes::UInt64:
-                        E->Push(row[i].GetUInt64());
-                        break;
-                    case DatabaseFieldTypes::Int64:
-                        E->Push(row[i].GetInt64());
-                        break;
-                    case DatabaseFieldTypes::Float:
-                    case DatabaseFieldTypes::Double:
-                    case DatabaseFieldTypes::Decimal:
-                        E->Push(row[i].GetDouble());
-                        break;
-                    case DatabaseFieldTypes::Date:
-                    case DatabaseFieldTypes::Time:
-                    case DatabaseFieldTypes::Binary:
-                        E->Push(row[i].GetCString());
-                        break;
-                    default:
-                        E->Push();
-                        break;
-                }
-            }
-            lua_rawset(E->L, tbl);
-        }
-
-        lua_settop(E->L, tbl);
-        return 1;
+        // Disabled - needs modern TC QueryResultFieldMetadata/DatabaseFieldTypes
+        return 0;
     }
 
     ElunaRegister<ElunaQuery> QueryMethods[] =
@@ -334,7 +282,7 @@ namespace LuaQuery
         // Getters
         { "GetColumnCount", &LuaQuery::GetColumnCount },
         { "GetRowCount", &LuaQuery::GetRowCount },
-        { "GetRow", &LuaQuery::GetRow },
+        { "GetRow", METHOD_REG_NONE }, // needs QueryResultFieldMetadata/DatabaseFieldTypes
         { "GetBool", &LuaQuery::GetBool },
         { "GetUInt8", &LuaQuery::GetUInt8 },
         { "GetUInt16", &LuaQuery::GetUInt16 },

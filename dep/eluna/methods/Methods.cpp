@@ -20,6 +20,10 @@
 #include "BigIntMethods.h"
 #include "WorldPacketMethods.h"
 #include "ElunaProcInfoMethods.h"
+#include "ElunaQueryMethods.h"
+#include "QuestMethods.h"
+#include "MapMethods.h"
+#include "WorldObjectMethods.h"
 
 void RegisterMethods(Eluna* E)
 {
@@ -48,4 +52,20 @@ void RegisterMethods(Eluna* E)
     // Phase B-7: ElunaProcInfo (28 bindings)
     ElunaTemplate<ElunaProcInfo>::Register(E, "ElunaProcInfo");
     ElunaTemplate<ElunaProcInfo>::SetMethods(E, LuaElunaProcInfo::ElunaProcInfoMethods);
+
+    // Phase B-8: ElunaQuery (17 bindings, GetRow disabled)
+    ElunaTemplate<ElunaQuery>::Register(E, "ElunaQuery");
+    ElunaTemplate<ElunaQuery>::SetMethods(E, LuaQuery::QueryMethods);
+
+    // Phase B-9: Quest (12 bindings)
+    ElunaTemplate<Quest>::Register(E, "Quest");
+    ElunaTemplate<Quest>::SetMethods(E, LuaQuest::QuestMethods);
+
+    // Phase B-10: Map (19 bindings, Data disabled)
+    ElunaTemplate<Map>::Register(E, "Map");
+    ElunaTemplate<Map>::SetMethods(E, LuaMap::MapMethods);
+
+    // Phase B-11: WorldObject (48 bindings, 3 event+Data disabled)
+    ElunaTemplate<WorldObject>::Register(E, "WorldObject");
+    ElunaTemplate<WorldObject>::SetMethods(E, LuaWorldObject::WorldObjectMethods);
 }
