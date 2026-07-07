@@ -18,6 +18,8 @@
 #include "ObjectMethods.h"
 #include "CorpseMethods.h"
 #include "BigIntMethods.h"
+#include "WorldPacketMethods.h"
+#include "ElunaProcInfoMethods.h"
 
 void RegisterMethods(Eluna* E)
 {
@@ -38,4 +40,12 @@ void RegisterMethods(Eluna* E)
 
     ElunaTemplate<ObjectGuid>::Register(E, "Guid");
     ElunaTemplate<ObjectGuid>::SetMethods(E, LuaBigInt::ObjectGuidMethods);
+
+    // Phase B-6: WorldPacket (23 bindings)
+    ElunaTemplate<WorldPacket>::Register(E, "WorldPacket");
+    ElunaTemplate<WorldPacket>::SetMethods(E, LuaPacket::PacketMethods);
+
+    // Phase B-7: ElunaProcInfo (28 bindings)
+    ElunaTemplate<ElunaProcInfo>::Register(E, "ElunaProcInfo");
+    ElunaTemplate<ElunaProcInfo>::SetMethods(E, LuaElunaProcInfo::ElunaProcInfoMethods);
 }
