@@ -277,7 +277,7 @@ namespace LuaUnit
      */
     int IsAlive(Eluna* E, Unit* unit)
     {
-        E->Push(unit->IsAlive());
+        E->Push(unit->isAlive());
         return 1;
     }
 

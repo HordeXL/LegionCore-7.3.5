@@ -7,7 +7,8 @@
 #ifndef WORLDOBJECTMETHODS_H
 #define WORLDOBJECTMETHODS_H
 
-#include "LuaValue.h"
+// C++17 header excluded - Phase B: Data() method disabled
+// #include "LuaValue.h"
 
 /***
  * Inherits all methods from: [Object]
@@ -1135,9 +1136,10 @@ namespace LuaWorldObject
      * local table = WorldObject:Data():AsTable()
      * </pre>
      */
-    int Data(Eluna* E, WorldObject* obj)
+    int Data(Eluna* /*E*/, WorldObject* /*obj*/)
     {
-        return LuaVal::PushLuaVal(E->L, obj->lua_data);
+        // Disabled - needs C++17 LuaVal
+        return 0;
     }
     
     ElunaRegister<WorldObject> WorldObjectMethods[] =
@@ -1194,7 +1196,7 @@ namespace LuaWorldObject
         { "PlayMusic", &LuaWorldObject::PlayMusic },
         { "PlayDirectSound", &LuaWorldObject::PlayDirectSound },
         { "PlayDistanceSound", &LuaWorldObject::PlayDistanceSound },
-        { "Data", &LuaWorldObject::Data }
+        { "Data", METHOD_REG_NONE } // Disabled - needs C++17 LuaVal
     };
 };
 #endif

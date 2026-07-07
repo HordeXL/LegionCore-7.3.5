@@ -11,11 +11,31 @@
 #include "ElunaTemplate.h"
 #include "ElunaUtility.h"
 
-// Method includes - disabled for LegionCore 7.3.5 Phase A
-// API bindings need adaptation from modern TC to LegionCore API
+// Phase B: TrinityCore method bindings (LegionCore-adapted)
+// Each file is tested individually for LegionCore API compatibility.
+// Files with too many API differences are added incrementally.
 
-void RegisterMethods(Eluna* /*E*/)
+#include "ObjectMethods.h"
+#include "CorpseMethods.h"
+#include "BigIntMethods.h"
+
+void RegisterMethods(Eluna* E)
 {
-    // Phase A: no methods registered yet
-    // Phase B will add the actual API bindings
+    // Phase B-3: Object (29 bindings - getters/setters, safe for LegionCore)
+    ElunaTemplate<Object>::Register(E, "Object");
+    ElunaTemplate<Object>::SetMethods(E, LuaObject::ObjectMethods);
+
+    // Phase B-5: Corpse (5 bindings - simple methods)
+    ElunaTemplate<Corpse>::Register(E, "Corpse");
+    ElunaTemplate<Corpse>::SetMethods(E, LuaCorpse::CorpseMethods);
+
+    // Phase B-5: BigInt (22+22+14 = 58 bindings - pure math, no TC API dependency)
+    ElunaTemplate<long long>::Register(E, "int64");
+    ElunaTemplate<long long>::SetMethods(E, LuaBigInt::LongLongMethods);
+
+    ElunaTemplate<unsigned long long>::Register(E, "uint64");
+    ElunaTemplate<unsigned long long>::SetMethods(E, LuaBigInt::ULongLongMethods);
+
+    ElunaTemplate<ObjectGuid>::Register(E, "Guid");
+    ElunaTemplate<ObjectGuid>::SetMethods(E, LuaBigInt::ObjectGuidMethods);
 }

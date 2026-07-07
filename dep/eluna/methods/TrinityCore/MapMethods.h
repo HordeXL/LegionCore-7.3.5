@@ -8,7 +8,8 @@
 #define MAPMETHODS_H
 
 #include "ElunaInstanceAI.h"
-#include "LuaValue.h"
+// C++17 header excluded - Phase B: Data() method disabled
+// #include "LuaValue.h"
 
 /***
  * A game map, e.g. Azeroth, Eastern Kingdoms, the Molten Core, etc.
@@ -346,9 +347,10 @@ namespace LuaMap
      * local table = Map:Data():AsTable()
      * </pre>
      */
-    int Data(Eluna* E, Map* map)
+    int Data(Eluna* /*E*/, Map* /*map*/)
     {
-        return LuaVal::PushLuaVal(E->L, map->lua_data);
+        // Disabled - needs C++17 LuaVal
+        return 0;
     }
     
     ElunaRegister<Map> MapMethods[] =
@@ -378,7 +380,7 @@ namespace LuaMap
 
         // Other
         { "SaveInstanceData", &LuaMap::SaveInstanceData },
-        { "Data", &LuaMap::Data }
+        { "Data", METHOD_REG_NONE } // Disabled - needs C++17 LuaVal
     };
 };
 #endif
