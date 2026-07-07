@@ -3007,6 +3007,77 @@ Loggers=GENERAL UNITS PETS VEHICLES TSCR DATABASE_AI MAPSCRIPTS NETWORKIO SPELLS
 
 QuestPOI.DisableErrors = 1
 
+###################################################################################################
+# ELUNA LUA ENGINE
+###################################################################################################
+#
+#    Eluna.Enabled
+#        Description: Enable/disable Eluna Lua scripting engine
+#        Default:     1 (enabled) - 0 (disabled)
+#
+# Eluna.Enabled = 1
+#
+#    Eluna.ScriptPath
+#        Description: Path to the directory containing Lua scripts (relative to working directory or absolute)
+#        Default:     "lua_scripts"
+#
+# Eluna.ScriptPath = "lua_scripts"
+#
+#    Eluna.RequirePaths
+#        Description: Additional Lua require paths (separated by semicolons)
+#        Default:     "" (empty)
+#
+# Eluna.RequirePaths = ""
+#
+#    Eluna.RequireCPaths
+#        Description: Additional Lua require C paths (separated by semicolons)
+#        Default:     "" (empty)
+#
+# Eluna.RequireCPaths = ""
+#
+#    Eluna.TraceBack
+#        Description: Enable Lua traceback on errors
+#        Default:     0 (disabled) - 1 (enabled)
+#
+# Eluna.TraceBack = 0
+#
+#    Eluna.ScriptReloader
+#        Description: Enable script reloader (automatically reloads scripts when they change on disk)
+#        Default:     0 (disabled) - 1 (enabled)
+#
+# Eluna.ScriptReloader = 0
+#
+#    Eluna.UseUnsafeMethods
+#        Description: Enable unsafe Lua methods (e.g., dofile, loadfile)
+#        Default:     1 (enabled) - 0 (disabled)
+#
+# Eluna.UseUnsafeMethods = 1
+#
+#    Eluna.UseDeprecatedMethods
+#        Description: Enable deprecated Lua methods
+#        Default:     1 (enabled) - 0 (disabled)
+#
+# Eluna.UseDeprecatedMethods = 1
+#
+#    Eluna.ReloadCommand
+#        Description: Enable the .reload eluna command
+#        Default:     1 (enabled) - 0 (disabled)
+#
+# Eluna.ReloadCommand = 1
+#
+#    Eluna.ReloadSecurityLevel
+#        Description: Minimum GM level required to use .reload eluna
+#        Default:     3 (max) - 0 (anyone)
+#
+# Eluna.ReloadSecurityLevel = 3
+#
+#    Eluna.OnlyOnMaps
+#        Description: Comma-separated list of map IDs where Eluna should load scripts.
+#                     Leave empty to load on all maps.
+#        Default:     "" (empty)
+#
+# Eluna.OnlyOnMaps = ""
+
 #
 ###################################################################################################
 

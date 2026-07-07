@@ -111,6 +111,7 @@
 #include "WorldPacket.h"
 #include "WorldSession.h"
 #include "WorldStateMgr.h"
+#include "ElunaLoader.h"
 
 uint8 World::m_ExitCode = SHUTDOWN_EXIT_CODE;
 std::atomic<uint32> World::m_worldLoopCounter(0);
@@ -2147,6 +2148,9 @@ void World::SetInitialWorldSettings()
     TC_LOG_INFO(LOG_FILTER_SERVER_LOADING, "Initializing Scripts...");
     sScriptMgr->Initialize();
     sScriptMgr->OnConfigLoad(false);                                // must be done after the ScriptMgr has been properly initialized
+
+    TC_LOG_INFO(LOG_FILTER_SERVER_LOADING, "Loading Eluna scripts...");
+    sElunaLoader->LoadScripts();
 
     sScriptDataStore->ValidateSpellScripts();
 

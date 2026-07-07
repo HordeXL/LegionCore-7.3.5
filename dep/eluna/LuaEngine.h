@@ -147,7 +147,6 @@ enum MethodFlags : uint32
 
 #if defined ELUNA_TRINITY
 #define ELUNA_GAME_API TC_GAME_API
-#define TRACKABLE_PTR_NAMESPACE ::Trinity::
 #elif defined ELUNA_AZEROTHCORE
 #define ELUNA_GAME_API AC_GAME_API
 #else

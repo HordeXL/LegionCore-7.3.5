@@ -18,6 +18,8 @@
 
 #include "SpellPackets.h"
 #include "ScriptMgr.h"
+#include "ElunaMgr.h"
+#include "LuaEngine.h"
 #include "Garrison.h"
 #include "GameObjectAI.h"
 #include "ScenarioMgr.h"
@@ -142,7 +144,11 @@ void WorldSession::HandleUseItemOpcode(WorldPackets::Spells::ItemUse& cast)
     }
 
     // Note: If script stop casting it must send appropriate data to client to prevent stuck item in gray state.
-    if (!sScriptMgr->OnItemUse(pUser, pItem, targets))
+    bool elunaItemUsed = false;
+    if (Eluna* e = sElunaMgr->Get(ElunaInfoKey::MakeGlobalKey(0)))
+        elunaItemUsed = !e->OnUse(pUser, pItem, targets);
+
+    if (!sScriptMgr->OnItemUse(pUser, pItem, targets) && !elunaItemUsed)
     {
         // no script or script not process request by self
         pItem->SetInUse();

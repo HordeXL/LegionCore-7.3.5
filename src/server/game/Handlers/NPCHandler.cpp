@@ -28,6 +28,8 @@
 #include "Player.h"
 #include "GameObjectAI.h"
 #include "GossipDef.h"
+#include "ElunaMgr.h"
+#include "LuaEngine.h"
 #include "ObjectAccessor.h"
 #include "Creature.h"
 #include "Pet.h"
@@ -345,6 +347,15 @@ void WorldSession::HandleGossipSelectOption(WorldPackets::NPC::GossipSelectOptio
     }
     else
     {
+        // Try Eluna player/item gossip handler (e.g. teleport hearthstone)
+        ElunaInfoKey globalKey = ElunaInfoKey::MakeGlobalKey(0);
+        if (Eluna* e = sElunaMgr->Get(globalKey))
+        {
+            uint32 sender = player->PlayerTalkClass->GetGossipOptionSender(packet.GossipIndex);
+            uint32 action = player->PlayerTalkClass->GetGossipOptionAction(packet.GossipIndex);
+            e->HandleGossipSelectOption(player, packet.GossipID, sender, action, packet.PromotionCode);
+            return;
+        }
         TC_LOG_DEBUG(LOG_FILTER_NETWORKIO, "WORLD: HandleGossipSelectOption - unsupported GUID %s", packet.GossipUnit.ToString());
         return;
     }

@@ -62,7 +62,7 @@ private:
     void CombineLists();
     void ProcessScript(lua_State* L, std::string filename, const size_t& filesize, const std::string& fullpath, int32 mapId);
     bool CompileScript(lua_State* L, LuaScript& script);
-    static int LoadBytecodeChunk(lua_State* L, uint8* bytes, size_t len, BytecodeBuffer* buffer);
+    static int LoadBytecodeChunk(lua_State* L, const void* p, size_t sz, void* ud);
 
     std::atomic<uint8> m_cacheState;
     std::vector<LuaScript> m_scriptCache;
