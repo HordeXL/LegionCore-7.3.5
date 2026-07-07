@@ -48,6 +48,8 @@
 #include "ScriptMgr.h"
 #include "SharedDefines.h"
 #include "SpectatorAddon.h"
+#include "ElunaMgr.h"
+#include "LuaEngine.h"
 #include "Spell.h"
 #include "SpellAuraEffects.h"
 #include "SpellInfo.h"
@@ -635,6 +637,8 @@ void Spell::SelectImplicitChannelTargets(SpellEffIndex effIndex, SpellImplicitTa
             {
                 WorldObject* target = ObjectAccessor::GetUnit(*m_caster, channelTarget);
                 CallScriptObjectTargetSelectHandlers(target, effIndex);
+                if (Eluna* e = sElunaMgr->Get(ElunaInfoKey::MakeGlobalKey(0)))
+                    e->OnObjectTargetSelect(this, effIndex, target);
                 // unit target may be no longer avalible - teleported out of map for example
                 if (target && target->ToUnit())
                     AddUnitTarget(target->ToUnit(), 1 << effIndex);
@@ -651,6 +655,8 @@ void Spell::SelectImplicitChannelTargets(SpellEffIndex effIndex, SpellImplicitTa
                 DynamicFieldStructuredView<ObjectGuid> channelObjects = m_originalCaster->GetChannelObjects();
                 WorldObject* target = channelObjects.size() > 0 ? ObjectAccessor::GetWorldObject(*m_caster, *channelObjects.begin()) : nullptr;
                 CallScriptObjectTargetSelectHandlers(target, effIndex);
+                if (Eluna* e = sElunaMgr->Get(ElunaInfoKey::MakeGlobalKey(0)))
+                    e->OnObjectTargetSelect(this, effIndex, target);
                 if (target)
                     m_targets.SetDst(*target);
                 else
@@ -763,6 +769,8 @@ void Spell::SelectImplicitNearbyTargets(SpellEffIndex effIndex, SpellImplicitTar
     #endif
 
     CallScriptObjectTargetSelectHandlers(target, effIndex);
+    if (Eluna* e = sElunaMgr->Get(ElunaInfoKey::MakeGlobalKey(0)))
+        e->OnObjectTargetSelect(this, effIndex, target);
 
     switch (targetType.GetObjectType())
     {
@@ -891,6 +899,8 @@ void Spell::SelectImplicitBetweenTargets(SpellEffIndex effIndex, SpellImplicitTa
         TC_LOG_DEBUG(LOG_FILTER_SPELLS_AURAS, "Spell::SelectImplicitBetweenTargets angle %f, dist %f, x %f, y %f, Id %u, targets.size %u", angle, dist, center->GetPositionX(), center->GetPositionY(), m_spellInfo->Id, targets.size());
 
         CallScriptObjectAreaTargetSelectHandlers(targets, effIndex, targetType.GetTarget());
+        if (Eluna* e = sElunaMgr->Get(ElunaInfoKey::MakeGlobalKey(0)))
+            e->OnObjectAreaTargetSelect(this, effIndex, targets);
 
         if (!targets.empty())
         {
@@ -942,6 +952,8 @@ void Spell::SelectImplicitConeTargets(SpellEffIndex effIndex, SpellImplicitTarge
         SearchTargets<Trinity::WorldObjectListSearcher<Trinity::WorldObjectSpellConeTargetCheck> >(searcher, containerTypeMask, caster, caster, radius);
 
         CallScriptObjectAreaTargetSelectHandlers(targets, effIndex, targetType.GetTarget());
+        if (Eluna* e = sElunaMgr->Get(ElunaInfoKey::MakeGlobalKey(0)))
+            e->OnObjectAreaTargetSelect(this, effIndex, targets);
 
         if (!targets.empty())
         {
@@ -1051,6 +1063,8 @@ void Spell::SelectImplicitAreaTargets(SpellEffIndex effIndex, SpellImplicitTarge
         m_spellInfo->Id, radius, targetType.GetObjectType(), targets.size(), effIndex);
 
     CallScriptObjectAreaTargetSelectHandlers(targets, effIndex, targetType.GetTarget());
+    if (Eluna* e = sElunaMgr->Get(ElunaInfoKey::MakeGlobalKey(0)))
+        e->OnObjectAreaTargetSelect(this, effIndex, targets);
 
     TC_LOG_DEBUG(LOG_FILTER_SPELLS_AURAS, "Spell::SelectImplicitAreaTargets after filter %u, radius %f, GetObjectType %u, targets count %u, GetCheckType %i, X %f, Y %f",
     m_spellInfo->Id, radius, targetType.GetObjectType(), targets.size(), targetType.GetCheckType(), center->GetPositionX(), center->GetPositionY());
@@ -1622,6 +1636,8 @@ void Spell::SelectImplicitCasterObjectTargets(SpellEffIndex effIndex, SpellImpli
     }
 
     CallScriptObjectTargetSelectHandlers(target, effIndex);
+    if (Eluna* e = sElunaMgr->Get(ElunaInfoKey::MakeGlobalKey(0)))
+        e->OnObjectTargetSelect(this, effIndex, target);
 
     if (target && target->ToUnit())
         AddUnitTarget(target->ToUnit(), 1 << effIndex, checkIfValid);
@@ -1638,6 +1654,8 @@ void Spell::SelectImplicitTargetObjectTargets(SpellEffIndex effIndex, SpellImpli
     WorldObject* target = m_targets.GetObjectTarget();
 
     CallScriptObjectTargetSelectHandlers(target, effIndex);
+    if (Eluna* e = sElunaMgr->Get(ElunaInfoKey::MakeGlobalKey(0)))
+        e->OnObjectTargetSelect(this, effIndex, target);
 
     if (target)
     {
@@ -1699,6 +1717,8 @@ void Spell::SelectImplicitChainTargets(SpellEffIndex effIndex, SpellImplicitTarg
 
         // Chain primary target is added earlier
         CallScriptObjectAreaTargetSelectHandlers(targets, effIndex, targetType.GetTarget());
+        if (Eluna* e = sElunaMgr->Get(ElunaInfoKey::MakeGlobalKey(0)))
+            e->OnObjectAreaTargetSelect(this, effIndex, targets);
 
         // for backward compability
         std::list<Unit*> unitTargets;
@@ -1894,6 +1914,8 @@ void Spell::SelectEffectTypeImplicitTargets(uint8 effIndex)
                 WorldObject* target = ObjectAccessor::FindPlayer(m_caster->ToPlayer()->GetSelection());
 
                 CallScriptObjectTargetSelectHandlers(target, SpellEffIndex(effIndex));
+                if (Eluna* e = sElunaMgr->Get(ElunaInfoKey::MakeGlobalKey(0)))
+                    e->OnObjectTargetSelect(this, SpellEffIndex(effIndex), target);
 
                 if (target && target->ToPlayer())
                     AddUnitTarget(target->ToUnit(), 1 << effIndex, false);
@@ -1954,6 +1976,8 @@ void Spell::SelectEffectTypeImplicitTargets(uint8 effIndex)
     }
 
     CallScriptObjectTargetSelectHandlers(target, SpellEffIndex(effIndex));
+    if (Eluna* e = sElunaMgr->Get(ElunaInfoKey::MakeGlobalKey(0)))
+        e->OnObjectTargetSelect(this, SpellEffIndex(effIndex), target);
 
     if (target)
     {
@@ -2868,6 +2892,9 @@ void Spell::DoAllEffectOnTarget(TargetInfoPtr target)
     }
     CallScriptOnHitHandlers();
 
+    if (Eluna* e = sElunaMgr->Get(ElunaInfoKey::MakeGlobalKey(0)))
+        e->OnSpellHit(this);
+
     if (missInfo != SPELL_MISS_EVADE && m_caster->IsValidAttackTarget(unit) && (m_spellInfo->CanStartCombat() || m_spellInfo->HasEffect(SPELL_EFFECT_DISPEL)))
     {
         bool initCombat = !m_spellInfo->HasAttribute(SPELL_ATTR3_NO_INITIAL_AGGRO) && !m_spellInfo->HasAttribute(SPELL_ATTR1_NO_THREAT) && !(m_caster->IsCreature() && !m_caster->IsVisible());
@@ -3081,6 +3108,8 @@ void Spell::DoAllEffectOnTarget(TargetInfoPtr target)
             m_caster->ToPlayer()->UpdatePvP(true);
 
         CallScriptAfterHitHandlers();
+        if (Eluna* e = sElunaMgr->Get(ElunaInfoKey::MakeGlobalKey(0)))
+            e->OnAfterSpellHit(this);
     }
 }
 
@@ -3127,6 +3156,9 @@ SpellMissInfo Spell::DoSpellHitOnUnit(Unit* unit, uint32 effectMask, bool scaleA
 
     PrepareScriptHitHandlers();
     CallScriptBeforeHitHandlers();
+
+    if (Eluna* e = sElunaMgr->Get(ElunaInfoKey::MakeGlobalKey(0)))
+        e->OnBeforeSpellHit(this, SPELL_MISS_NONE);
 
     LinkedSpell(unit, unit, SPELL_LINK_BEFORE_HIT, effectMask);
 
@@ -3499,6 +3531,9 @@ void Spell::DoAllEffectOnTarget(GOTargetInfo* target)
     PrepareScriptHitHandlers();
     CallScriptBeforeHitHandlers();
 
+    if (Eluna* e = sElunaMgr->Get(ElunaInfoKey::MakeGlobalKey(0)))
+        e->OnBeforeSpellHit(this, SPELL_MISS_NONE);
+
     for (uint32 effectNumber = 0; effectNumber < MAX_SPELL_EFFECTS; ++effectNumber)
     {
         if (m_spellInfo->EffectMask < uint32(1 << effectNumber))
@@ -3509,7 +3544,12 @@ void Spell::DoAllEffectOnTarget(GOTargetInfo* target)
     }
 
     CallScriptOnHitHandlers();
+    if (Eluna* e = sElunaMgr->Get(ElunaInfoKey::MakeGlobalKey(0)))
+        e->OnSpellHit(this);
+
     CallScriptAfterHitHandlers();
+    if (Eluna* e = sElunaMgr->Get(ElunaInfoKey::MakeGlobalKey(0)))
+        e->OnAfterSpellHit(this);
 }
 
 void Spell::DoAllEffectOnTarget(ItemTargetInfo* target)
@@ -3521,6 +3561,9 @@ void Spell::DoAllEffectOnTarget(ItemTargetInfo* target)
     PrepareScriptHitHandlers();
     CallScriptBeforeHitHandlers();
 
+    if (Eluna* e = sElunaMgr->Get(ElunaInfoKey::MakeGlobalKey(0)))
+        e->OnBeforeSpellHit(this, SPELL_MISS_NONE);
+
     for (uint32 effectNumber = 0; effectNumber < MAX_SPELL_EFFECTS; ++effectNumber)
     {
         if (m_spellInfo->EffectMask < uint32(1 << effectNumber))
@@ -3531,8 +3574,12 @@ void Spell::DoAllEffectOnTarget(ItemTargetInfo* target)
     }
 
     CallScriptOnHitHandlers();
+    if (Eluna* e = sElunaMgr->Get(ElunaInfoKey::MakeGlobalKey(0)))
+        e->OnSpellHit(this);
 
     CallScriptAfterHitHandlers();
+    if (Eluna* e = sElunaMgr->Get(ElunaInfoKey::MakeGlobalKey(0)))
+        e->OnAfterSpellHit(this);
 }
 
 bool Spell::UpdateChanneledTargetList()
@@ -4361,6 +4408,10 @@ void Spell::cast(bool skipCheck)
     }
 
     CallScriptBeforeCastHandlers();
+
+    if (Eluna* e = sElunaMgr->Get(ElunaInfoKey::MakeGlobalKey(0)))
+        e->OnBeforeCast(this);
+
     LinkedSpell(m_caster, m_targets.GetUnitTarget(), SPELL_LINK_BEFORE_CAST);
 
     // skip check if done already (for instant cast spells for example)
@@ -4443,6 +4494,13 @@ void Spell::cast(bool skipCheck)
     PrepareTriggersExecutedOnHit();
 
     CallScriptOnCastHandlers();
+
+    if (Eluna* e = sElunaMgr->Get(ElunaInfoKey::MakeGlobalKey(0)))
+    {
+        e->OnSpellCast(this, skipCheck);
+        if (Player* playerCaster = m_caster->ToPlayer())
+            e->OnSpellCast(playerCaster, this, skipCheck);
+    }
 
     if (m_caster->IsCreature() && m_caster->ToCreature()->IsAIEnabled)
         m_caster->ToCreature()->AI()->SpellFinishCast(m_spellInfo);
@@ -4686,6 +4744,9 @@ void Spell::cast(bool skipCheck)
     }
 
     CallScriptAfterCastHandlers();
+
+    if (Eluna* e = sElunaMgr->Get(ElunaInfoKey::MakeGlobalKey(0)))
+        e->OnAfterCast(this);
 
     if (m_spellInfo->Cooldowns.RecoveryTime)
         if (Player* plr = m_caster->ToPlayer())
@@ -9180,6 +9241,10 @@ bool Spell::CheckEffectTarget(Unit const* target, uint32 eff) const
 //                 return false;
             break;
     }
+
+    if (Eluna* e = sElunaMgr->Get(ElunaInfoKey::MakeGlobalKey(0)))
+        if (SpellCastResult elunaResult = (SpellCastResult)e->OnCheckCast(const_cast<Spell*>(this)))
+            return elunaResult;
 
     return true;
 }

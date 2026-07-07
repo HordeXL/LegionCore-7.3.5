@@ -63,9 +63,7 @@ bool Eluna::OnUse(Player* pPlayer, Item* pItem, SpellCastTargets const& targets)
     if (pItem && castSpell)
         return true;
 
-    // Send equip error that shows no message
-    // This is a hack fix to stop spell casting visual bug when a spell is not cast on use
-    pPlayer->SendEquipError(EQUIP_ERR_OK, pItem, nullptr);
+    // Script handled it — do NOT send EQUIP_ERR_OK (Legion client treats it as failure, blocking gossip UI)
     return false;
 }
 

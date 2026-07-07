@@ -25,6 +25,7 @@
 #include "MapMethods.h"
 #include "WorldObjectMethods.h"
 #include "GlobalMethods.h"
+#include "MinimalPlayerMethods.h"
 
 void RegisterMethods(Eluna* E)
 {
@@ -70,6 +71,10 @@ void RegisterMethods(Eluna* E)
     ElunaTemplate<WorldObject>::Register(E, "WorldObject");
     ElunaTemplate<WorldObject>::SetMethods(E, LuaWorldObject::WorldObjectMethods);
 
-    // Phase B-12: Global functions (108 bindings)
+    // Phase B-13: Player — minimal LegionCore bindings (gossip + teleport)
+    ElunaTemplate<Player>::Register(E, "Player");
+    ElunaTemplate<Player>::SetMethods(E, LuaPlayer::PlayerMethods);
+
+    // Phase B-14: Global functions (108 bindings)
     ElunaTemplate<>::SetMethods(E, LuaGlobalFunctions::GlobalMethods);
 }

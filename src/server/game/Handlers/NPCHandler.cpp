@@ -353,6 +353,18 @@ void WorldSession::HandleGossipSelectOption(WorldPackets::NPC::GossipSelectOptio
         {
             uint32 sender = player->PlayerTalkClass->GetGossipOptionSender(packet.GossipIndex);
             uint32 action = player->PlayerTalkClass->GetGossipOptionAction(packet.GossipIndex);
+
+            // If the gossip source is an item (opened via item gossip), use the item-specific handler
+            if (packet.GossipUnit.IsItem())
+            {
+                if (Item* item = player->GetItemByGuid(packet.GossipUnit))
+                {
+                    e->HandleGossipSelectOption(player, item, sender, action, packet.PromotionCode);
+                    return;
+                }
+            }
+
+            // Otherwise, use the player gossip handler
             e->HandleGossipSelectOption(player, packet.GossipID, sender, action, packet.PromotionCode);
             return;
         }

@@ -148,11 +148,48 @@ void WorldSession::HandleUseItemOpcode(WorldPackets::Spells::ItemUse& cast)
     if (Eluna* e = sElunaMgr->Get(ElunaInfoKey::MakeGlobalKey(0)))
         elunaItemUsed = !e->OnUse(pUser, pItem, targets);
 
-    if (!sScriptMgr->OnItemUse(pUser, pItem, targets) && !elunaItemUsed)
+    if (!sScriptMgr->OnItemUse(pUser, pItem, targets))
     {
-        // no script or script not process request by self
-        pItem->SetInUse();
-        pUser->CastItemUseSpell(pItem, targets, cast.Cast.Misc, cast.Cast.SpellGuid);
+        if (!elunaItemUsed)
+        {
+            // no script or script not process request by self
+            pItem->SetInUse();
+            pUser->CastItemUseSpell(pItem, targets, cast.Cast.Misc, cast.Cast.SpellGuid);
+        }
+        else
+        {
+            // Eluna script handled the item use (showed gossip menu).
+            // Send SMSG_SPELL_START + SMSG_SPELL_GO so the client releases the item.
+            ItemTemplate const* proto = pItem->GetTemplate();
+            if (proto && !proto->Effects.empty())
+            {
+                uint32 spellId = proto->Effects[0]->SpellID;
+                if (sSpellMgr->GetSpellInfo(spellId))
+                {
+                    ObjectGuid castGuid = ObjectGuid::Create<HighGuid::Cast>(pUser->GetMapId(), spellId, sObjectMgr->GetGenerator<HighGuid::Cast>()->Generate(), SPELL_CAST_TYPE_ITEM);
+
+                    // Send SMSG_SPELL_START
+                    WorldPackets::Spells::SpellStart startPacket;
+                    startPacket.Cast.CasterGUID = pItem->GetGUID();
+                    startPacket.Cast.CasterUnit = pUser->GetGUID();
+                    startPacket.Cast.CastGuid = castGuid;
+                    startPacket.Cast.SpellID = spellId;
+                    startPacket.Cast.CastTime = 0;
+                    targets.Write(startPacket.Cast.Target);
+                    pUser->SendDirectMessage(startPacket.Write());
+
+                    // Send SMSG_SPELL_GO
+                    WorldPackets::Spells::SpellGo goPacket;
+                    goPacket.Cast.CasterGUID = pItem->GetGUID();
+                    goPacket.Cast.CasterUnit = pUser->GetGUID();
+                    goPacket.Cast.CastGuid = castGuid;
+                    goPacket.Cast.SpellID = spellId;
+                    goPacket.Cast.CastTime = 0;
+                    targets.Write(goPacket.Cast.Target);
+                    pUser->SendDirectMessage(goPacket.Write());
+                }
+            }
+        }
     }
 }
 

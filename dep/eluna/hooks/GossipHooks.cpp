@@ -86,6 +86,7 @@ void Eluna::HandleGossipSelectOption(Player* pPlayer, uint32 menuId, uint32 send
         HookPush();
     else
         HookPush(code);
+    HookPush(menuId); // pass menuId so Lua callbacks can use it
 
     CallAllFunctions(binding, key);
 }
