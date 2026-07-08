@@ -12,13 +12,6 @@
 // ProcFlagsInit - In newer TrinityCore this is a class, in older cores it's a uint32
 typedef uint32 ProcFlagsInit;
 
-// TeamId constants (not always defined in older TrinityCore forks)
-#ifndef TEAM_ALLIANCE
-#define TEAM_ALLIANCE            0
-#define TEAM_HORDE               1
-#define TEAM_NEUTRAL             2
-#endif
-
 // SpellHistory compatibility - In newer TrinityCore SpellHistory is a separate class,
 // in this LegionCore cooldowns are managed directly on Player/Creature
 // These inline methods use forward-declared types and are only called after full includes

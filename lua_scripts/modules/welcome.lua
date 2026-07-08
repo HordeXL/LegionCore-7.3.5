@@ -11,3 +11,4 @@ local function OnLogin(event, player, firstLogin)
     end
 end
 RegisterPlayerEvent(3, OnLogin)
+print("[Eluna] Welcome module loaded")

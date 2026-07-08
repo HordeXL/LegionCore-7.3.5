@@ -48,6 +48,11 @@
 #include "LoginQueryHolder.h"
 #include "GameEventMgr.h"
 
+#ifdef ELUNA_TRINITY
+#include "ElunaMgr.h"
+#include "LuaEngine.h"
+#endif
+
 void WorldSession::HandleCharEnum(PreparedQueryResult result, bool isDeleted)
 {
     m_DHCount = 0;
@@ -956,6 +961,22 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder* holder)
             player->SetStandState(UNIT_STAND_STATE_STAND);
 
         sScriptMgr->OnPlayerLogin(player, firstLogin);
+
+#ifdef ELUNA_TRINITY
+        if (Eluna* e = sElunaMgr->Get(ElunaInfoKey(player->GetMapId(), player->GetInstanceId())))
+        {
+            TC_LOG_INFO(LOG_FILTER_GENERAL, "[Eluna] OnLogin called for player on map %u instance %u",
+                player->GetMapId(), player->GetInstanceId());
+            e->OnLogin(player);
+            if (firstLogin)
+                e->OnFirstLogin(player);
+        }
+        else
+        {
+            TC_LOG_INFO(LOG_FILTER_GENERAL, "[Eluna] OnLogin FAILED - no Eluna instance for map %u instance %u",
+                player->GetMapId(), player->GetInstanceId());
+        }
+#endif
         player->SetChangeMap(false);
     });
 
