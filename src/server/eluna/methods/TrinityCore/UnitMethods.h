@@ -347,8 +347,9 @@ namespace LuaUnit
      *
      * @return bool inCombat
      */
-    int IsInCombat(Eluna* /*E*/)
+    int IsInCombat(Eluna* E, Unit* unit)
 {
+    E->Push(unit->isInCombat());
     return 1;
 }
 
@@ -420,8 +421,11 @@ namespace LuaUnit
      * @param uint32 spell : entry of the aura spell
      * @return bool hasAura
      */
-    int HasAura(Eluna* /*E*/)
+    int HasAura(Eluna* E, Unit* unit)
 {
+    uint32 spell = E->CHECKVAL<uint32>(2);
+
+    E->Push(unit->HasAura(spell));
     return 1;
 }
 
@@ -778,8 +782,9 @@ namespace LuaUnit
      *
      * @return uint32 maxHealth
      */
-    int GetMaxHealth(Eluna* /*E*/)
+    int GetMaxHealth(Eluna* E, Unit* unit)
 {
+    E->Push(unit->GetMaxHealth());
     return 1;
 }
 
@@ -1160,9 +1165,11 @@ namespace LuaUnit
      *
      * @param uint32 health : new health
      */
-    int SetHealth(Eluna* /*E*/)
+    int SetHealth(Eluna* E, Unit* unit)
 {
-    return 1;
+    uint32 amt = E->CHECKVAL<uint32>(2);
+    unit->SetHealth(amt);
+    return 0;
 }
 
     /**
@@ -1718,9 +1725,18 @@ namespace LuaUnit
      * @param uint32 spell : entry of a spell
      * @param bool triggered = false : if true the spell is instant and has no cost
      */
-    int CastSpell(Eluna* /*E*/)
+    int CastSpell(Eluna* E, Unit* unit)
 {
-    return 1;
+    Unit* target = E->CHECKOBJ<Unit>(2, false);
+    uint32 spell = E->CHECKVAL<uint32>(3);
+    bool triggered = E->CHECKVAL<bool>(4, false);
+
+    SpellInfo const* spellEntry = sSpellMgr->GetSpellInfo(spell);
+    if (!spellEntry)
+        return 0;
+
+    unit->CastSpell(target, spell, triggered);
+    return 0;
 }
 
     /**
@@ -1758,9 +1774,10 @@ namespace LuaUnit
     /**
      * Clears the [Unit]'s combat
      */
-    int ClearInCombat(Eluna* /*E*/)
+    int ClearInCombat(Eluna* /*E*/, Unit* unit)
 {
-    return 1;
+    unit->ClearInCombat();
+    return 0;
 }
 
     /**

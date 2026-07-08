@@ -19,6 +19,11 @@
 #include "SpellPackets.h"
 #include "ScriptMgr.h"
 #include "Garrison.h"
+
+#ifdef ELUNA_TRINITY
+#include "ElunaMgr.h"
+#include "LuaEngine.h"
+#endif
 #include "GameObjectAI.h"
 #include "ScenarioMgr.h"
 #include "PetPackets.h"
@@ -142,6 +147,13 @@ void WorldSession::HandleUseItemOpcode(WorldPackets::Spells::ItemUse& cast)
     }
 
     // Note: If script stop casting it must send appropriate data to client to prevent stuck item in gray state.
+#ifdef ELUNA_TRINITY
+    // Let Eluna handle the item use first (for item gossip menus, etc.)
+    if (Eluna* e = sElunaMgr->Get(ElunaInfoKey(pUser->GetMapId(), pUser->GetInstanceId())))
+        if (!e->OnUse(pUser, pItem, targets))
+            return; // Eluna handled it (e.g. gossip menu), don't SetInUse or cast spell
+#endif
+
     if (!sScriptMgr->OnItemUse(pUser, pItem, targets))
     {
         // no script or script not process request by self

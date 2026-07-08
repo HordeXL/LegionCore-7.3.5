@@ -44,6 +44,11 @@
 #include "NPCPackets.h"
 #include "MailPackets.h"
 
+#ifdef ELUNA_TRINITY
+#include "ElunaMgr.h"
+#include "LuaEngine.h"
+#endif
+
 void WorldSession::HandleTabardVendorActivate(WorldPackets::NPC::Hello& packet)
 {
     Creature* unit = GetPlayer()->GetNPCIfCanInteractWith(packet.Unit, UNIT_NPC_FLAG_TABARDDESIGNER);
@@ -342,6 +347,22 @@ void WorldSession::HandleGossipSelectOption(WorldPackets::NPC::GossipSelectOptio
             TC_LOG_DEBUG(LOG_FILTER_NETWORKIO, "WORLD: HandleGossipSelectOption - GameObject (GUID: %s) not found.", packet.GossipUnit.ToString());
             return;
         }
+    }
+    else if (packet.GossipUnit.IsItem())
+    {
+#ifdef ELUNA_TRINITY
+        if (Item* item = player->GetItemByGuid(packet.GossipUnit))
+        {
+            if (Eluna* e = sElunaMgr->Get(ElunaInfoKey(player->GetMapId(), player->GetInstanceId())))
+            {
+                uint32 sender = player->PlayerTalkClass->GetGossipOptionSender(packet.GossipIndex);
+                uint32 action = player->PlayerTalkClass->GetGossipOptionAction(packet.GossipIndex);
+                e->HandleGossipSelectOption(player, item, sender, action,
+                    packet.PromotionCode.empty() ? "" : packet.PromotionCode.c_str());
+            }
+        }
+        return;
+#endif
     }
     else
     {

@@ -529,6 +529,15 @@ namespace LuaWorldObject
      */
     int SpawnCreature(Eluna* E, WorldObject* obj)
     {
+        uint32 entry = E->CHECKVAL<uint32>(2);
+        float x = E->CHECKVAL<float>(3);
+        float y = E->CHECKVAL<float>(4);
+        float z = E->CHECKVAL<float>(5);
+        float o = E->CHECKVAL<float>(6);
+        uint32 spawnType = E->CHECKVAL<uint32>(7, TEMPSUMMON_MANUAL_DESPAWN);
+        uint32 despawnTimer = E->CHECKVAL<uint32>(8, 0);
+
+        E->Push(obj->SummonCreature(entry, x, y, z, o, TempSummonType(spawnType), despawnTimer));
         return 1;
     }
 

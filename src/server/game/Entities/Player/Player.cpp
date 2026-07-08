@@ -127,6 +127,11 @@
 #include "WorldStatePackets.h"
 #include "WowTime.hpp"
 
+#ifdef ELUNA_TRINITY
+#include "ElunaMgr.h"
+#include "LuaEngine.h"
+#endif
+
 #define ZONE_UPDATE_INTERVAL (1*IN_MILLISECONDS)
 
 // corpse reclaim times

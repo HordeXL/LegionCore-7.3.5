@@ -83,8 +83,9 @@ namespace LuaMap
      *
      * @return string mapName
      */
-    int GetName(Eluna* /*E*/)
+    int GetName(Eluna* E, Map* map)
 {
+    E->Push(map->GetMapName());
     return 1;
 }
 
@@ -97,8 +98,15 @@ namespace LuaMap
      * @param float y
      * @return float z
      */
-    int GetHeight(Eluna* /*E*/)
+    int GetHeight(Eluna* E, Map* map)
 {
+    float x = E->CHECKVAL<float>(2);
+    float y = E->CHECKVAL<float>(3);
+    uint32 phasemask = E->CHECKVAL<uint32>(4, 1);
+
+    float z = map->GetHeight(phasemask, x, y, MAX_HEIGHT);
+    if (z != INVALID_HEIGHT)
+        E->Push(z);
     return 1;
 }
 

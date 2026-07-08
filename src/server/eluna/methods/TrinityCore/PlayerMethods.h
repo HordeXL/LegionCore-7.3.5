@@ -15,6 +15,7 @@
 #include "NPCPackets.h"
 #include "PartyPackets.h"
 #include "Unit.h"
+#include "InstanceSaveMgr.h"
 #include <boost/callable_traits/args.hpp>
 
 /***
@@ -83,8 +84,11 @@ namespace LuaPlayer
      * @param uint32 spellId
      * @return bool hasSpell
      */
-    int HasSpell(Eluna* /*E*/)
+    int HasSpell(Eluna* E, Player* player)
 {
+    uint32 id = E->CHECKVAL<uint32>(2);
+
+    E->Push(player->HasSpell(id));
     return 1;
 }
 
@@ -1073,8 +1077,14 @@ namespace LuaPlayer
      * @param uint8 slot
      * @return [Item] item
      */
-    int GetEquippedItemBySlot(Eluna* /*E*/)
+    int GetEquippedItemBySlot(Eluna* E, Player* player)
 {
+    uint8 slot = E->CHECKVAL<uint8>(2);
+    if (slot >= EQUIPMENT_SLOT_END)
+        return 1;
+
+    Item* item = player->GetItemByPos(INVENTORY_SLOT_BAG_0, slot);
+    E->Push(item);
     return 1;
 }
 
@@ -1181,8 +1191,9 @@ namespace LuaPlayer
      *
      * @return [Unit] unit
      */
-    int GetSelection(Eluna* /*E*/)
+    int GetSelection(Eluna* E, Player* player)
 {
+    E->Push(player->GetSelectedUnit());
     return 1;
 }
 
@@ -1191,8 +1202,9 @@ namespace LuaPlayer
      *
      * @return [AccountTypes] gmRank
      */
-    int GetGMRank(Eluna* /*E*/)
+    int GetGMRank(Eluna* E, Player* player)
 {
+    E->Push(player->GetSession()->GetSecurity());
     return 1;
 }
 
@@ -1221,8 +1233,9 @@ namespace LuaPlayer
      *
      * @return [TeamId] teamId
      */
-    int GetTeam(Eluna* /*E*/)
+    int GetTeam(Eluna* E, Player* player)
 {
+    E->Push(player->GetTeamId());
     return 1;
 }
 
@@ -1273,8 +1286,9 @@ namespace LuaPlayer
      *
      * @return uint32 totalPlayTime
      */
-    int GetTotalPlayedTime(Eluna* /*E*/)
+    int GetTotalPlayedTime(Eluna* E, Player* player)
 {
+    E->Push(player->GetTotalPlayedTime());
     return 1;
 }
 
@@ -1433,9 +1447,12 @@ namespace LuaPlayer
      *
      * @param uint32 flag
      */
-    int SetAtLoginFlag(Eluna* /*E*/)
+    int SetAtLoginFlag(Eluna* E, Player* player)
 {
-    return 1;
+    uint32 flag = E->CHECKVAL<uint32>(2);
+
+    player->SetAtLoginFlag((AtLoginFlags)flag);
+    return 0;
 }
 
     /**
@@ -1663,9 +1680,18 @@ namespace LuaPlayer
      * @param uint32 mapId : Map ID
      * @param uint32 areaId : Area ID
      */
-    int SetBindPoint(Eluna* /*E*/)
+    int SetBindPoint(Eluna* E, Player* player)
 {
-    return 1;
+    float x = E->CHECKVAL<float>(2);
+    float y = E->CHECKVAL<float>(3);
+    float z = E->CHECKVAL<float>(4);
+    uint32 mapId = E->CHECKVAL<uint32>(5);
+    uint32 areaId = E->CHECKVAL<uint32>(6);
+
+    WorldLocation loc(mapId, x, y, z);
+
+    player->SetHomebind(loc, areaId);
+    return 0;
 }
 
     /**
@@ -1718,9 +1744,11 @@ namespace LuaPlayer
     /**
      * Resets the [Player]s pets talent points
      */
-    int ResetPetTalents(Eluna* /*E*/)
+    int ResetPetTalents(Eluna* /*E*/, Player* player)
 {
-    return 1;
+    player->ResetPetTalents();
+    player->SendTalentsInfoData(true);
+    return 0;
 }
 #endif
 
@@ -1772,9 +1800,10 @@ namespace LuaPlayer
     /**
      * Saves the [Player] to the database
      */
-    int SaveToDB(Eluna* /*E*/)
+    int SaveToDB(Eluna* /*E*/, Player* player)
 {
-    return 1;
+    player->SaveToDB(false);
+    return 0;
 }
 
     /**
@@ -1844,9 +1873,12 @@ namespace LuaPlayer
 {
     return 1;
 }
-    int SendShowBank(Eluna* /*E*/)
+    int SendShowBank(Eluna* E, Player* player)
 {
-    return 1;
+    WorldObject* obj = E->CHECKOBJ<WorldObject>(2);
+
+    player->GetSession()->SendShowBank(obj->GET_GUID());
+    return 0;
 }
 
     /**
@@ -1910,9 +1942,15 @@ namespace LuaPlayer
      * @param uint32 map = true
      * @param uint32 difficulty = 0
      */
-    int UnbindInstance(Eluna* /*E*/)
+    int UnbindInstance(Eluna* E, Player* player)
 {
-    return 1;
+    uint32 map = E->CHECKVAL<uint32>(2);
+    uint32 difficulty = E->CHECKVAL<uint32>(3, 0);
+
+    if (difficulty < MAX_DIFFICULTY)
+        player->UnbindInstance(map, Difficulty(difficulty), true);
+
+    return 0;
 }
 
     /**
@@ -1952,9 +1990,14 @@ namespace LuaPlayer
      * @param float discountMod = 1.0
      * @param bool guidBank = false
      */
-    int DurabilityRepairAll(Eluna* /*E*/)
+    int DurabilityRepairAll(Eluna* E, Player* player)
 {
-    return 1;
+    bool takeCost = E->CHECKVAL<bool>(2, true);
+    float discountMod = E->CHECKVAL<float>(3, 1.0f);
+    bool guildBank = E->CHECKVAL<bool>(4, false);
+
+    player->DurabilityRepairAll(takeCost, discountMod, guildBank);
+    return 0;
 }
 
     /**
@@ -2044,9 +2087,13 @@ namespace LuaPlayer
      *
      * @param bool noCost = true
      */
-    int ResetTalents(Eluna* /*E*/)
+    int ResetTalents(Eluna* E, Player* player)
 {
-    return 1;
+    bool no_cost = E->CHECKVAL<bool>(2, true);
+
+    player->ResetTalents(no_cost);
+    player->SendTalentsInfoData(false);
+    return 0;
 }
 
     /**
@@ -2314,9 +2361,10 @@ namespace LuaPlayer
     /**
      * Advances all of the [Player]s weapon skills to the maximum amount available
      */
-    int AdvanceSkillsToMax(Eluna* /*E*/)
+    int AdvanceSkillsToMax(Eluna* /*E*/, Player* player)
 {
-    return 1;
+    player->UpdateSkillsForLevel();
+    return 0;
 }
 
     /**
@@ -2335,9 +2383,16 @@ namespace LuaPlayer
      * @param uint32 skillId
      * @param uint32 skillStep
      */
-    int AdvanceSkill(Eluna* /*E*/)
+    int AdvanceSkill(Eluna* E, Player* player)
 {
-    return 1;
+    uint32 _skillId = E->CHECKVAL<uint32>(2);
+    uint32 _step = E->CHECKVAL<uint32>(3);
+    if (_skillId && _step)
+    {
+        if (player->HasSkill(_skillId))
+            player->UpdateSkill(_skillId, _step);
+    }
+    return 0;
 }
 
     /**
@@ -2349,8 +2404,17 @@ namespace LuaPlayer
      * @param float zCoord
      * @param float orientation
      */
-    int Teleport(Eluna* /*E*/)
+    int Teleport(Eluna* E, Player* player)
 {
+    uint32 mapId = E->CHECKVAL<uint32>(2);
+    float x = E->CHECKVAL<float>(3);
+    float y = E->CHECKVAL<float>(4);
+    float z = E->CHECKVAL<float>(5);
+    float o = E->CHECKVAL<float>(6);
+
+    player->SaveRecallPosition();
+
+    E->Push(player->TeleportTo(mapId, x, y, z, o));
     return 1;
 }
 
@@ -2410,9 +2474,13 @@ namespace LuaPlayer
      * @param uint32 spellId
      * @param bool update = true
      */
-    int ResetSpellCooldown(Eluna* /*E*/)
+    int ResetSpellCooldown(Eluna* E, Player* player)
 {
-    return 1;
+    uint32 spellId = E->CHECKVAL<uint32>(2);
+    bool update = E->CHECKVAL<bool>(3, true);
+
+    player->RemoveSpellCooldown(spellId, update);
+    return 0;
 }
 
     /**
@@ -2429,9 +2497,10 @@ namespace LuaPlayer
     /**
      * Resets all of the [Player]'s cooldowns
      */
-    int ResetAllCooldowns(Eluna* /*E*/)
+    int ResetAllCooldowns(Eluna* /*E*/, Player* player)
 {
-    return 1;
+    player->RemoveAllSpellCooldown();
+    return 0;
 }
 
     /**
@@ -2447,26 +2516,30 @@ namespace LuaPlayer
     return 0;
 }
 
-#if ELUNA_EXPANSION < EXP_RETAIL
     /**
      * Sends an Area Trigger Message to the [Player]
      *
      * @param string message
      */
-    int SendAreaTriggerMessage(Eluna* /*E*/)
+    int SendAreaTriggerMessage(Eluna* E, Player* player)
 {
-    return 1;
+    std::string msg = E->CHECKVAL<std::string>(2);
+    if (msg.length() > 0)
+        ChatHandler(player->GetSession()).SendSysMessage(msg.c_str());
+    return 0;
 }
-#endif
 
     /**
      * Sends a Notification to the [Player]
      *
      * @param string message
      */
-    int SendNotification(Eluna* /*E*/)
+    int SendNotification(Eluna* E, Player* player)
 {
-    return 1;
+    std::string msg = E->CHECKVAL<std::string>(2);
+    if (msg.length() > 0)
+        player->GetSession()->SendNotification(msg.c_str());
+    return 0;
 }
 
     /**
@@ -2507,9 +2580,11 @@ namespace LuaPlayer
      *
      * @param int32 copperAmt : negative to remove, positive to add
      */
-    int ModifyMoney(Eluna* /*E*/)
+    int ModifyMoney(Eluna* E, Player* player)
 {
-    return 1;
+    int32 amt = E->CHECKVAL<int32>(2);
+    player->ModifyMoney(amt);
+    return 0;
 }
 
     /**
@@ -2517,9 +2592,12 @@ namespace LuaPlayer
      *
      * @param uint32 spellId
      */
-    int LearnSpell(Eluna* /*E*/)
+    int LearnSpell(Eluna* E, Player* player)
 {
-    return 1;
+    uint32 id = E->CHECKVAL<uint32>(2);
+
+    player->learnSpell(id, false);
+    return 0;
 }
 
     /**
@@ -2570,9 +2648,18 @@ namespace LuaPlayer
      * @param string popup = nil : if non empty string, a popup with given text shown on click
      * @param uint32 money = 0 : required money in copper
      */
-    int GossipMenuAddItem(Eluna* /*E*/)
+    int GossipMenuAddItem(Eluna* E, Player* player)
 {
-    return 1;
+    uint32 _icon = E->CHECKVAL<uint32>(2);
+    const char* msg = E->CHECKVAL<const char*>(3);
+    uint32 _sender = E->CHECKVAL<uint32>(4);
+    uint32 _intid = E->CHECKVAL<uint32>(5);
+    bool _code = E->CHECKVAL<bool>(6, false);
+    const char* _promptMsg = E->CHECKVAL<const char*>(7, "");
+    uint32 _money = E->CHECKVAL<uint32>(8, 0);
+
+    player->PlayerTalkClass->GetGossipMenu().AddMenuItem(-1, uint8(_icon), msg, _sender, _intid, _promptMsg, _money, 0, _code);
+    return 0;
 }
 
     /**
@@ -2622,9 +2709,10 @@ namespace LuaPlayer
      *     Note: This is needed when you show a gossip menu without using gossip hello or select hooks which do this automatically.
      *     Usually this is needed when using [Player] is the sender of a Gossip Menu.
      */
-    int GossipClearMenu(Eluna* /*E*/)
+    int GossipClearMenu(Eluna* /*E*/, Player* player)
 {
-    return 1;
+    player->PlayerTalkClass->ClearMenus();
+    return 0;
 }
 
     /**
