@@ -651,8 +651,9 @@ namespace LuaUnit
      *
      * @return uint8 level
      */
-    int GetLevel(Eluna* /*E*/)
+    int GetLevel(Eluna* E, Unit* unit)
 {
+    E->Push(unit->getLevel());
     return 1;
 }
 

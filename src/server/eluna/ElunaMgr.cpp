@@ -55,6 +55,13 @@ void ElunaMgr::Destroy(ElunaInfo const& info)
     Destroy(info.key);
 }
 
+void ElunaMgr::ReloadAll()
+{
+    for (auto& pair : _elunaMap)
+        if (pair.second)
+            pair.second->ReloadEluna();
+}
+
 ElunaInfo::~ElunaInfo()
 {
 }

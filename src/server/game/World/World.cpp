@@ -2622,6 +2622,20 @@ void World::Update(uint32 diff)
 
     sInstanceSaveMgr->Update();
 
+#ifdef ELUNA_TRINITY
+    // Check for Lua script changes every ~5 seconds
+    if (sElunaConfig->IsElunaEnabled())
+    {
+        static uint32 elunaReloadTimer = 0;
+        elunaReloadTimer += diff;
+        if (elunaReloadTimer >= 5000)
+        {
+            elunaReloadTimer = 0;
+            sElunaLoader->CheckForScriptChanges();
+        }
+    }
+#endif
+
     // And last, but not least handle the issued cli commands
     ProcessCliCommands();
 

@@ -10,6 +10,10 @@
 
 #include "LuaEngine.h"
 
+#include <unordered_map>
+#include <ctime>
+#include <algorithm>
+
 #if defined ELUNA_TRINITY && defined(TRACKABLE_PTR_NAMESPACE)
 #include <efsw/efsw.hpp>
 #endif
@@ -52,6 +56,7 @@ public:
 
     void LoadScripts();
     void ReloadElunaForMap(int mapId);
+    void CheckForScriptChanges();
 
     uint8 GetCacheState() const { return m_cacheState; }
     const std::vector<LuaScript>& GetLuaScripts() const { return m_scriptCache; }
@@ -80,6 +85,7 @@ private:
     std::list<LuaScript> m_scripts;
     std::list<LuaScript> m_extensions;
     std::thread m_reloadThread;
+    std::unordered_map<std::string, std::time_t> m_fileTimestamps;
 };
 
 #if defined ELUNA_TRINITY && defined(TRACKABLE_PTR_NAMESPACE)

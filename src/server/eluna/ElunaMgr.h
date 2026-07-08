@@ -102,6 +102,8 @@ public:
     void Destroy(ElunaInfoKey key);
     void Destroy(ElunaInfo const& info);
 
+    void ReloadAll();
+
 private:
     std::unordered_map<ElunaInfoKey, std::unique_ptr<Eluna>> _elunaMap;
 };

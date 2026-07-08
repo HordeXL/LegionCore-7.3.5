@@ -2439,9 +2439,12 @@ namespace LuaPlayer
      *
      * @param string message
      */
-    int SendBroadcastMessage(Eluna* /*E*/)
+    int SendBroadcastMessage(Eluna* E, Player* player)
 {
-    return 1;
+    const char* message = E->CHECKVAL<const char*>(2);
+    if (std::string(message).length() > 0)
+        ChatHandler(player->GetSession()).SendSysMessage(message);
+    return 0;
 }
 
 #if ELUNA_EXPANSION < EXP_RETAIL

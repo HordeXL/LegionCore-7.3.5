@@ -8,6 +8,7 @@
 #include "ElunaCompat.h"
 #include "ElunaConfig.h"
 #include "ElunaLoader.h"
+#include "ElunaMgr.h"
 #include "ElunaUtility.h"
 #include <fstream>
 #include <sstream>
@@ -134,6 +135,7 @@ void ElunaLoader::LoadScripts()
     // clear all cache variables
     m_requirePath.clear();
     m_requirecPath.clear();
+    m_fileTimestamps.clear();
 
     // read and compile all scripts
     ReadFiles(L, lua_folderpath);
@@ -232,6 +234,7 @@ void ElunaLoader::ReadFiles(lua_State* L, std::string path)
                 std::string filename = dir_iter->path().filename().generic_string();
                 size_t filesize = fs::file_size(dir_iter->path());
                 ProcessScript(L, filename, filesize, fullpath, mapId);
+                m_fileTimestamps[fullpath] = fs::last_write_time(dir_iter->path());
             }
         }
     }
@@ -349,20 +352,58 @@ void ElunaLoader::CombineLists()
 
 void ElunaLoader::ReloadElunaForMap(int mapId)
 {
-#if 0
     // reload the script cache asynchronously
     ReloadScriptCache();
 
     if (mapId != RELOAD_CACHE_ONLY)
+        sElunaMgr->ReloadAll();
+}
+
+void ElunaLoader::CheckForScriptChanges()
+{
+    if (!sElunaConfig->IsElunaEnabled())
+        return;
+
+    if (m_cacheState != SCRIPT_CACHE_READY)
+        return;
+
+    std::string lua_folderpath = sElunaConfig->GetConfig(CONFIG_ELUNA_SCRIPT_PATH);
+    if (lua_folderpath.empty())
+        return;
+
+    // Check if any .lua or .ext file has been modified
+    bool changed = false;
+    try
     {
-        // Iterate maps manually
-        if (mapId == RELOAD_ALL_STATES || mapId == RELOAD_GLOBAL_STATE)
+        for (fs::recursive_directory_iterator it(lua_folderpath), end; it != end; ++it)
         {
-            for (uint32 i = 0; i < sMapMgr->i_maps.size(); ++i)
-                if (Map* map = sMapMgr->i_maps[i])
-                    if (Eluna* e = map->GetEluna())
-                        e->ReloadEluna();
+            if (!fs::is_regular_file(it->path()))
+                continue;
+
+            std::string ext = it->path().extension().string();
+            std::transform(ext.begin(), ext.end(), ext.begin(), [](unsigned char c) { return std::tolower(c); });
+            if (ext != ".lua" && ext != ".ext")
+                continue;
+
+            std::string fullpath = it->path().generic_string();
+            std::time_t lastWrite = fs::last_write_time(it->path());
+
+            auto prev = m_fileTimestamps.find(fullpath);
+            if (prev == m_fileTimestamps.end() || prev->second != lastWrite)
+            {
+                m_fileTimestamps[fullpath] = lastWrite;
+                changed = true;
+            }
         }
     }
-#endif
+    catch (const std::exception&)
+    {
+        return;
+    }
+
+    if (changed)
+    {
+        ELUNA_LOG_INFO("[Eluna]: Script file change detected, reloading...");
+        ReloadElunaForMap(RELOAD_ALL_STATES);
+    }
 }
