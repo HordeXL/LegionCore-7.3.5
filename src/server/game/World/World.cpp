@@ -112,6 +112,11 @@
 #include "WorldSession.h"
 #include "WorldStateMgr.h"
 
+#ifdef ELUNA_TRINITY
+#include "ElunaConfig.h"
+#include "ElunaLoader.h"
+#endif
+
 uint8 World::m_ExitCode = SHUTDOWN_EXIT_CODE;
 std::atomic<uint32> World::m_worldLoopCounter(0);
 
@@ -1579,6 +1584,16 @@ void World::SetInitialWorldSettings()
 
     ///- Initialize config settings
     LoadConfigSettings();
+
+#ifdef ELUNA_TRINITY
+    ///- Initialize Eluna Lua Engine
+    sElunaConfig->Initialize();
+    if (sElunaConfig->IsElunaEnabled())
+    {
+        TC_LOG_INFO(LOG_FILTER_GENERAL, ">> Initializing Eluna Lua Engine");
+        sElunaLoader->LoadScripts();
+    }
+#endif
 
     ///- Initialize Allowed Security Level
     LoadDBAllowedSecurityLevel();

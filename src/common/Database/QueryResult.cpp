@@ -42,7 +42,7 @@ PreparedResultSet::PreparedResultSet(MYSQL_STMT* stmt, MYSQL_RES *result, uint64
     if (!m_res)
         return;
 
-    if (m_stmt->bind_result_done)
+    if (m_stmt->bind_result_done && m_stmt->bind)
     {
         delete[] m_stmt->bind->length;
         delete[] m_stmt->bind->is_null;

@@ -3007,6 +3007,73 @@ Loggers=GENERAL UNITS PETS VEHICLES TSCR DATABASE_AI MAPSCRIPTS NETWORKIO SPELLS
 
 QuestPOI.DisableErrors = 1
 
+###################################################################################################
+# ELUNA LUA ENGINE
+#
+#    Eluna.Enabled
+#        Description: Enable or disable the Eluna Lua Engine
+#        Default:     0 - Disabled
+#                     1 - Enabled
+#
+#    Eluna.ScriptPath
+#        Description: Path to the Lua scripts directory (relative to the binary)
+#        Default:     "lua_scripts"
+#
+#    Eluna.TraceBack
+#        Description: Show Lua error tracebacks
+#        Default:     0 - Disabled
+#                     1 - Enabled
+#
+#    Eluna.ScriptReloader
+#        Description: Enable live script reloading (requires file watcher)
+#        Default:     0 - Disabled
+#                     1 - Enabled
+#
+#    Eluna.UseUnsafeMethods
+#        Description: Enable potentially unsafe Lua methods
+#        Default:     1 - Enabled
+#                     0 - Disabled
+#
+#    Eluna.UseDeprecatedMethods
+#        Description: Enable deprecated Lua methods
+#        Default:     1 - Enabled
+#                     0 - Disabled
+#
+#    Eluna.ReloadCommand
+#        Description: Enable the .reload eluna command
+#        Default:     1 - Enabled
+#                     0 - Disabled
+#
+#    Eluna.ReloadSecurityLevel
+#        Description: GM level required to use .reload eluna
+#        Default:     3 (Admin)
+#
+#    Eluna.OnlyOnMaps
+#        Description: Comma-separated list of map IDs where Eluna is active
+#                     Empty = all maps
+#        Default:     ""
+#
+#    Eluna.RequirePaths
+#        Description: Extra Lua require paths (semicolon-separated)
+#        Default:     ""
+#
+#    Eluna.RequireCPaths
+#        Description: Extra Lua C paths (semicolon-separated)
+#        Default:     ""
+#
+
+Eluna.Enabled = 0
+Eluna.ScriptPath = "lua_scripts"
+Eluna.TraceBack = 1
+Eluna.ScriptReloader = 0
+Eluna.UseUnsafeMethods = 1
+Eluna.UseDeprecatedMethods = 1
+Eluna.ReloadCommand = 1
+Eluna.ReloadSecurityLevel = 3
+Eluna.OnlyOnMaps = ""
+Eluna.RequirePaths = ""
+Eluna.RequireCPaths = ""
+
 #
 ###################################################################################################
 

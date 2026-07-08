@@ -276,6 +276,8 @@ typedef std::unordered_map<uint32 /*zoneId*/, ZoneDynamicInfo> ZoneDynamicInfoMa
 
 typedef std::unordered_map<ObjectGuid, std::shared_ptr<WorldObject>> SharedObjectPtr;
 
+class Eluna;
+
 class Map
 {
     friend class MapReference;
@@ -646,6 +648,9 @@ class Map
         std::set<Scenario*> m_scenarios;
 
         void UpdateOutdoorPvPScript();
+
+        // Eluna Lua Engine integration
+        Eluna* GetEluna();
 
     private:
         void LoadMapAndVMap(int gx, int gy);

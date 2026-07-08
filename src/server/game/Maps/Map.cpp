@@ -52,6 +52,11 @@
 #include "WorldStateMgr.h"
 #include "GuildMgr.h"
 
+#ifdef ELUNA_TRINITY
+#include "ElunaConfig.h"
+#include "ElunaMgr.h"
+#endif
+
 namespace {
 
 union u_map_magic
@@ -602,6 +607,19 @@ m_activeNonPlayersIter(m_activeNonPlayers.end()), i_grids(), GridMaps()
     MMAP::MMapFactory::createOrGetMMapManager()->loadMapInstance(sWorld->GetDataPath(), GetId(), GetThreadID());
 
     sScriptMgr->OnCreateMap(this);
+
+#ifdef ELUNA_TRINITY
+    // Initialize Eluna for this map
+    if (sElunaConfig->IsElunaEnabled())
+    {
+        ElunaInfoKey key(GetId(), GetInstanceId());
+        if (sElunaConfig->ShouldMapLoadEluna(GetId()) && !sElunaMgr->Get(key))
+        {
+            ElunaInfo info(key);
+            sElunaMgr->Create(this, info);
+        }
+    }
+#endif
 
     m_Transports.clear();
 
@@ -5624,3 +5642,11 @@ void Map::RemoveMaxVisible(Object* obj)
     std::lock_guard<std::recursive_mutex> guard(i_MaxVisibleList_lock);
     m_MaxVisibleList.erase(obj);
 }
+
+#ifdef ELUNA_TRINITY
+Eluna* Map::GetEluna()
+{
+    ElunaInfoKey key(GetId(), GetInstanceId());
+    return sElunaMgr->Get(key);
+}
+#endif

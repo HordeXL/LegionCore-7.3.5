@@ -5,7 +5,7 @@
 # modifications, as long as this notice is preserved.
 #
 # This program is distributed in the hope that it will be useful, but
-# WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
+# WITHOUT ANY WARRANTY, to the extent implied by the law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 CollectSourceFiles(
@@ -13,6 +13,17 @@ CollectSourceFiles(
   PRIVATE_SOURCES
   # Exclude
   ${CMAKE_CURRENT_SOURCE_DIR}/PrecompiledHeaders)
+
+set(ELUNA_DIR ${CMAKE_SOURCE_DIR}/src/server/eluna)
+
+if (ELUNA)
+  # Add Eluna source files to the game library
+  file(GLOB_RECURSE ELUNA_SOURCES
+    ${ELUNA_DIR}/*.cpp
+    ${ELUNA_DIR}/*.h
+    ${ELUNA_DIR}/*.hpp)
+  list(APPEND PRIVATE_SOURCES ${ELUNA_SOURCES})
+endif()
 
 if (USE_COREPCH)
   set(PRIVATE_PCH_HEADER PrecompiledHeaders/gamePCH.h)
@@ -36,12 +47,26 @@ target_include_directories(game
   PRIVATE
     ${CMAKE_CURRENT_BINARY_DIR})
 
+if (ELUNA)
+  target_include_directories(game PRIVATE ${ELUNA_DIR})
+  target_include_directories(game PRIVATE ${ELUNA_DIR}/hooks)
+  target_include_directories(game PRIVATE ${ELUNA_DIR}/methods/TrinityCore)
+  target_include_directories(game PRIVATE ${CMAKE_SOURCE_DIR}/dep/lua52/src)
+endif()
+
 target_link_libraries(game
   PRIVATE
     trinity-core-interface
   PUBLIC
     shared
     Detour)
+
+if (ELUNA)
+  target_compile_definitions(game PRIVATE ELUNA_TRINITY)
+  target_compile_definitions(game PRIVATE ELUNA_EXPANSION=EXP_RETAIL)
+  target_link_libraries(game PRIVATE lua52)
+  set_property(TARGET game PROPERTY CXX_STANDARD 17)
+endif()
 
 set_target_properties(game
     PROPERTIES
