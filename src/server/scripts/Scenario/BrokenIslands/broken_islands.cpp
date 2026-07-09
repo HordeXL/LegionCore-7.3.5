@@ -3485,6 +3485,31 @@ public:
     }
 };
 
+class npc_q40522_saurfang : public CreatureScript
+{
+public:
+    npc_q40522_saurfang() : CreatureScript("npc_q40522_saurfang") { }
+
+    bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
+    {
+        player->PlayerTalkClass->ClearMenus();
+        player->PlayerTalkClass->SendCloseGossip();
+
+        if (action == 1)
+        {
+            player->KilledMonsterCredit(100934);
+            player->KilledMonsterCredit(100541);
+            player->KilledMonsterCredit(100552);
+
+            player->CastSpell(player, 197944, true);
+            player->CastSpell(player, 200252, true);
+            player->CastSpell(player, 200282, true);
+            player->CastSpell(player, 198897, true);
+        }
+        return true;
+    }
+};
+
 class npc_q40522_sylvanas : public CreatureScript
 {
 public:
@@ -3541,5 +3566,6 @@ void AddSC_brokenIslands()
     new npc_q44281_1();
 
     new scene_jewelcraft_game();
+    new npc_q40522_saurfang();
     new npc_q40522_sylvanas();
 }
