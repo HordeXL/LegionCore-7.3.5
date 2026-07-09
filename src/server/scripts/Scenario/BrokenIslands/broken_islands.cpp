@@ -3418,6 +3418,26 @@ public:
     }
 };
 
+class npc_q40522_sylvanas : public CreatureScript
+{
+public:
+    npc_q40522_sylvanas() : CreatureScript("npc_q40522_sylvanas") { }
+
+    bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 /*action*/) override
+    {
+        player->PlayerTalkClass->ClearMenus();
+
+        player->KilledMonsterCredit(100541);
+        player->KilledMonsterCredit(100552);
+        player->KilledMonsterCredit(100934);
+        player->KilledMonsterCredit(100985);
+
+        player->CompleteQuest(40522);
+
+        return true;
+    }
+};
+
 void AddSC_brokenIslands()
 {
     new npc_q42782("npc_q42782");
@@ -3452,4 +3472,5 @@ void AddSC_brokenIslands()
     new npc_q44281_1();
 
     new scene_jewelcraft_game();
+    new npc_q40522_sylvanas();
 }
