@@ -2842,6 +2842,73 @@ public:
     }
 };
 
+class npc_100873_q40607 : public CreatureScript
+{
+public:
+    npc_100873_q40607() : CreatureScript("npc_100873_q40607") { }
+
+    bool OnGossipSelect(Player* player, Creature* creature, uint32 sender, uint32 action) override
+    {
+        // sender is always 0 when loading from DB gossip_menu_option
+        // action = OptionType (1 = GOSSIP_OPTION_GOSSIP)
+        if (action == 1)
+        {
+            player->PlayerTalkClass->ClearMenus();
+            player->PlayerTalkClass->SendCloseGossip();
+
+            // Give kill credit for "speak to Allari" objective
+            player->KilledMonsterCredit(112731);
+
+            // Cast reveal hidden demons spell and visual
+            player->CastSpell(player, 225648, true);
+            player->CastSpell(player, 182254, true);
+
+            // Send scene directly (bypass spell system)
+            Position pos;
+            player->GetPosition(&pos);
+            player->SendSpellScene(1447, nullptr, true, &pos);
+
+            return true;
+        }
+
+        return false;
+    }
+};
+
+class npc_113986_q44663 : public CreatureScript
+{
+public:
+    npc_113986_q44663() : CreatureScript("npc_113986_q44663") { }
+
+    bool OnGossipSelect(Player* player, Creature* creature, uint32 sender, uint32 action) override
+    {
+        // Menu 20457, action = OptionType (1 = GOSSIP_OPTION_GOSSIP)
+        if (action == 1)
+        {
+            player->PlayerTalkClass->ClearMenus();
+            player->PlayerTalkClass->SendCloseGossip();
+
+            // Give kill credits for quest 44663 objectives
+            player->KilledMonsterCredit(114506);
+            player->KilledMonsterCredit(113762);
+
+            // Cast teleport Dalaran scene spell (DBC-defined effect triggers scene)
+            player->CastSpell(player, 227861, true);
+
+            // Delay teleport to Dalaran (Broken Isles) to let scene play
+            player->AddDelayedEvent(5000, [player]() -> void
+            {
+                if (player)
+                    player->TeleportTo(1220, -864.9f, 4404.84f, 737.43f, 0.0f);
+            });
+
+            return true;
+        }
+
+        return false;
+    }
+};
+
 class npc_q44281_1 : public CreatureScript
 {
 public:
@@ -3469,6 +3536,8 @@ void AddSC_brokenIslands()
     new scenarion_bi_heroes_horde();
 
     new scene_bi_horde_q40607();
+    new npc_100873_q40607();
+    new npc_113986_q44663();
     new npc_q44281_1();
 
     new scene_jewelcraft_game();
