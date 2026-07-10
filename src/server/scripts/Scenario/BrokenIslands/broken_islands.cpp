@@ -2909,6 +2909,31 @@ public:
     }
 };
 
+class npc_100429_anduin_dh_questline : public CreatureScript
+{
+public:
+    npc_100429_anduin_dh_questline() : CreatureScript("npc_100429_anduin_dh_questline") { }
+
+    bool OnGossipSelect(Player* player, Creature* creature, uint32 sender, uint32 action) override
+    {
+        // sender is always 0 when loading from DB gossip_menu_option
+        // action = OptionType (1 = GOSSIP_OPTION_GOSSIP)
+        if (action == 1 && player->GetQuestStatus(40517) == QUEST_STATUS_INCOMPLETE)
+        {
+            player->PlayerTalkClass->ClearMenus();
+            player->PlayerTalkClass->SendCloseGossip();
+
+            // Directly complete and reward quest 40517
+            if (Quest const* quest = sQuestDataStore->GetQuestTemplate(40517))
+                player->RewardQuest(quest, 0, player);
+
+            return true;
+        }
+
+        return false;
+    }
+};
+
 class npc_q44281_1 : public CreatureScript
 {
 public:
@@ -3568,4 +3593,5 @@ void AddSC_brokenIslands()
     new scene_jewelcraft_game();
     new npc_q40522_saurfang();
     new npc_q40522_sylvanas();
+    new npc_100429_anduin_dh_questline();
 }
