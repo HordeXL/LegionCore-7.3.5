@@ -2934,6 +2934,37 @@ public:
     }
 };
 
+class npc_100675_allari_quest_40593 : public CreatureScript
+{
+public:
+    npc_100675_allari_quest_40593() : CreatureScript("npc_100675_allari_quest_40593") { }
+
+    bool OnGossipSelect(Player* player, Creature* creature, uint32 sender, uint32 action) override
+    {
+        // sender is always 0 when loading from DB gossip_menu_option
+        // action = OptionType (1 = GOSSIP_OPTION_GOSSIP)
+        if (action == 1 && player->GetQuestStatus(40593) == QUEST_STATUS_INCOMPLETE)
+        {
+            player->PlayerTalkClass->ClearMenus();
+            player->PlayerTalkClass->SendCloseGossip();
+
+            // Give kill credit for speaking to Allari
+            player->KilledMonsterCredit(111585);
+
+            // Cast Demon Attack scene (triggers the Alliance scene)
+            player->CastSpell(player, 225500, true);
+
+            // Cast reveal hidden demons spells (same as scene_bi_alliance_q40593 trigger)
+            player->CastSpell(player, 100616, true);
+            player->CastSpell(player, 199046, true);
+
+            return true;
+        }
+
+        return false;
+    }
+};
+
 class npc_q44281_1 : public CreatureScript
 {
 public:
@@ -3577,6 +3608,7 @@ void AddSC_brokenIslands()
 
     new npc_q40517_p1();
     new scene_bi_alliance_q40593();
+    new npc_100675_allari_quest_40593();
 
     new npc_q42782_1();
     new npc_109494();
