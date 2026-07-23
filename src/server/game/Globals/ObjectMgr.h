@@ -1148,6 +1148,8 @@ class ObjectMgr
         std::vector<std::vector<float>> _mapDifficultyStat;
 
         ItemTemplateContainer _itemTemplateStore;
+        std::vector<std::unique_ptr<ItemEntry>> _customItemEntries;
+        std::vector<std::unique_ptr<ItemSparseEntry>> _customItemSparseEntries;
         NpcTextLocaleContainer _npcTextLocaleStore;
         PageTextLocaleContainer _pageTextLocaleStore;
         TrinityStringLocaleContainer _trinityStringLocaleStore;

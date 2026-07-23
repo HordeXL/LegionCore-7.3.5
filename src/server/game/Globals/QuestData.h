@@ -242,6 +242,10 @@ public:
     QuestRelationBounds GetCreatureQuestRelationBounds(uint32 creature_entry);
     QuestRelationBounds GetCreatureQuestInvolvedRelationBoundsByQuest(uint32 questId);
     QuestRelationBounds GetCreatureQuestInvolvedRelationBounds(uint32 creature_entry);
+
+    // 获取任务的起始 NPC (creature_queststarter)
+    uint32 GetQuestStarterCreature(uint32 questId) const;
+
     QuestRelationBounds GetAreaQuestRelationBounds(uint32 area);
     QuestTemplateLocale const* GetQuestLocale(uint32 entry) const;
     QuestRequestItemsLocale const* GetQuestRequestItemsLocale(uint32 entry) const;

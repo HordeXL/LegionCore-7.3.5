@@ -2909,6 +2909,73 @@ void ObjectMgr::LoadItemTemplates()
         itemItr->second.Effects.push_back(effectEntry);
     }
 
+    // 从 item_template 表加载自定义物品（补充 DB2 中不存在的物品）
+    {
+        QueryResult customResult = WorldDatabase.Query("SELECT entry, class, name, displayid, quality, flags, "
+            "buycount, buyprice, sellprice, inventorytype, allowableclass, allowablerace, "
+            "itemlevel, requiredlevel, maxcount, stackable, material FROM item_template");
+        if (customResult)
+        {
+            do
+            {
+                Field* fields = customResult->Fetch();
+                uint32 itemId = fields[0].GetUInt32();
+
+                if (_itemTemplateStore.find(itemId) != _itemTemplateStore.end())
+                    continue;
+
+                QueryResult scriptResult = WorldDatabase.PQuery("SELECT 1 FROM item_script_names WHERE Id = %u", itemId);
+                if (!scriptResult)
+                    continue;
+
+                auto itemEntry = std::make_unique<ItemEntry>();
+                memset(itemEntry.get(), 0, sizeof(ItemEntry));
+                itemEntry->ID = itemId;
+                itemEntry->ClassID = fields[1].GetUInt8();
+                itemEntry->InventoryType = fields[9].GetUInt8();
+                itemEntry->Material = fields[16].GetInt8();
+
+                auto sparseEntry = std::make_unique<ItemSparseEntry>();
+                memset(sparseEntry.get(), 0, sizeof(ItemSparseEntry));
+                sparseEntry->ID = itemId;
+                sparseEntry->AllowableRace = fields[11].GetInt64();
+                sparseEntry->AllowableClass = fields[10].GetUInt16();
+                sparseEntry->OverallQualityID = fields[4].GetUInt8();
+                sparseEntry->InventoryType = fields[9].GetUInt8();
+                sparseEntry->RequiredLevel = fields[13].GetInt8();
+                sparseEntry->ItemLevel = fields[12].GetUInt16();
+                sparseEntry->MaxCount = fields[14].GetInt32();
+                sparseEntry->Stackable = fields[15].GetInt32();
+                sparseEntry->BuyPrice = fields[7].GetInt32();
+                sparseEntry->SellPrice = fields[8].GetInt32();
+                sparseEntry->Flags[0] = fields[5].GetUInt32();
+                sparseEntry->Material = fields[16].GetInt8();
+                sparseEntry->VendorStackCount = fields[6].GetInt32();
+                sparseEntry->ExpansionID = 0;
+
+                auto nameStr = std::make_unique<LocalizedString>();
+                memset(nameStr.get(), 0, sizeof(LocalizedString));
+                nameStr->Str[0] = _strdup(fields[2].GetCString());
+                sparseEntry->Display = nameStr.get();
+
+                ItemTemplate itemTemplate;
+                memset(&itemTemplate, 0, sizeof(ItemTemplate));
+                const_cast<ItemEntry*&>(itemTemplate.BasicData) = itemEntry.get();
+                const_cast<ItemSparseEntry*&>(itemTemplate.ExtendedData) = sparseEntry.get();
+                itemTemplate.ItemLevel = fields[12].GetUInt32();
+                itemTemplate.VendorStackCount = fields[6].GetUInt32();
+                itemTemplate.AllowableClass = fields[10].GetUInt32();
+                itemTemplate.AllowableRace = fields[11].GetInt64();
+
+                _itemTemplateStore[itemId] = itemTemplate;
+                _customItemEntries.push_back(std::move(itemEntry));
+                _customItemSparseEntries.push_back(std::move(sparseEntry));
+
+                ++sparseCount;
+            } while (customResult->NextRow());
+        }
+    }
+
     TC_LOG_INFO(LOG_FILTER_SERVER_LOADING, ">> Loaded %u item templates from ItemSparse.db2 in %u ms", sparseCount, GetMSTimeDiffToNow(oldMSTime));
 }
 

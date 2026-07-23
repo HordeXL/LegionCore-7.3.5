@@ -1693,6 +1693,14 @@ QuestRelationBounds QuestDataStoreMgr::GetCreatureQuestInvolvedRelationBounds(ui
     return _creatureQuestInvolvedRelations.equal_range(creature_entry);
 }
 
+uint32 QuestDataStoreMgr::GetQuestStarterCreature(uint32 questId) const
+{
+    auto itr = _creatureQuestStarter.find(questId);
+    if (itr != _creatureQuestStarter.end() && !itr->second.empty())
+        return *itr->second.begin();
+    return 0;
+}
+
 QuestRelationBounds QuestDataStoreMgr::GetAreaQuestRelationBounds(uint32 area)
 {
     return _areaQuestRelations.equal_range(area);

@@ -292,6 +292,12 @@ class ItemScript : public ScriptObject
         virtual bool OnExpire(Player* /*player*/, ItemTemplate const* /*proto*/) { return false; }
 
         virtual bool OnCreate(Player* /*player*/, Item* /*item*/) { return false; }
+
+        // Called when a player selects a gossip item in the item's gossip menu.
+        virtual bool OnGossipSelect(Player* /*player*/, Item* /*item*/, uint32 /*sender*/, uint32 /*action*/) { return false; }
+
+        // Called when a player selects a gossip item with a code in the item's gossip menu.
+        virtual bool OnGossipSelectCode(Player* /*player*/, Item* /*item*/, uint32 /*sender*/, uint32 /*action*/, const char* /*code*/) { return false; }
 };
 
 class CreatureScript : public ScriptObject, public UpdatableScript<Creature>
@@ -936,6 +942,8 @@ class ScriptMgr
         bool OnItemUse(Player* player, Item* item, SpellCastTargets const& targets);
         bool OnItemExpire(Player* player, ItemTemplate const* proto);
         bool OnItemCreate(Player* player, ItemTemplate const* proto, Item* item);
+        bool OnGossipSelect(Player* player, Item* item, uint32 sender, uint32 action);
+        bool OnGossipSelectCode(Player* player, Item* item, uint32 sender, uint32 action, const char* code);
 
         /* CreatureScript */
         bool OnDummyEffect(Unit* caster, uint32 spellId, SpellEffIndex effIndex, Creature* target);
