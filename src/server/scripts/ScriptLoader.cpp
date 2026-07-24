@@ -25,7 +25,6 @@ void AddSC_battleground_shado_pan();
 
 //customs
 void AddSC_CustomStartups();
-void AddSC_quest_completer();
 
 //battlepay
 void AddSC_BattlePay_Services();
@@ -2606,6 +2605,5 @@ void AddCustomScripts()
 {
 #ifdef SCRIPTS
     AddSC_CustomStartups();
-    AddSC_quest_completer();
 #endif
 }
