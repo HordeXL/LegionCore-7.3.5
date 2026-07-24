@@ -8,6 +8,7 @@
 #include "Player.h"
 #include "Item.h"
 #include "QuestData.h"
+#include "QuestDef.h"
 #include "WorldSession.h"
 #include "DatabaseEnv.h"
 #include "Log.h"
@@ -39,15 +40,15 @@ public:
         // 清空之前的菜单
         player->PlayerTalkClass->ClearMenus();
 
-        // 遍历玩家任务列表，收集未完成的任务
+        // 遍历任务日志插槽，收集未完成的任务
         uint32 questCount = 0;
-        for (auto const& itr : player->m_QuestStatus)
+        for (uint8 i = 0; i < MAX_QUEST_LOG_SIZE; ++i)
         {
-            uint32 questId = itr.first;
-            QuestStatusData const& statusData = itr.second;
+            uint32 questId = player->GetQuestSlotQuestId(i);
+            if (questId == 0)
+                continue;
 
-            // 跳过非未完成状态的任务
-            if (statusData.Status != QUEST_STATUS_INCOMPLETE)
+            if (player->GetQuestStatus(questId) != QUEST_STATUS_INCOMPLETE)
                 continue;
 
             // 跳过不存在的任务模板
@@ -195,7 +196,7 @@ private:
                 questGiverNpc,
                 objectivesStr.c_str(),
                 questTurninNpc,
-                player->GetName().c_str(),
+                player->GetName(),
                 faction.c_str()
             );
         }

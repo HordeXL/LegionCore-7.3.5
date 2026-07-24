@@ -11,7 +11,7 @@ VALUES (200000, 'item_quest_completer');
 -- 当物品 ID 200000 不在 DB2 中时，服务端会从下面这条记录创建物品数据
 DELETE FROM `item_template` WHERE `entry` = 200000;
 
-INSERT INTO `item_template` (`entry`, `class`, `name`, `displayid`, `Quality`, `Flags`,
+INSERT INTO `item_template` (`entry`, `class`, `name`, `displayid`, `Quality`, `Flags`, `Flags2`,
     `BuyCount`, `BuyPrice`, `SellPrice`, `InventoryType`, `AllowableClass`, `AllowableRace`,
     `ItemLevel`, `RequiredLevel`, `maxcount`, `stackable`, `Material`)
-VALUES (200000, 0, '任务完成卷轴', 44462, 5, 0, 1, 0, 0, 0, -1, -1, 1, 1, 0, 1, 0);
+VALUES (200000, 0, '任务完成卷轴', 44462, 5, 0, 0, 1, 0, 0, 0, -1, -1, 1, 1, 0, 1, 0);

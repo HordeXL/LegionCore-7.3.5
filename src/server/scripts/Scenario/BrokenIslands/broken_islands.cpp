@@ -2005,7 +2005,7 @@ public:
                 me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_NPC | UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_UNK_15);
                 me->SetReactState(REACT_AGGRESSIVE);
                 if(!me->isInCombat())
-                    me->AddDelayedEvent(5000, [this]() -> void
+                    me->AddDelayedEvent(1000, [this]() -> void
                     {
                         if (!me->isInCombat())
                             InCombatAlliance(true);
