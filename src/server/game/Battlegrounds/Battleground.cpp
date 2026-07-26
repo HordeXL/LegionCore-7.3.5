@@ -23,6 +23,7 @@
 #include "BattlegroundDM.h"
 #include "Bracket.h"
 #include "BracketMgr.h"
+#include "PlayerBotMgr.h"
 #include "ChatPackets.h"
 #include "ChatTextBuilder.h"
 #include "Creature.h"
@@ -1196,6 +1197,11 @@ void Battleground::BlockMovement(Player* player)
 
 void Battleground::RemovePlayerAtLeave(ObjectGuid guid, bool Transport, bool SendPacket)
 {
+#ifdef PLAYERBOT
+    if (Player* player = ObjectAccessor::FindPlayer(guid))
+        sPlayerBotMgr->OnRealPlayerLeaveBattleground(player);
+#endif
+
     uint32 team = GetPlayerTeam(guid);
     bool participant = false;
 
@@ -1389,6 +1395,10 @@ void Battleground::StartBattleground()
 
 void Battleground::AddPlayer(Player* player)
 {
+#ifdef PLAYERBOT
+    sPlayerBotMgr->OnRealPlayerEnterBattleground(GetTypeID(), player->getLevel());
+#endif
+
     if (player->HasFlag(PLAYER_FIELD_PLAYER_FLAGS, PLAYER_FLAGS_AFK))
         player->ToggleAFK();
 

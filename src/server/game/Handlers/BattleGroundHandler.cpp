@@ -26,6 +26,7 @@
 #include "OutdoorPvPMgr.h"
 #include "WowTime.hpp"
 #include "GameEventMgr.h"
+#include "PlayerBotMgr.h"
 #include "LFGMgr.h"
 
 void WorldSession::HandleBattlemasterHello(WorldPackets::NPC::Hello& packet)
@@ -136,6 +137,10 @@ void WorldSession::HandleBattlemasterJoin(WorldPackets::Battleground::Join& pack
         bool isRating = queueID == MS::Battlegrounds::BattlegroundTypeId::BattlegroundDeathMatch;
         BattlegroundQueue& bgQueue = sBattlegroundMgr->GetBattlegroundQueue(bgQueueTypeId);
         GroupQueueInfo* ginfo = bgQueue.AddGroup(player, nullptr, queueID, bracketEntry, 0, isRating, false, packet.BlacklistMap);
+
+#ifdef PLAYERBOT
+        sPlayerBotMgr->OnRealPlayerJoinBattlegroundQueue(queueID, player->getLevel());
+#endif
 
         player->SetQueueRoleMask(bracketEntry->RangeIndex, packet.RolesMask);
 
@@ -369,6 +374,10 @@ void WorldSession::HandleBattleFieldPort(WorldPackets::Battleground::Port& packe
         player->SendDirectMessage(battlefieldStatus.Write());
 
         bgQueue.RemovePlayer(player->GetGUID(), false);
+
+#ifdef PLAYERBOT
+        sPlayerBotMgr->OnRealPlayerLeaveBattlegroundQueue(bgTypeId, player->getLevel());
+#endif
 
         if (Battleground* currentBg = player->GetBattleground())
             currentBg->RemovePlayerAtLeave(player->GetGUID(), false, true);

@@ -100,4 +100,9 @@ void WorldDatabaseConnection::DoPrepareStatements()
     PrepareStatement(WORLD_SEL_CHARACTER_TEMPLATE_CLASSES, "SELECT FactionGroup, Class, X, Y, Z, O, MapID, Money, RaceMask FROM character_template_class WHERE TemplateID = ?", CONNECTION_SYNCH);
 
     PrepareStatement(WORLD_UPD_QUEST_OBJECTIVE_BUGGED_STATE, "UPDATE quest_objectives SET Bugged = ? WHERE ID = ?", CONNECTION_ASYNC);
+
+    PrepareStatement(WORLD_SEL_ALL_AIWAYPOINTS, "SELECT entry, map, x, y, z, link, description FROM aiwaypoints", CONNECTION_SYNCH);
+    PrepareStatement(WORLD_INS_AIWAYPOINTS, "INSERT INTO aiwaypoints (entry, map, x, y, z, link) VALUES (?, ?, ?, ?, ?, ?)", CONNECTION_ASYNC);
+    PrepareStatement(WORLD_UPD_AIWAYPOINTS, "UPDATE aiwaypoints SET map = ?, x = ?, y = ?, z = ?, link = ?, description = ? WHERE entry = ?", CONNECTION_ASYNC);
+    PrepareStatement(WORLD_DEL_AIWAYPOINTS, "DELETE FROM aiwaypoints WHERE entry = ?", CONNECTION_ASYNC);
 }

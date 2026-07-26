@@ -36,6 +36,7 @@
 #include "InstanceScript.h"
 #include "AuthenticationPackets.h"
 #include "ClientConfigPackets.h"
+#include "PlayerBotMgr.h"
 #include "SystemPackets.h"
 #include "WorldStateMgr.h"
 #include "AreaTriggerData.h"
@@ -454,6 +455,9 @@ void WorldSession::HandleCharCreateOpcode(WorldPackets::Character::CreateChar& c
 
             TC_LOG_INFO(LOG_FILTER_CHARACTER, "Account: %d (IP: %s) Create Character:[%s] (GUID: %u)", GetAccountId(), GetRemoteAddress().c_str(), createInfo->Name.c_str(), newChar.GetGUIDLow());
             sScriptMgr->OnPlayerCreate(&newChar);
+#ifdef PLAYERBOT
+            sPlayerBotMgr->OnPlayerBotCreate(newChar.GetGUID(), GetAccountId(), newChar.GetName(), newChar.getGender(), newChar.getRace(), newChar.getClass(), newChar.getLevel());
+#endif
             sWorld->AddCharacterInfo(newChar.GetGUIDLow(), std::string(newChar.GetName()), newChar.getGender(), newChar.getRace(), newChar.getClass(), newChar.getLevel(), GetAccountId());
             sWorld->UpdateCharacterAccount(newChar.GetGUIDLow(), GetAccountId());
 
@@ -961,6 +965,10 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder* holder)
             player->SetStandState(UNIT_STAND_STATE_STAND);
 
         sScriptMgr->OnPlayerLogin(player, firstLogin);
+
+#ifdef PLAYERBOT
+        sPlayerBotMgr->OnPlayerBotLogin(player->GetSession(), player);
+#endif
 
 #ifdef ELUNA_TRINITY
         if (Eluna* e = sElunaMgr->Get(ElunaInfoKey(player->GetMapId(), player->GetInstanceId())))

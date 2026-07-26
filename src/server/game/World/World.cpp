@@ -39,6 +39,7 @@
 #include "BlackMarketMgr.h"
 #include "BracketMgr.h"
 #include "CalendarMgr.h"
+#include "PlayerBotMgr.h"
 #include "CellImpl.h"
 #include "ChallengeMgr.h"
 #include "Channel.h"
@@ -1585,6 +1586,12 @@ void World::SetInitialWorldSettings()
     ///- Initialize config settings
     LoadConfigSettings();
 
+#ifdef PLAYERBOT
+    sPlayerBotMgr->SetMax(sConfigMgr->GetIntDefault("PlayerBot.MaxOnlineCount", 10));
+    sPlayerBotMgr->LoadPlayerBotBaseInfo();
+    sPlayerBotMgr->AllPlayerBotRandomLogin();
+#endif
+
 #ifdef ELUNA_TRINITY
     ///- Initialize Eluna Lua Engine
     sElunaConfig->Initialize();
@@ -2504,6 +2511,12 @@ void World::Update(uint32 diff)
 
     /// <li> Handle session updates when the timer has passed
     UpdateSessions(diff);
+
+#ifdef PLAYERBOT
+    #ifdef PLAYERBOT_AI
+    sPlayerBotMgr->Update();
+#endif
+#endif
 
     /// <li> Update uptime table
     if (m_timers[WUPDATE_UPTIME].Passed())

@@ -1,12 +1,16 @@
 
 #include "PlayerBotSession.h"
 #include "PlayerBotSetting.h"
-#include "Player.h"
-#include "BattlegroundMgr.h"
-#include "BotAI.h"
-#include "PlayerBotMgr.h"
+#ifdef PLAYERBOT_AI
 #include "BotGroupAI.h"
 #include "BotFieldAI.h"
+#include "BotAI.h"
+#else
+#include "BotAIStubs.h"
+#endif
+#include "Player.h"
+#include "BattlegroundMgr.h"
+#include "PlayerBotMgr.h"
 #include "LFGMgr.h"
 #include "CharacterPackets.h"
 #include "DB2Structure.h"
@@ -769,3 +773,4 @@ bool PlayerBotSession::ProcessOfferPetitionSign(BotGlobleSchedule& schedule)
 	//HandlePetitionSignOpcode(cmd);
 	return true;
 }
+ 

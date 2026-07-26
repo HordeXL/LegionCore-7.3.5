@@ -29,6 +29,8 @@
 #include "SHA256.h"
 #include "World.h"
 #include "Warden.h"
+#include "PlayerBotMgr.h"
+#include "PlayerBotSession.h"
 #include "Duration.h"
 
 #include <zlib.h>
@@ -917,9 +919,21 @@ void WorldSocket::HandleAuthSessionCallback(std::shared_ptr<WorldPackets::Auth::
 
     _authed = true;
 
-    _worldSession = std::make_shared<WorldSession>(account.Game.Id, std::move(authSession->RealmJoinTicket), shared_from_this(), account.Game.Security,
-        account.Game.Expansion, mutetime, account.Game.OS, account.BattleNet.Locale, account.Game.Recruiter, account.Game.IsRectuiter, AuthFlags(account.Game.AtAuthFlag),
-        std::move(accountTokenMap), account.Game.Referer);
+    #ifdef PLAYERBOT
+    if (sPlayerBotMgr->IsBotAccuntName(authSession->RealmJoinTicket))
+    {
+        _worldSession = std::make_shared<PlayerBotSession>(account.Game.Id, authSession->RealmJoinTicket, account.Game.Security,
+            account.Game.Expansion, mutetime, account.BattleNet.Locale, account.Game.Recruiter, account.Game.IsRectuiter);
+    }
+    else
+    {
+#endif
+        _worldSession = std::make_shared<WorldSession>(account.Game.Id, std::move(authSession->RealmJoinTicket), shared_from_this(), account.Game.Security,
+            account.Game.Expansion, mutetime, account.Game.OS, account.BattleNet.Locale, account.Game.Recruiter, account.Game.IsRectuiter, AuthFlags(account.Game.AtAuthFlag),
+            std::move(accountTokenMap), account.Game.Referer);
+#ifdef PLAYERBOT
+    }
+#endif
 
     _worldSession->_realmID = authSession->RealmID;
     _worldSession->_hwid = account.Game.Hwid;

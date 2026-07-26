@@ -36,6 +36,43 @@ if (USE_COREPCH)
   set(PRIVATE_PCH_HEADER PrecompiledHeaders/gamePCH.h)
 endif ()
 
+if (PLAYERBOT)
+  # PlayerBot 核心模块
+  file(GLOB PLAYERBOT_CORE_SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/PlayerBot/*.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/PlayerBot/*.h)
+  list(APPEND PRIVATE_SOURCES ${PLAYERBOT_CORE_SOURCES})
+
+  # Server 扩展（PlayerBotSession + OnlineMgr）
+  list(APPEND PRIVATE_SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/Server/PlayerBotSession.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Server/PlayerBotSession.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Server/OnlineMgr.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Server/OnlineMgr.h)
+
+  message(STATUS "PlayerBot core module: ENABLED (sources added)")
+
+  if (PLAYERBOT_AI)
+    # AI 系统根目录
+    file(GLOB PLAYERBOT_AI_ROOT_SOURCES
+      ${CMAKE_CURRENT_SOURCE_DIR}/AI/PlayerAI/*.cpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/AI/PlayerAI/*.h)
+    list(APPEND PRIVATE_SOURCES ${PLAYERBOT_AI_ROOT_SOURCES})
+
+    # AI 子目录
+    foreach(AI_SUBDIR BotFieldAI BotGroupAI BotDuelAI BotArenaAI BotClassAI)
+      file(GLOB PLAYERBOT_AI_SUB_SOURCES
+        ${CMAKE_CURRENT_SOURCE_DIR}/AI/PlayerAI/${AI_SUBDIR}/*.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/AI/PlayerAI/${AI_SUBDIR}/*.h)
+      list(APPEND PRIVATE_SOURCES ${PLAYERBOT_AI_SUB_SOURCES})
+    endforeach()
+
+    message(STATUS "PlayerBot AI system: ENABLED (sources added)")
+  else()
+    message(STATUS "PlayerBot AI system: DISABLED")
+  endif()
+endif()
+
 GroupSources(${CMAKE_CURRENT_SOURCE_DIR})
 
 add_library(game
@@ -61,6 +98,13 @@ if (ELUNA)
   target_include_directories(game PRIVATE ${CMAKE_SOURCE_DIR}/dep/lua52/src)
 endif()
 
+if (PLAYERBOT)
+  target_compile_definitions(game PRIVATE PLAYERBOT)
+  if (PLAYERBOT_AI)
+    target_compile_definitions(game PRIVATE PLAYERBOT_AI)
+  endif()
+endif()
+
 target_link_libraries(game
   PRIVATE
     trinity-core-interface
@@ -73,47 +117,6 @@ if (ELUNA)
   target_compile_definitions(game PRIVATE ELUNA_EXPANSION=EXP_RETAIL)
   target_link_libraries(game PRIVATE lua52)
   set_property(TARGET game PROPERTY CXX_STANDARD 17)
-endif()
-
-if (PLAYERBOT)
-  target_compile_definitions(game PRIVATE PLAYERBOT)
-
-  # PlayerBot 核心模块
-  file(GLOB PLAYERBOT_CORE_SOURCES
-    ${CMAKE_CURRENT_SOURCE_DIR}/PlayerBot/*.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/PlayerBot/*.h)
-  list(APPEND PRIVATE_SOURCES ${PLAYERBOT_CORE_SOURCES})
-
-  # Server 扩展（PlayerBotSession + OnlineMgr）
-  list(APPEND PRIVATE_SOURCES
-    ${CMAKE_CURRENT_SOURCE_DIR}/Server/PlayerBotSession.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/Server/PlayerBotSession.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/Server/OnlineMgr.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/Server/OnlineMgr.h)
-
-  message(STATUS "PlayerBot core module: ENABLED")
-
-  if (PLAYERBOT_AI)
-    target_compile_definitions(game PRIVATE PLAYERBOT_AI)
-
-    # AI 系统根目录
-    file(GLOB PLAYERBOT_AI_ROOT_SOURCES
-      ${CMAKE_CURRENT_SOURCE_DIR}/AI/PlayerAI/*.cpp
-      ${CMAKE_CURRENT_SOURCE_DIR}/AI/PlayerAI/*.h)
-    list(APPEND PRIVATE_SOURCES ${PLAYERBOT_AI_ROOT_SOURCES})
-
-    # AI 子目录
-    foreach(AI_SUBDIR BotFieldAI BotGroupAI BotDuelAI BotArenaAI BotClassAI)
-      file(GLOB PLAYERBOT_AI_SUB_SOURCES
-        ${CMAKE_CURRENT_SOURCE_DIR}/AI/PlayerAI/${AI_SUBDIR}/*.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/AI/PlayerAI/${AI_SUBDIR}/*.h)
-      list(APPEND PRIVATE_SOURCES ${PLAYERBOT_AI_SUB_SOURCES})
-    endforeach()
-
-    message(STATUS "PlayerBot AI system: ENABLED")
-  else()
-    message(STATUS "PlayerBot AI system: DISABLED")
-  endif()
 endif()
 
 set_target_properties(game

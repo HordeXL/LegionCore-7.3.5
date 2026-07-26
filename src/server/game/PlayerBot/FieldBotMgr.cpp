@@ -1,3 +1,4 @@
+#ifdef PLAYERBOT_AI
 
 #include "FieldBotMgr.h"
 #include "PlayerBotTalkMgr.h"
@@ -38,16 +39,16 @@ void WorldPoster::SendOnceGlobalPoster()
 void WorldPoster::InitializePoster()
 {
 	m_AllPosterContent.clear();
-	PushPoster("ÄúÏÖÔÚÊ¹ÓÃµÄÊÇÌÔ±¦µêÆÌ¡¾ÐÀÓ±¿Æ¼¼Ä§ÊÞÖ±Óªµê¡¿µÄÌåÑé²úÆ·");
-	PushPoster("ÌÔ±¦ ÐÀÓ±¿Æ¼¼88ÌåÑé²úÆ·Ö»¿ª·Å°¢À­Ï£Õ½³¡");
-	PushPoster("ÌÔ±¦ ÐÀÓ±¿Æ¼¼88ÌåÑé²úÆ·Ö»¿ª·ÅÕ½Ê¿¡¢ÊõÊ¿¡¢ÄÁÊ¦Èý¸öÖ°Òµ");
-	PushPoster("ÌÔ±¦ ÐÀÓ±¿Æ¼¼88ÌåÑé²úÆ·²»¿ª·ÅÒ°ÍâÍÅÕ½ÏµÍ³");
-	PushPoster("ÌÔ±¦ ÐÀÓ±¿Æ¼¼88ÌåÑé²úÆ·²»¿ª·ÅËæ»úµØÏÂ³ÇÏµÍ³");
-	PushPoster("ÌÔ±¦ ÐÀÓ±¿Æ¼¼88ÌåÑé²úÆ·²»¿ª·Å¾º¼¼³¡");
-	PushPoster("ÌÔ±¦ ÐÀÓ±¿Æ¼¼88ÌåÑé²úÆ·ÎÞ·¨ÇÐ»»ÍÅ¶Ó£¬ÎÞ·¨½øÈëÍÅ¶Ó¸±±¾");
-	PushPoster("Èç¹ûÄúÏ²»¶ÎÒÃÇµÄ²úÆ·£¬Çë¹ºÂòÍêÕû°æ");
-	PushPoster("¹ºÂò·½Ê½£ºÇëÌÔ±¦ÁªÏµÍúÍú¡¾ÐÀÓ±¿Æ¼¼88¡¿»òÕßQQÁªÏµ277922486");
-	PushPoster("ÆäËüÈÎºÎÁªÏµ·½Ê½¶¼ÊÇÆÛÆ­Íæ¼Ò");
+	PushPoster("æ‚¨çŽ°åœ¨ä½¿ç”¨çš„æ˜¯æ·˜å®åº—é“ºã€æ¬£é¢–ç§‘æŠ€é­”å…½ç›´è¥åº—ã€‘çš„ä½“éªŒäº§å“");
+	PushPoster("æ·˜å® æ¬£é¢–ç§‘æŠ€88ä½“éªŒäº§å“åªå¼€æ”¾é˜¿æ‹‰å¸Œæˆ˜åœº");
+	PushPoster("æ·˜å® æ¬£é¢–ç§‘æŠ€88ä½“éªŒäº§å“åªå¼€æ”¾æˆ˜å£«ã€æœ¯å£«ã€ç‰§å¸ˆä¸‰ä¸ªèŒä¸š");
+	PushPoster("æ·˜å® æ¬£é¢–ç§‘æŠ€88ä½“éªŒäº§å“ä¸å¼€æ”¾é‡Žå¤–å›¢æˆ˜ç³»ç»Ÿ");
+	PushPoster("æ·˜å® æ¬£é¢–ç§‘æŠ€88ä½“éªŒäº§å“ä¸å¼€æ”¾éšæœºåœ°ä¸‹åŸŽç³»ç»Ÿ");
+	PushPoster("æ·˜å® æ¬£é¢–ç§‘æŠ€88ä½“éªŒäº§å“ä¸å¼€æ”¾ç«žæŠ€åœº");
+	PushPoster("æ·˜å® æ¬£é¢–ç§‘æŠ€88ä½“éªŒäº§å“æ— æ³•åˆ‡æ¢å›¢é˜Ÿï¼Œæ— æ³•è¿›å…¥å›¢é˜Ÿå‰¯æœ¬");
+	PushPoster("å¦‚æžœæ‚¨å–œæ¬¢æˆ‘ä»¬çš„äº§å“ï¼Œè¯·è´­ä¹°å®Œæ•´ç‰ˆ");
+	PushPoster("è´­ä¹°æ–¹å¼ï¼šè¯·æ·˜å®è”ç³»æ—ºæ—ºã€æ¬£é¢–ç§‘æŠ€88ã€‘æˆ–è€…QQè”ç³»277922486");
+	PushPoster("å…¶å®ƒä»»ä½•è”ç³»æ–¹å¼éƒ½æ˜¯æ¬ºéª—çŽ©å®¶");
 }
 
 void WorldPoster::PushPoster(std::string content)
@@ -308,7 +309,7 @@ void FieldWarfare::ProcessWarrfare(Player* targetPlayer)
 	const SessionMap& allSession = sWorld->GetAllSessions();
 	for (SessionMap::const_iterator itSession = allSession.begin(); itSession != allSession.end(); itSession++)
 	{
-		if (itSession->second->PlayerLoading() || !itSession->second->IsBotSession() || itSession->second/*IsAccountBotSession*/ false)
+		if (itSession->second->PlayerLoading() || !itSession->second->IsBotSession() || false /*IsAccountBotSession*/)
 			continue;
 		Player* player = itSession->second->GetPlayer();
 		if (!player)
@@ -404,11 +405,11 @@ void FieldWarfare::ProcessEpilog(Player* targetPlayer)
 			{
 				if (nearPlayer->GetTeamId() == weaknessTeam)
 				{
-					pFieldAI->SetDrivingPVP(false);
+					/*pFieldAI->SetDrivingPVP(false);*/
 					if (!pFieldAI->HasCruxMovement())
 						pFieldAI->SetCruxMovement(GetEvadePosition(targetPlayer, nearPlayer));
 				}
-				pFieldAI->SetWarfareTarget(NULL);
+				/*pFieldAI->SetWarfareTarget(NULL);*/
 			}
 		}
 	}
@@ -444,8 +445,8 @@ void FieldWarfare::OverFieldActing()
 		//Position homePosition = Position(player->m_homebindX, player->m_homebindY, player->m_homebindZ, player->GetOrientation());
 		if (BotFieldAI* pFieldAI = dynamic_cast<BotFieldAI*>(player->GetAI()))
 		{
-			pFieldAI->SetDrivingPVP(false);
-			pFieldAI->SetWarfareTarget(NULL);
+			/*pFieldAI->SetDrivingPVP(false);*/
+			/*pFieldAI->SetWarfareTarget(NULL);*/
 			//pFieldAI->SetTeleport(player->m_homebindMapId, homePosition);
 			sPlayerBotMgr->PlayerBotLogout(itSession->second->GetAccountId());
 		}
@@ -460,7 +461,7 @@ void FieldWarfare::AddPlayerBotToFieldWarfare(Player* target, TeamId upTeam)
 		if (!itSession->second->IsBotSession())
 			continue;
 		WorldSession* pSession = (WorldSession*)itSession->second.get();
-		if (!pSession || pSession->PlayerLoading() || pSession/*HasSchedules*/ false || pSession/*IsAccountBotSession*/ false)
+		if (!pSession || pSession->PlayerLoading() || false /*HasSchedules*/ || false /*IsAccountBotSession*/)
 			continue;
 		Player* player = pSession->GetPlayer();
 		if (!player)
@@ -470,7 +471,7 @@ void FieldWarfare::AddPlayerBotToFieldWarfare(Player* target, TeamId upTeam)
 		}
 		else
 		{
-			if (!player->IsInWorld() || !player/*IsSettingFinish*/ true || player->GetTeamId() != upTeam)
+			if (!player->IsInWorld() || !true /*IsSettingFinish*/ || player->GetTeamId() != upTeam)
 				continue;
 			if (player->InBattleground() || player->InBattlegroundQueue() || player->InArena() || player->GetGroup() || player->isUsingLfg())
 				continue;
@@ -494,7 +495,7 @@ void FieldWarfare::TeleportToTargetVisible(Player* pBot, Player* pTarget)
 	if (pBot->getLevel() < minLevel || pBot->getLevel() > maxLevel)
 	{
 		PlayerBotSession* pSession = dynamic_cast<PlayerBotSession*>(pBot->GetSession());
-		if (!pSession || pSession/*HasSchedules*/ false || pSession/*IsAccountBotSession*/ false)
+		if (!pSession || false /*HasSchedules*/ || false /*IsAccountBotSession*/)
 			return;
 		BotGlobleSchedule schedule2(BotGlobleScheduleType::BGSType_Settting, 0);
 		schedule2.parameter1 = minLevel;
@@ -649,7 +650,7 @@ bool FieldBotMgr::MatchTeleportCondition(Player* p1, Player* p2)
 	if (p1->getLevel() < 20 && p1->GetTeamId() != p2->GetTeamId())
 		return false;
 	WorldSession* pSession = p2->GetSession();
-	if (!pSession || pSession/*HasSchedules*/ false || p2->GetGroup() || p2->isUsingLfg())
+	if (!pSession || false /*HasSchedules*/ || p2->GetGroup() || p2->isUsingLfg())
 		return false;
 	if (p1->GetMap() != p2->GetMap())
 		return true;
@@ -699,7 +700,7 @@ PLAYER_LIST FieldBotMgr::GetAllRealPlayer()
 		if (!pSession || pSession->PlayerLoading())
 			continue;
 		Player* player = pSession->GetPlayer();
-		if (!player || !player->IsInWorld() || !player/*IsSettingFinish*/ true)
+		if (!player || !player->IsInWorld() || !true /*IsSettingFinish*/)
 			continue;
 		realPlayers.push_back(player);
 	}
@@ -715,10 +716,10 @@ FIELDAI_LIST FieldBotMgr::GetAllFieldBotPlayer(TeamId team)
 		if (!itSession->second->IsBotSession())
 			continue;
 		PlayerBotSession* pSession = dynamic_cast<PlayerBotSession*>((WorldSession*)itSession->second.get());
-		if (!pSession || pSession->PlayerLoading() || pSession/*HasSchedules*/ false || pSession/*IsAccountBotSession*/ false)
+		if (!pSession || pSession->PlayerLoading() || false /*HasSchedules*/ || false /*IsAccountBotSession*/)
 			continue;
 		Player* player = pSession->GetPlayer();
-		if (!player || !player->IsInWorld() || !player/*IsSettingFinish*/ true)
+		if (!player || !player->IsInWorld() || !true /*IsSettingFinish*/)
 			continue;
 		if (team != TEAM_NEUTRAL)
 		{
@@ -743,7 +744,7 @@ void FieldBotMgr::TeleportToTargetVisible(BotFieldAI* pFieldAI, Player* pTarget)
 	if (levelGap > 2)
 	{
 		PlayerBotSession* pSession = dynamic_cast<PlayerBotSession*>(pFieldAI->GetAIPayer()->GetSession());
-		if (!pSession || pSession/*HasSchedules*/ false || pSession/*IsAccountBotSession*/ false)
+		if (!pSession || false /*HasSchedules*/ || false /*IsAccountBotSession*/)
 			return;
 		BotGlobleSchedule schedule2(BotGlobleScheduleType::BGSType_Settting, 0);
 		schedule2.parameter1 = pTarget->getLevel();
@@ -1082,3 +1083,5 @@ FieldWarfare* FieldBotMgr::GetWarfareActing()
 		return reinterpret_cast<FieldWarfare*>(m_FieldActing);
 	return NULL;
 }
+
+#endif /* PLAYERBOT_AI */

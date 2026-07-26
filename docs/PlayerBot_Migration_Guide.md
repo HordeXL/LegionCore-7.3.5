@@ -4,7 +4,7 @@
 
 > **源仓库**: https://github.com/normalzero/LegionPlayerBot  
 > **目标仓库**: 当前工作空间 `LegionCore-7.3.5`  
-> **文档版本**: 3.0
+> **文档版本**: 5.0
 
 ---
 
@@ -821,11 +821,10 @@ find /tmp/legionplayerbot/src/server/game/AI/PlayerAI -name "*.cpp" -o -name "*.
 ---
 
 > **文档维护者**: Reasonix AI  
-> **最后更新**: 2026-07-24
+> **最后更新**: 2026-07-26
 > **已完成**:
 > - 第一阶段：PlayerBot 核心模块 10 文件 + Server 扩展 4 文件 + CMake 配置 ✅
-> - 第二阶段：AI/PlayerAI 全部 38 个文件下载 ✅
-> - API 兼容性修复：7 类适配，21 个文件修改 ✅
-> - 核心类扩展（方案 B）：Player/WorldSession/Group/Pet/Battleground 等 6 个头文件 ✅
-> - 编译错误从 630 降至 340（持续修复中）
-> **下一步建议**: 继续修复 BotMovementAI/BotBGAIMovement 中的 Pathfinding 依赖错误，完成后进入第三阶段（功能集成）
+> - 第二阶段：AI/PlayerAI 全部 38 个文件 + API 兼容性修复 + 核心类扩展 ✅
+> - 编译验证：PLAYERBOT=1 + PLAYERBOT_AI=1，game.lib 150M 编译通过，0 错误 ✅
+> - 第三阶段：全部 6 个核心钩子集成完成（WorldSession/Player/World/BG/竞技场/配置）✅
+> **下一步建议**: 进入第四阶段（数据库和配置）——应用 SQL、配置 worldserver.conf、启动测试

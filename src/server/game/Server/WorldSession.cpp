@@ -20,6 +20,8 @@
     \ingroup u2w
 */
 
+#include "PlayerBotMgr.h"
+
 #include <zlib.h>
 #include <utility>
 
@@ -708,6 +710,10 @@ void WorldSession::LogoutPlayer(bool Save)
 
         //! Call script hook before deletion
         sScriptMgr->OnPlayerLogout(_player);
+
+#ifdef PLAYERBOT
+        sPlayerBotMgr->OnPlayerBotLogout(this);
+#endif
 
         //! Remove the player from the world
         // the player may not be in the world when logging out
