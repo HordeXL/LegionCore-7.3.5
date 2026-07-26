@@ -8,11 +8,18 @@
 # WITHOUT ANY WARRANTY, to the extent implied by the law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
+# Suppress C4828: invalid character in source charset (GBK characters in UTF-8 files)
+if(MSVC)
+  add_compile_options(/wd4828)
+endif()
+
 CollectSourceFiles(
   ${CMAKE_CURRENT_SOURCE_DIR}
   PRIVATE_SOURCES
   # Exclude
-  ${CMAKE_CURRENT_SOURCE_DIR}/PrecompiledHeaders)
+  ${CMAKE_CURRENT_SOURCE_DIR}/PrecompiledHeaders
+  ${CMAKE_CURRENT_SOURCE_DIR}/PlayerBot
+  ${CMAKE_CURRENT_SOURCE_DIR}/AI/PlayerAI)
 
 set(ELUNA_DIR ${CMAKE_SOURCE_DIR}/src/server/eluna)
 
@@ -66,6 +73,47 @@ if (ELUNA)
   target_compile_definitions(game PRIVATE ELUNA_EXPANSION=EXP_RETAIL)
   target_link_libraries(game PRIVATE lua52)
   set_property(TARGET game PROPERTY CXX_STANDARD 17)
+endif()
+
+if (PLAYERBOT)
+  target_compile_definitions(game PRIVATE PLAYERBOT)
+
+  # PlayerBot 核心模块
+  file(GLOB PLAYERBOT_CORE_SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/PlayerBot/*.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/PlayerBot/*.h)
+  list(APPEND PRIVATE_SOURCES ${PLAYERBOT_CORE_SOURCES})
+
+  # Server 扩展（PlayerBotSession + OnlineMgr）
+  list(APPEND PRIVATE_SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/Server/PlayerBotSession.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Server/PlayerBotSession.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/Server/OnlineMgr.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/Server/OnlineMgr.h)
+
+  message(STATUS "PlayerBot core module: ENABLED")
+
+  if (PLAYERBOT_AI)
+    target_compile_definitions(game PRIVATE PLAYERBOT_AI)
+
+    # AI 系统根目录
+    file(GLOB PLAYERBOT_AI_ROOT_SOURCES
+      ${CMAKE_CURRENT_SOURCE_DIR}/AI/PlayerAI/*.cpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/AI/PlayerAI/*.h)
+    list(APPEND PRIVATE_SOURCES ${PLAYERBOT_AI_ROOT_SOURCES})
+
+    # AI 子目录
+    foreach(AI_SUBDIR BotFieldAI BotGroupAI BotDuelAI BotArenaAI BotClassAI)
+      file(GLOB PLAYERBOT_AI_SUB_SOURCES
+        ${CMAKE_CURRENT_SOURCE_DIR}/AI/PlayerAI/${AI_SUBDIR}/*.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/AI/PlayerAI/${AI_SUBDIR}/*.h)
+      list(APPEND PRIVATE_SOURCES ${PLAYERBOT_AI_SUB_SOURCES})
+    endforeach()
+
+    message(STATUS "PlayerBot AI system: ENABLED")
+  else()
+    message(STATUS "PlayerBot AI system: DISABLED")
+  endif()
 endif()
 
 set_target_properties(game

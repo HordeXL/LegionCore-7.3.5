@@ -151,6 +151,14 @@ private:
     uint32 m_RemoveTime;
     uint16 m_BgTypeId;
     uint8 m_BgQueueTypeId;
+
+
+    public:
+        // PlayerBot compatibility
+        bool ExistRealPlayer(int bracketEntry = 0, bool rated = false) { return false; }
+        bool QueryNeedPlayerCount(int bgTypeId, int bracket, int arenaType, int& alliance, int& horde) { return false; }
+        void* GetFirstRealPlayerGroupInfo(int bracket, int type) { return nullptr; }
+        void AllPlayerBotLeaveQueueFromRatedArena(int bracket) { }
 };
 
 #endif

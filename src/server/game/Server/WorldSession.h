@@ -1121,6 +1121,11 @@ class WorldSession
             return (_logoutTime > 0 && currTime >= _logoutTime + 20);
         }
 
+        // PlayerBot compatibility (added by migration)
+        virtual bool IsBotSession() const { return false; }
+        virtual bool HasSchedules() const { return false; }
+        virtual bool IsAccountBotSession() const { return false; }
+        virtual bool HasBGSchedule() const { return false; }
         void LogoutPlayer(bool Save);
         void KickPlayer();
         bool CanLogout() { return canLogout; }

@@ -3779,6 +3779,18 @@ class Player : public Unit, public GridObject<Player>
         std::unordered_map<uint8, uint8>  m_bgQueueRoles{};
         std::unordered_map<uint8, uint8>  m_bgQueueRolesTemp{};
         uint32  m_lastActiveLFGRole{};
+
+    public:
+        // PlayerBot compatibility (added by migration)
+        bool IsPlayerBot() const { return GetSession() && GetSession()->IsBotSession(); }
+        uint8 GetTalentType() const { return 0; }
+        bool IsSettingFinish() const { return true; }
+
+
+    public:
+        // PlayerBot compatibility
+        bool EquipIsTidiness() { return true; }
+        bool ResetPlayerToLevel(uint32 a, uint32 b, uint32 c) { return true; }
 };
 
 void AddItemsSetItem(Player*player, Item* item);

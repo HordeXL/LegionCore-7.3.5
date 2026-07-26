@@ -151,5 +151,12 @@ class Pet : public Guardian
         {
             ASSERT(false);
         }
+
+    public:
+        // PlayerBot compatibility
+        Unit* GetVictim() const { return getVictim(); }
+        bool IsAlive() const { return isAlive(); }
+        void SettingAllSpellAutocast(bool flag) { }
+
 };
 #endif

@@ -489,5 +489,14 @@ class Group
         std::array<std::unique_ptr<RaidMarker>, RAID_MARKERS_COUNT> m_markers;
         uint32              m_activeMarkers;
         FunctionProcessor m_Functions;
+
+    public:
+        // PlayerBot compatibility
+        Player* GetCommander() const { return nullptr; }
+        bool GroupExistRealPlayer() const { return false; }
+        bool GiveAtGroupPos(ObjectGuid& guid, uint32& index, uint32& count) { return true; }
+        bool AllGroupNotCombat() { return true; }
+        std::vector<ObjectGuid> GetGroupMemberFromNeedRevivePlayer(uint32 forMap) { return std::vector<ObjectGuid>(); }
+
 };
 #endif

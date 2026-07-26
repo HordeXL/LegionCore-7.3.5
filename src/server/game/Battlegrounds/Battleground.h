@@ -629,6 +629,15 @@ private:
     bool _isBrawl;
     bool m_IsBG;
     std::map<ObjectGuid, BattlegroundPlayer>  _players;
+
+    public:
+        // PlayerBot compatibility
+        bool ExistRealPlayer() const { return false; }
+        int32 GetFreeSlotsForTeam(Team team) const { return 0; }
+
+    public:
+        // PlayerBot compatibility
+        bool HasJoinNearGrave() { return false; }
 };
 
 #endif

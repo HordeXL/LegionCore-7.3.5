@@ -15,6 +15,8 @@ option(USE_COREPCH      "Use precompiled headers when compiling servers"        
 option(WITH_WARNINGS    "Show all warnings during compile"                            0)
 option(WITH_COREDEBUG   "Include additional debug-code in core"                       0)
 option(ELUNA            "Include Eluna Lua Engine"                                    1)
+option(PLAYERBOT        "Build with playerbot module"                                 1)
+option(PLAYERBOT_AI     "Build playerbot AI system (requires PLAYERBOT)"              1)
 
 set(WITH_SOURCE_TREE    "hierarchical" CACHE STRING "Build the source tree for IDE's.")
 set_property(CACHE WITH_SOURCE_TREE PROPERTY STRINGS no flat hierarchical hierarchical-folders)

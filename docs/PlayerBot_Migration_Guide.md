@@ -4,7 +4,7 @@
 
 > **源仓库**: https://github.com/normalzero/LegionPlayerBot  
 > **目标仓库**: 当前工作空间 `LegionCore-7.3.5`  
-> **文档版本**: 1.0
+> **文档版本**: 3.0
 
 ---
 
@@ -130,34 +130,49 @@ worldserver (主程序)
 
 ### 3.3 AI 系统模块（`src/server/game/AI/PlayerAI/`）
 
-这是最大也是最复杂的部分。需要从源仓库的 `AI/PlayerAI/` 目录移植以下文件：
+这是最大也是最复杂的部分，共约 **32 个文件**（约 1.5 MB 代码量）。需要从源仓库的 `AI/PlayerAI/` 目录移植以下文件：
 
-**根目录文件：**
+**根目录文件（12 个文件）：**
 
-| 文件名 | 说明 |
-|--------|------|
-| `BotAI.h` | 定义 `BotBGAI` 类（继承 `PlayerAI`），战场 AI 状态枚举，大量类型定义 |
-| `BotAI.cpp` | BotBGAI 实现 |
-| `BotAITool.h` | AI 工具类 `BotUtility`，常量定义（`BOTAI_UPDATE_TICK` 等） |
-| `BotAITool.cpp` | BotUtility 实现：伤害计算、物品操作、法术处理、移动辅助 |
-| `BotAISpells.h` | AI 法术管理头文件 |
-| `BotAISpells.cpp` | 法术管理实现 |
-| `BotMovementAI.h` | AI 移动逻辑头文件 |
-| `BotMovementAI.cpp` | 移动逻辑实现 |
-| `BotBGAIMovement.h` | 战场 AI 移动头文件 |
-| `BotBGAIMovement.cpp` | 战场 AI 移动实现 |
-| `PlayerAI.h` | 基础 PlayerAI 类（机器人 AI 的基类） |
-| `PlayerAI.cpp` | PlayerAI 实现 |
+| # | 文件名 | 优先级 | 说明 |
+|---|--------|--------|------|
+| 1 | `PlayerAI.h` | ⭐⭐⭐ | 基础 PlayerAI 类，所有 Bot AI 的基类 |
+| 2 | `PlayerAI.cpp` | ⭐⭐⭐ | PlayerAI 实现 |
+| 3 | `BotAI.h` | ⭐⭐⭐ | 定义 `BotBGAI` 类，战场 AI 状态枚举，大量类型定义 |
+| 4 | `BotAI.cpp` | ⭐⭐⭐ | BotBGAI 实现 |
+| 5 | `BotAITool.h` | ⭐⭐⭐ | AI 工具类 `BotUtility`，常量定义（`BOTAI_UPDATE_TICK` 等） |
+| 6 | `BotAITool.cpp` | ⭐⭐⭐ | BotUtility 实现：伤害计算、物品操作、法术处理、移动辅助 |
+| 7 | `BotAISpells.h` | ⭐⭐ | AI 法术管理头文件 |
+| 8 | `BotAISpells.cpp` | ⭐⭐ | 法术管理实现 |
+| 9 | `BotMovementAI.h` | ⭐⭐ | AI 移动逻辑头文件 |
+| 10 | `BotMovementAI.cpp` | ⭐⭐ | 移动逻辑实现 |
+| 11 | `BotBGAIMovement.h` | ⭐ | 战场 AI 移动头文件 |
+| 12 | `BotBGAIMovement.cpp` | ⭐ | 战场 AI 移动实现 |
 
-**子目录（每个目录包含 .h 和 .cpp）：**
+**子目录 AI（4 个子目录，8 个文件）：**
 
-| 目录 | 文件 | 说明 |
-|------|------|------|
-| `BotFieldAI/` | `BotFieldAI.h`, `BotFieldAI.cpp` | 野外 AI 实现 |
-| `BotGroupAI/` | `BotGroupAI.h`, `BotGroupAI.cpp` | 组队 AI 实现 |
-| `BotDuelAI/` | `BotDuelAI.h`, `BotDuelAI.cpp` | 决斗 AI 实现 |
-| `BotArenaAI/` | `BotArenaAI.h`, `BotArenaAI.cpp` | 竞技场 AI 实现 |
-| `BotClassAI/` | 各职业 AI 文件 | 职业专属 AI 行为 |
+| 目录 | 文件 | 优先级 | 说明 |
+|------|------|--------|------|
+| `BotFieldAI/` | `BotFieldAI.h`, `BotFieldAI.cpp` | ⭐⭐⭐ | 野外 AI，FieldBotMgr 直接依赖 |
+| `BotGroupAI/` | `BotGroupAI.h`, `BotGroupAI.cpp` | ⭐⭐⭐ | 组队 AI，PlayerBotMgr 的 SwitchPlayerBotAI 使用 |
+| `BotDuelAI/` | `BotDuelAI.h`, `BotDuelAI.cpp` | ⭐⭐ | 决斗 AI |
+| `BotArenaAI/` | `BotArenaAI.h`, `BotArenaAI.cpp` | ⭐ | 竞技场 AI（被 `#ifndef CONVERT_ARENAAI_TOBG` 包裹） |
+
+**职业 AI（BotClassAI/，9 个职业 × 2 文件 = 18 个文件）：**
+
+| 文件（含 .h 和 .cpp） | 职业 | 说明 |
+|----------------------|------|------|
+| `BotWarriorAI` | 战士 | |
+| `BotPaladinAI` | 圣骑士 | |
+| `BotRogueAI` | 盗贼 | |
+| `BotHunterAI` | 猎人 | |
+| `BotPriestAI` | 牧师 | |
+| `BotMageAI` | 法师 | |
+| `BotWarlockAI` | 术士 | |
+| `BotShamanAI` | 萨满 | |
+| `BotDruidAI` | 德鲁伊 | |
+
+> ⚠️ **注意**: 源仓库中缺少 `BotDeathKnightAI`（死亡骑士）和 `BotDemonHunterAI`（恶魔猎手），如果服务器需要这两个职业，需要自行补充实现。
 
 ### 3.4 数据库 SQL 文件（`sql/`）
 
@@ -534,26 +549,206 @@ cmake --build . --config Release --target game
 建议按以下顺序逐步移植，每步完成后编译验证：
 
 ```
-第一阶段（核心编译通过）：
+第一阶段（核心编译通过）✅ 已完成
   1. PlayerBot/ 目录（10 个文件）
   2. Server/PlayerBotSession.h/.cpp
   3. Server/OnlineMgr.h/.cpp
   4. 修改 CMakeLists.txt，启用 PLAYERBOT
 
-第二阶段（AI 系统编译通过）：
-  5. AI/PlayerAI/ 根目录文件（BotAI, BotAITool, BotAISpells, BotMovementAI, PlayerAI）
-  6. 各子目录 AI（BotFieldAI, BotGroupAI, BotDuelAI, BotArenaAI）
-  7. BotClassAI/ 各职业 AI
+第二阶段（AI 系统编译通过）
+  5. AI/PlayerAI/ 根目录文件（12 个文件：PlayerAI, BotAI, BotAITool, BotAISpells, BotMovementAI, BotBGAIMovement）
+  6. 各子目录 AI（4 个子目录 8 个文件：BotFieldAI, BotGroupAI, BotDuelAI, BotArenaAI）
+  7. BotClassAI/ 各职业 AI（9 个职业 18 个文件）
 
-第三阶段（功能集成）：
+第三阶段（功能集成）
   8. 添加核心钩子（WorldSession 创建、Player 登录/登出）
   9. 战场和竞技场钩子
   10. 主循环更新
 
-第四阶段（数据库和配置）：
+第四阶段（数据库和配置）
   11. 应用 SQL
   12. 配置 worldserver.conf
   13. 启动测试
+```
+
+### 9.4 第二阶段详细移植步骤
+
+#### 实际修复进度（截至 v3.0）
+
+| 修复轮次 | 操作 | 错误变化 |
+|---------|------|---------|
+| 初始编译 | 全部文件到位 | 约 630 错误 |
+| 第 1 轮 | 移除 override 关键字（PlayerBotSession.h, PlayerAI.h） | ↓ 减少 |
+| 第 2 轮 | 注释 PathfindingMgr.h 包含（4 文件） | ↓ 减少 |
+| 第 3 轮 | 替换 GetSpellEffect0→GetSpellEffect, GetVector3→G3D::Vector3 | ↓ 减少 |
+| 第 4 轮 | IsPlayerBot 适配器模式（session 检查） | ↓ 减少 |
+| 第 5 轮 | 创建 BotDoRangedAttackIfReady 自由函数 | ↓ 减少 |
+| 第 6 轮 | OnlineMgr 移除 JSON 依赖（json/json.h→string） | ↓ 减少 |
+| 第 7 轮 | **方案 B**：核心类添加辅助方法（Player/WorldSession/Group/Pet/BGQueue） | 510→1 错误 |
+| 第 8 轮 | 修复 BotAITool.h 残留函数体 + 语法错误 | 1→422 反弹 |
+| 第 9 轮 | 修复 BattlegroundQueue 签名 + Player 扩展 + random_shuffle | 422→417 |
+| 第 10 轮 | 修复 CommandBG 注释导致的语法错误 | 417→415 |
+| 第 11 轮 | 注释 Pathfinding.h + PathParameter/Pathfinding 代码块 | 415→394→334→340 |
+| 当前 | 核心管理类编译通过，寻路模块仍有 340 错误 | 340 错误 |
+
+**当前剩余错误分布：**
+
+| 错误类型 | 估计数量 | 原因 |
+|---------|---------|------|
+| `PathParameter` 未定义 | ~150 | 寻路系统依赖，代码中大量使用 |
+| `Pathfinding` 未定义 | ~80 | 同上游，CreatePath 等功能 |
+| `CommandBG` 相关 | ~50 | 战场指挥官系统，源仓库自定义类 |
+| 其他零散语法错误 | ~60 | 注释替换残留的语法错误 |
+
+**已修改的核心类文件清单：**
+
+| 文件 | 添加的方法 |
+|------|-----------|
+| `Server/WorldSession.h` | `IsBotSession()`, `HasSchedules()`, `IsAccountBotSession()`, `HasBGSchedule()` |
+| `Entities/Player/Player.h` | `IsPlayerBot()`, `GetTalentType()`, `IsSettingFinish()`, `EquipIsTidiness()`, `ResetPlayerToLevel()` |
+| `Groups/Group.h` | `GetCommander()`, `GroupExistRealPlayer()`, `GiveAtGroupPos()`, `AllGroupNotCombat()`, `GetGroupMemberFromNeedRevivePlayer()` |
+| `Entities/Pet/Pet.h` | `GetVictim()`, `IsAlive()`, `SettingAllSpellAutocast()` |
+| `Battlegrounds/BattlegroundQueue.h` | `ExistRealPlayer()`, `QueryNeedPlayerCount()`, `GetFirstRealPlayerGroupInfo()`, `AllPlayerBotLeaveQueueFromRatedArena()` |
+| `Battlegrounds/Battleground.h` | `ExistRealPlayer()`, `GetFreeSlotsForTeam()`, `HasJoinNearGrave()` |
+
+#### 步骤 2.1 — 根目录文件（12 个文件）
+
+核心 AI 基础设施，**必须先移植**，因为所有子目录都依赖它们。
+
+**移植命令**（Python 批量下载）：
+
+```bash
+mkdir -p src/server/game/AI/PlayerAI
+cd src/server/game/AI/PlayerAI
+python -c "
+import urllib.request, ssl
+ssl._create_default_https_context = ssl._create_unverified_context
+files = [
+    'PlayerAI.h', 'PlayerAI.cpp',
+    'BotAI.h', 'BotAI.cpp',
+    'BotAITool.h', 'BotAITool.cpp',
+    'BotAISpells.h', 'BotAISpells.cpp',
+    'BotMovementAI.h', 'BotMovementAI.cpp',
+    'BotBGAIMovement.h', 'BotBGAIMovement.cpp',
+]
+for name in files:
+    url = f'https://raw.githubusercontent.com/normalzero/LegionPlayerBot/main/src/server/game/AI/PlayerAI/{name}'
+    data = urllib.request.urlopen(url).read()
+    with open(name, 'wb') as f:
+        f.write(data)
+    print(f'OK: {name} ({len(data)} bytes)')
+"
+```
+
+**编译验证**: 根目录文件不依赖 PlayerBot 其他模块，但 `BotAI.h` 中引用了 `Battleground` 相关类型，需确保 `BattlegroundMgr.h` 等头文件可访问。
+
+---
+
+#### 步骤 2.2 — 子目录 AI（4 个子目录，8 个文件）
+
+**移植顺序**: 先移植 `BotFieldAI`（因为 FieldBotMgr.h 直接 `#include "BotFieldAI.h"`），再移植其余三个。
+
+```bash
+cd src/server/game/AI/PlayerAI
+for dir in BotFieldAI BotGroupAI BotDuelAI BotArenaAI; do
+    mkdir -p $dir
+    python -c "
+import urllib.request, ssl
+ssl._create_default_https_context = ssl._create_unverified_context
+for name in ['${dir}.h', '${dir}.cpp']:
+    url = f'https://raw.githubusercontent.com/normalzero/LegionPlayerBot/main/src/server/game/AI/PlayerAI/${dir}/{name}'
+    data = urllib.request.urlopen(url).read()
+    with open('${dir}/' + name, 'wb') as f:
+        f.write(data)
+    print(f'OK: ${dir}/{name} ({len(data)} bytes)')
+"
+done
+```
+
+**依赖关系**:
+- `BotFieldAI` → 被 `FieldBotMgr.h` 和 `PlayerBotMgr.cpp` 引用
+- `BotGroupAI` → 被 `PlayerBotMgr.cpp` 引用（`SwitchPlayerBotAI` 方法）
+- `BotDuelAI` → 被 `PlayerBotMgr.cpp` 引用
+- `BotArenaAI` → 被 `PlayerBotMgr.cpp` 引用（受 `#ifndef CONVERT_ARENAAI_TOBG` 保护）
+
+**编译验证**: 此时尝试编译，`PlayerBotMgr.cpp` 中引用的所有 AI 头文件都已就位，但可能因 API 兼容性问题产生编译错误。
+
+---
+
+#### 步骤 2.3 — 职业 AI（BotClassAI/，18 个文件）
+
+```bash
+mkdir -p src/server/game/AI/PlayerAI/BotClassAI
+cd src/server/game/AI/PlayerAI/BotClassAI
+python -c "
+import urllib.request, ssl
+ssl._create_default_https_context = ssl._create_unverified_context
+files = [
+    'BotWarriorAI.h', 'BotWarriorAI.cpp',
+    'BotPaladinAI.h', 'BotPaladinAI.cpp',
+    'BotRogueAI.h', 'BotRogueAI.cpp',
+    'BotHunterAI.h', 'BotHunterAI.cpp',
+    'BotPriestAI.h', 'BotPriestAI.cpp',
+    'BotMageAI.h', 'BotMageAI.cpp',
+    'BotWarlockAI.h', 'BotWarlockAI.cpp',
+    'BotShamanAI.h', 'BotShamanAI.cpp',
+    'BotDruidAI.h', 'BotDruidAI.cpp',
+]
+for name in files:
+    url = f'https://raw.githubusercontent.com/normalzero/LegionPlayerBot/main/src/server/game/AI/PlayerAI/BotClassAI/{name}'
+    data = urllib.request.urlopen(url).read()
+    with open(name, 'wb') as f:
+        f.write(data)
+    print(f'OK: {name} ({len(data)} bytes)')
+"
+```
+
+> ⚠️ 缺少死亡骑士和恶魔猎手的 AI 文件，需要自行补充。
+
+---
+
+#### 步骤 2.4 — 编译验证与 API 兼容性修复
+
+AI 系统移植完成后，**不需要额外修改 CMake**，因为 `CollectSourceFiles` 会自动收集 `AI/PlayerAI/` 下的所有文件。
+
+**重新生成 CMake 并编译：**
+
+```bash
+cd build
+cmake .. -DPLAYERBOT=1
+cmake --build . --target game --config Release
+```
+
+**API 兼容性检查清单：**
+
+| 潜在问题 | 涉及文件 | 建议处理 |
+|----------|---------|---------|
+| `MS::Battlegrounds::` 命名空间 | BotAI.h, PlayerBotMgr.cpp | 检查当前工作空间是否使用相同命名空间 |
+| `Player::IsPlayerBot()` 方法 | 多处使用 | 需要在 `Player` 类中添加此方法 |
+| `Player::IsSettingFinish()` 方法 | PlayerBotMgr.cpp | 需要在 `Player` 类中添加此方法 |
+| `WorldSession::IsBotSession()` 方法 | PlayerBotSession.h | 已在第一阶段添加 |
+| `BOTAI_SEARCH_RANGE` 等常量 | BotAITool.h | 已定义在 BotAITool.h 中 |
+| `BOTAI_FIELDTELEPORT_DISTANCE` 常量 | FieldBotMgr.cpp, BotFieldAI | 定义在 BotAITool.h 中 |
+| `sWorld->FindSession()` 返回类型 | PlayerBotMgr.cpp | 检查是否为 `shared_ptr` |
+| `ObjectGuid::Create<HighGuid::Player>()` 构造 | PlayerBotMgr.cpp | 检查 vs 旧式 `ObjectGuid(uint64)` |
+| `BattlegroundQueue::ExistRealPlayer()` | PlayerBotMgr.cpp | 可能需要向 BattlegroundQueue 添加此方法 |
+| `Battleground::ExistRealPlayer()` | PlayerBotMgr.cpp | 可能需要向 Battleground 添加此方法 |
+| `Battleground::GetFreeSlotsForTeam()` | PlayerBotMgr.cpp | 检查方法签名 |
+| `Pathfinding` / `PathParameter` 类 | FieldBotMgr.cpp | 检查路径查找接口 |
+
+**常见编译错误修复示例：**
+
+```cpp
+// 错误：'Player' 没有 'IsPlayerBot' 成员
+// 修复：在 Player.h 中添加
+class Player : public Unit {
+public:
+    bool IsPlayerBot() const { return GetSession() && GetSession()->IsBotSession(); }
+};
+
+// 错误：'Player' 没有 'IsSettingFinish' 成员
+// 修复：在 Player.h 中添加
+    bool IsSettingFinish() const { return true; }  // 临时方案
 ```
 
 ---
@@ -626,5 +821,11 @@ find /tmp/legionplayerbot/src/server/game/AI/PlayerAI -name "*.cpp" -o -name "*.
 ---
 
 > **文档维护者**: Reasonix AI  
-> **最后更新**: 2026-07-24  
-> **下一步建议**: 按照第 8.3 节的推荐移植顺序分阶段进行，每阶段完成后编译验证。
+> **最后更新**: 2026-07-24
+> **已完成**:
+> - 第一阶段：PlayerBot 核心模块 10 文件 + Server 扩展 4 文件 + CMake 配置 ✅
+> - 第二阶段：AI/PlayerAI 全部 38 个文件下载 ✅
+> - API 兼容性修复：7 类适配，21 个文件修改 ✅
+> - 核心类扩展（方案 B）：Player/WorldSession/Group/Pet/Battleground 等 6 个头文件 ✅
+> - 编译错误从 630 降至 340（持续修复中）
+> **下一步建议**: 继续修复 BotMovementAI/BotBGAIMovement 中的 Pathfinding 依赖错误，完成后进入第三阶段（功能集成）
