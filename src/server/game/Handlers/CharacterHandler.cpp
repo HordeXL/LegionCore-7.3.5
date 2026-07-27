@@ -37,6 +37,7 @@
 #include "AuthenticationPackets.h"
 #include "ClientConfigPackets.h"
 #include "PlayerBotMgr.h"
+#include "FieldBotMgr.h"
 #include "SystemPackets.h"
 #include "WorldStateMgr.h"
 #include "AreaTriggerData.h"
@@ -456,7 +457,10 @@ void WorldSession::HandleCharCreateOpcode(WorldPackets::Character::CreateChar& c
             TC_LOG_INFO(LOG_FILTER_CHARACTER, "Account: %d (IP: %s) Create Character:[%s] (GUID: %u)", GetAccountId(), GetRemoteAddress().c_str(), createInfo->Name.c_str(), newChar.GetGUIDLow());
             sScriptMgr->OnPlayerCreate(&newChar);
 #ifdef PLAYERBOT
-            sPlayerBotMgr->OnPlayerBotCreate(newChar.GetGUID(), GetAccountId(), newChar.GetName(), newChar.getGender(), newChar.getRace(), newChar.getClass(), newChar.getLevel());
+            if (IsBotSession())
+                sPlayerBotMgr->OnPlayerBotCreate(newChar.GetGUID(), GetAccountId(), newChar.GetName(), newChar.getGender(), newChar.getRace(), newChar.getClass(), newChar.getLevel());
+            else
+                sPlayerBotMgr->OnAccountBotCreate(newChar.GetGUID(), GetAccountId(), newChar.GetName(), newChar.getGender(), newChar.getRace(), newChar.getClass(), newChar.getLevel());
 #endif
             sWorld->AddCharacterInfo(newChar.GetGUIDLow(), std::string(newChar.GetName()), newChar.getGender(), newChar.getRace(), newChar.getClass(), newChar.getLevel(), GetAccountId());
             sWorld->UpdateCharacterAccount(newChar.GetGUIDLow(), GetAccountId());
@@ -526,6 +530,9 @@ void WorldSession::HandleCharDeleteOpcode(WorldPackets::Character::DeleteChar& c
     sGuildFinderMgr->RemoveMembershipRequest(charDelete.Guid, ObjectGuid::Create<HighGuid::Guild>(guildId));
     Player::DeleteFromDB(charDelete.Guid, GetAccountId());
     sWorld->DeleteCharName(name);
+#ifdef PLAYERBOT
+    sPlayerBotMgr->OnAccountBotDelete(charDelete.Guid, accountId);
+#endif
 
     SendCharDelete(CHAR_DELETE_SUCCESS);
 
@@ -967,7 +974,16 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder* holder)
         sScriptMgr->OnPlayerLogin(player, firstLogin);
 
 #ifdef PLAYERBOT
-        sPlayerBotMgr->OnPlayerBotLogin(player->GetSession(), player);
+        if (IsBotSession())
+        {
+            sPlayerBotMgr->OnPlayerBotLogin(this, pCurrChar);
+        }
+        else
+        {
+            sPlayerBotMgr->LoginFriendBotByPlayer(pCurrChar);
+            sPlayerBotMgr->LoginGroupBotByPlayer(pCurrChar);
+            sFieldBotMgr->OnRealPlayerLogin(pCurrChar);
+        }
 #endif
 
 #ifdef ELUNA_TRINITY

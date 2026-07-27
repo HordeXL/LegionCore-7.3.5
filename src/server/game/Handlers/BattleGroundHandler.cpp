@@ -376,7 +376,13 @@ void WorldSession::HandleBattleFieldPort(WorldPackets::Battleground::Port& packe
         bgQueue.RemovePlayer(player->GetGUID(), false);
 
 #ifdef PLAYERBOT
-        sPlayerBotMgr->OnRealPlayerLeaveBattlegroundQueue(bgTypeId, player->getLevel());
+        if (!IsBotSession())
+        {
+            if (bgTypeId != MS::Battlegrounds::BattlegroundTypeId::ArenaAll)
+                sPlayerBotMgr->OnRealPlayerLeaveBattlegroundQueue(bgTypeId, _player->getLevel());
+            else
+                sPlayerBotMgr->OnRealPlayerLeaveArenaQueue(bgTypeId, _player->getLevel(), 0);
+        }
 #endif
 
         if (Battleground* currentBg = player->GetBattleground())
@@ -385,6 +391,10 @@ void WorldSession::HandleBattleFieldPort(WorldPackets::Battleground::Port& packe
         player->SetBattlegroundId(bg->GetInstanceID(), bgTypeId);
         player->SetBGTeam(ginfo.Team);
         sBattlegroundMgr->SendToBattleground(player, ginfo.IsInvitedToBGInstanceGUID, bgTypeId);
+#ifdef PLAYERBOT
+        if (!IsBotSession())
+            sPlayerBotMgr->OnRealPlayerEnterBattleground(bgTypeId, _player->getLevel());
+#endif
     }
     else // leave queue
     {
@@ -446,6 +456,10 @@ void WorldSession::HandleLeaveBattlefield(WorldPackets::Battleground::NullCmsg& 
             if (bg->GetStatus() != STATUS_WAIT_LEAVE)
                 return;
 
+    #ifdef PLAYERBOT
+    if (!_player->IsPlayerBot())
+        sPlayerBotMgr->OnRealPlayerLeaveBattleground(_player);
+#endif
     _player->LeaveBattleground();
 }
 

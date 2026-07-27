@@ -22,6 +22,7 @@
 #include "BattlegroundMgr.h"
 #include "BrawlersGuild.h"
 #include "CellImpl.h"
+#include "FieldBotMgr.h"
 #include "DisableMgr.h"
 #include "DynamicTree.h"
 #include "GridInfo.h"
@@ -1101,6 +1102,10 @@ void Map::Update(const uint32 t_diff)
                 {
                     uint32 _ss = getMSTime();
                     player->Update(t_diff);
+#ifdef PLAYERBOT
+                    if (!player->IsPlayerBot())
+                        sFieldBotMgr->Update(player->GetGUID());
+#endif
                     uint32 _mssu = GetMSTimeDiffToNow(_ss);
                     VisitNearbyCellsOf(player);
                     uint32 _mss = GetMSTimeDiffToNow(_ss);

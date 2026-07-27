@@ -41,6 +41,7 @@
 #include "CalendarMgr.h"
 #include "PlayerBotMgr.h"
 #include "PlayerBotTalkMgr.h"
+#include "AIWaypointsMgr.h"
 #include "CellImpl.h"
 #include "ChallengeMgr.h"
 #include "Channel.h"
@@ -1592,6 +1593,11 @@ void World::SetInitialWorldSettings()
     sPlayerBotMgr->LoadPlayerBotBaseInfo();
     sPlayerBotTalkMgr->InitializeTalkText();
     sPlayerBotTalkMgr->InitializeStory();
+    if (!sAIWPMgr->LoadAIWaypoints())
+    {
+        exit(0);
+        return;
+    }
     m_timers[WUPDATE_PLAYERBOT_MGR].SetInterval(IN_MILLISECONDS * 2);
 #endif
 

@@ -21,6 +21,7 @@
 #include "WorldPacket.h"
 #include "WorldSession.h"
 #include "Player.h"
+#include "PlayerBotMgr.h"
 #include "World.h"
 #include "ObjectMgr.h"
 #include "GroupMgr.h"
@@ -822,6 +823,10 @@ bool Group::RemoveMemberQueue(ObjectGuid const& guid, RemoveMethod const& method
                     player->SetOriginalGroup(nullptr);
                 else
                     player->SetGroup(nullptr);
+#ifdef PLAYERBOT
+                if (player->IsPlayerBot())
+                    sPlayerBotMgr->OnPlayerBotLeaveOriginalGroup(player);
+#endif
 
                 // quest related GO state dependent from raid membership
                 player->AddDelayedEvent(100, [player]() -> void

@@ -18,6 +18,7 @@
 
 #include "AccountMgr.h"
 #include "AchievementMgr.h"
+#include "PlayerBotMgr.h"
 #include "Anticheat.h"
 #include "AreaTriggerData.h"
 #include "ArtifactPackets.h"
@@ -6967,7 +6968,12 @@ void Player::DeleteOldCharacters(uint32 keepDays)
          do
          {
             Field* fields = result->Fetch();
-            Player::DeleteFromDB(ObjectGuid::Create<HighGuid::Player>(fields[0].GetUInt64()), fields[1].GetUInt32(), true, true);
+            uint32 account = fields[1].GetUInt32();
+#ifdef PLAYERBOT
+            if (account > 0 && sPlayerBotMgr->GetPlayerBotAccountInfo(account))
+                continue;
+#endif
+            Player::DeleteFromDB(ObjectGuid::Create<HighGuid::Player>(fields[0].GetUInt64()), account, true, true);
          }
          while (result->NextRow());
     }

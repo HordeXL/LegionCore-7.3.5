@@ -700,6 +700,10 @@ void WorldSession::LogoutPlayer(bool Save)
         {
             _player->GetGroup()->SendUpdate();
             _player->GetGroup()->ResetMaxEnchantingLevel();
+#ifdef PLAYERBOT
+            if (!IsBotSession())
+                sPlayerBotMgr->LogoutAllGroupPlayerBot(_player->GetGroup(), false);
+#endif
         }
 
         //! Broadcast a logout message to the player's friends
