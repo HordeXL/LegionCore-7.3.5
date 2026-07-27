@@ -2849,6 +2849,10 @@ public:
 
     bool OnGossipSelect(Player* player, Creature* creature, uint32 sender, uint32 action) override
     {
+        // Skip player bots
+        if (player->IsPlayerBot())
+            return false;
+
         // sender is always 0 when loading from DB gossip_menu_option
         // action = OptionType (1 = GOSSIP_OPTION_GOSSIP)
         if (action == 1)
@@ -2882,6 +2886,10 @@ public:
 
     bool OnGossipSelect(Player* player, Creature* creature, uint32 sender, uint32 action) override
     {
+        // Skip player bots
+        if (player->IsPlayerBot())
+            return false;
+
         // Menu 20457, action = OptionType (1 = GOSSIP_OPTION_GOSSIP)
         if (action == 1)
         {
@@ -2901,6 +2909,36 @@ public:
                 if (player)
                     player->TeleportTo(1220, -864.9f, 4404.84f, 737.43f, 0.0f);
             });
+
+            return true;
+        }
+
+        return false;
+    }
+};
+
+class npc_100636_q40522 : public CreatureScript
+{
+public:
+    npc_100636_q40522() : CreatureScript("npc_100636_q40522") { }
+
+    bool OnGossipSelect(Player* player, Creature* creature, uint32 sender, uint32 action) override
+    {
+        // Skip player bots
+        if (player->IsPlayerBot())
+            return false;
+
+        // Menu 19116, option "Take me inside Grommash Hold."
+        if (action == 1)
+        {
+            player->PlayerTalkClass->ClearMenus();
+            player->PlayerTalkClass->SendCloseGossip();
+
+            // Give kill credit for entering Grommash Hold
+            player->KilledMonsterCredit(100552);
+
+            // Teleport player to Sylvanas in Grommash Hold area
+            player->TeleportTo(1, 1248.64f, -4379.36f, 34.916f, 0.0f);
 
             return true;
         }
@@ -3548,6 +3586,10 @@ public:
 
     bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
     {
+        // Skip player bots
+        if (player->IsPlayerBot())
+            return false;
+
         player->PlayerTalkClass->ClearMenus();
         player->PlayerTalkClass->SendCloseGossip();
 
@@ -3573,6 +3615,10 @@ public:
 
     bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 /*action*/) override
     {
+        // Skip player bots
+        if (player->IsPlayerBot())
+            return false;
+
         player->PlayerTalkClass->ClearMenus();
 
         player->KilledMonsterCredit(100541);

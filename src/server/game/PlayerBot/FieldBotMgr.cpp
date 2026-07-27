@@ -39,16 +39,16 @@ void WorldPoster::SendOnceGlobalPoster()
 void WorldPoster::InitializePoster()
 {
 	m_AllPosterContent.clear();
-	PushPoster("您现在使用的是淘宝店铺【欣颖科技魔兽直营店】的体验产品");
-	PushPoster("淘宝 欣颖科技88体验产品只开放阿拉希战场");
-	PushPoster("淘宝 欣颖科技88体验产品只开放战士、术士、牧师三个职业");
-	PushPoster("淘宝 欣颖科技88体验产品不开放野外团战系统");
-	PushPoster("淘宝 欣颖科技88体验产品不开放随机地下城系统");
-	PushPoster("淘宝 欣颖科技88体验产品不开放竞技场");
-	PushPoster("淘宝 欣颖科技88体验产品无法切换团队，无法进入团队副本");
-	PushPoster("如果您喜欢我们的产品，请购买完整版");
-	PushPoster("购买方式：请淘宝联系旺旺【欣颖科技88】或者QQ联系277922486");
-	PushPoster("其它任何联系方式都是欺骗玩家");
+	PushPoster("Ã¦ÂÂ¨Ã§ÂÂ°Ã¥ÂÂ¨Ã¤Â½Â¿Ã§ÂÂ¨Ã§ÂÂÃ¦ÂÂ¯Ã¦Â·ÂÃ¥Â®ÂÃ¥ÂºÂÃ©ÂÂºÃ£ÂÂÃ¦Â¬Â£Ã©Â¢ÂÃ§Â§ÂÃ¦ÂÂÃ©Â­ÂÃ¥ÂÂ½Ã§ÂÂ´Ã¨ÂÂ¥Ã¥ÂºÂÃ£ÂÂÃ§ÂÂÃ¤Â½ÂÃ©ÂªÂÃ¤ÂºÂ§Ã¥ÂÂ");
+	PushPoster("Ã¦Â·ÂÃ¥Â®Â Ã¦Â¬Â£Ã©Â¢ÂÃ§Â§ÂÃ¦ÂÂ88Ã¤Â½ÂÃ©ÂªÂÃ¤ÂºÂ§Ã¥ÂÂÃ¥ÂÂªÃ¥Â¼ÂÃ¦ÂÂ¾Ã©ÂÂ¿Ã¦ÂÂÃ¥Â¸ÂÃ¦ÂÂÃ¥ÂÂº");
+	PushPoster("Ã¦Â·ÂÃ¥Â®Â Ã¦Â¬Â£Ã©Â¢ÂÃ§Â§ÂÃ¦ÂÂ88Ã¤Â½ÂÃ©ÂªÂÃ¤ÂºÂ§Ã¥ÂÂÃ¥ÂÂªÃ¥Â¼ÂÃ¦ÂÂ¾Ã¦ÂÂÃ¥Â£Â«Ã£ÂÂÃ¦ÂÂ¯Ã¥Â£Â«Ã£ÂÂÃ§ÂÂ§Ã¥Â¸ÂÃ¤Â¸ÂÃ¤Â¸ÂªÃ¨ÂÂÃ¤Â¸Â");
+	PushPoster("Ã¦Â·ÂÃ¥Â®Â Ã¦Â¬Â£Ã©Â¢ÂÃ§Â§ÂÃ¦ÂÂ88Ã¤Â½ÂÃ©ÂªÂÃ¤ÂºÂ§Ã¥ÂÂÃ¤Â¸ÂÃ¥Â¼ÂÃ¦ÂÂ¾Ã©ÂÂÃ¥Â¤ÂÃ¥ÂÂ¢Ã¦ÂÂÃ§Â³Â»Ã§Â»Â");
+	PushPoster("Ã¦Â·ÂÃ¥Â®Â Ã¦Â¬Â£Ã©Â¢ÂÃ§Â§ÂÃ¦ÂÂ88Ã¤Â½ÂÃ©ÂªÂÃ¤ÂºÂ§Ã¥ÂÂÃ¤Â¸ÂÃ¥Â¼ÂÃ¦ÂÂ¾Ã©ÂÂÃ¦ÂÂºÃ¥ÂÂ°Ã¤Â¸ÂÃ¥ÂÂÃ§Â³Â»Ã§Â»Â");
+	PushPoster("Ã¦Â·ÂÃ¥Â®Â Ã¦Â¬Â£Ã©Â¢ÂÃ§Â§ÂÃ¦ÂÂ88Ã¤Â½ÂÃ©ÂªÂÃ¤ÂºÂ§Ã¥ÂÂÃ¤Â¸ÂÃ¥Â¼ÂÃ¦ÂÂ¾Ã§Â«ÂÃ¦ÂÂÃ¥ÂÂº");
+	PushPoster("Ã¦Â·ÂÃ¥Â®Â Ã¦Â¬Â£Ã©Â¢ÂÃ§Â§ÂÃ¦ÂÂ88Ã¤Â½ÂÃ©ÂªÂÃ¤ÂºÂ§Ã¥ÂÂÃ¦ÂÂ Ã¦Â³ÂÃ¥ÂÂÃ¦ÂÂ¢Ã¥ÂÂ¢Ã©ÂÂÃ¯Â¼ÂÃ¦ÂÂ Ã¦Â³ÂÃ¨Â¿ÂÃ¥ÂÂ¥Ã¥ÂÂ¢Ã©ÂÂÃ¥ÂÂ¯Ã¦ÂÂ¬");
+	PushPoster("Ã¥Â¦ÂÃ¦ÂÂÃ¦ÂÂ¨Ã¥ÂÂÃ¦Â¬Â¢Ã¦ÂÂÃ¤Â»Â¬Ã§ÂÂÃ¤ÂºÂ§Ã¥ÂÂÃ¯Â¼ÂÃ¨Â¯Â·Ã¨Â´Â­Ã¤Â¹Â°Ã¥Â®ÂÃ¦ÂÂ´Ã§ÂÂ");
+	PushPoster("Ã¨Â´Â­Ã¤Â¹Â°Ã¦ÂÂ¹Ã¥Â¼ÂÃ¯Â¼ÂÃ¨Â¯Â·Ã¦Â·ÂÃ¥Â®ÂÃ¨ÂÂÃ§Â³Â»Ã¦ÂÂºÃ¦ÂÂºÃ£ÂÂÃ¦Â¬Â£Ã©Â¢ÂÃ§Â§ÂÃ¦ÂÂ88Ã£ÂÂÃ¦ÂÂÃ¨ÂÂQQÃ¨ÂÂÃ§Â³Â»277922486");
+	PushPoster("Ã¥ÂÂ¶Ã¥Â®ÂÃ¤Â»Â»Ã¤Â½ÂÃ¨ÂÂÃ§Â³Â»Ã¦ÂÂ¹Ã¥Â¼ÂÃ©ÂÂ½Ã¦ÂÂ¯Ã¦Â¬ÂºÃ©ÂªÂÃ§ÂÂ©Ã¥Â®Â¶");
 }
 
 void WorldPoster::PushPoster(std::string content)
@@ -561,7 +561,7 @@ Position FieldWarfare::GetEvadePosition(Player* centerPlayer, Player* evadePlaye
 		distZ = evadePlayer->GetMap()->GetHeight(evadePlayer->GetPhaseMask(), distX, distY, distZ);
 		Position pos(distX, distY, distZ, angle);
 		if (!MapManager::IsValidMapCoord(evadePlayer->GetMapId(), distX, distY, distZ, angle))
-			pos = evadePlayer->GetFirstCollisionPosition((BOTAI_FIELDTELEPORT_DISTANCE * 4), angle);
+			evadePlayer->GetFirstCollisionPosition(pos, (BOTAI_FIELDTELEPORT_DISTANCE * 4), angle);
 		float dist = centerPlayer->GetDistance(pos);
 		if (dist > maxDist)
 		{
@@ -736,7 +736,7 @@ FIELDAI_LIST FieldBotMgr::GetAllFieldBotPlayer(TeamId team)
 
 void FieldBotMgr::TeleportToTargetVisible(BotFieldAI* pFieldAI, Player* pTarget)
 {
-	if (!pFieldAI || !pTarget || pFieldAI->HasTeleport() || !pFieldAI->GetAIPayer()/*IsSettingFinish*/ true)
+	if (!pFieldAI || !pTarget || pFieldAI->HasTeleport() || !pFieldAI->GetAIPayer() /*IsSettingFinish*/ || true)
 		return;
 	bool needResetAI = false;
 	int8 levelGap = (int8)pFieldAI->GetAIPayer()->getLevel() - (int8)pTarget->getLevel();
@@ -765,7 +765,8 @@ void FieldBotMgr::TeleportToTargetVisible(BotFieldAI* pFieldAI, Player* pTarget)
 		float farDist = BOTAI_FIELDTELEPORT_DISTANCE * 1.2f;
 		for (float angle = 0.0f; angle < (float(M_PI) * 2.0f); angle += onceAngle)
 		{
-			Position& pos = pTarget->GetFirstCollisionPosition(farDist, angle);
+			Position pos;
+			pTarget->GetFirstCollisionPosition(pos, farDist, angle);
 			float posDist = pTarget->GetDistance(pos);
 			if (posDist < farDist * 0.25f)
 				continue;
@@ -839,19 +840,11 @@ void FieldBotMgr::UpdateInitOnline()
 bool FieldBotMgr::IsVaildVisiblePos(Player* pTarget, float x, float y, float z)
 {
 	uint32 sessionID = pTarget->GetSession()->GetAccountId();
-	//PathParameter pathParam = PathParameter(sessionID, pTarget);
-	/*pathParam.*/targetPosX = x;
-	/*pathParam.*/targetPosY = y;
-	/*pathParam.*/targetPosZ = z;
-	/*pathParam.*/offset = 0;
-
-	//Pathfinding path(&pathParam, NULL, NULL);
-	float posx = /*pathParam.*/targetPosX;
-	float posy = /*pathParam.*/targetPosY;
-	float posz = /*pathParam.*/targetPosZ;
-	//path.UpdateAllowedPositionZ(posx, posy, posz);
-	bool result = //path.CalculatePath(posx, posy, posz);
-	if (!result || (//path.GetPathType() & PATHFIND_NOPATH))
+	float posx = x;
+	float posy = y;
+	float posz = z;
+	bool result = true;
+	if (!result)
 	{
 		return false;
 	}

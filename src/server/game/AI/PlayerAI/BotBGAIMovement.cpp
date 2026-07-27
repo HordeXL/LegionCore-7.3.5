@@ -128,7 +128,7 @@ bool BotAIVehicleMovement3D::UpdateVehicleMovement3D()
 
 	}
 
-	else
+	//else
 
 	{
 
@@ -602,71 +602,11 @@ void BotBGAIMovement::MovementTo(float x, float y, float z, float offset /* = 0 
 
 		{
 
-//if (irand(0,3)==1 && !m_Player->isInCombat()) 
-
-//	{
-
-		//m_Player->NearTeleportTo(x, y, z, 0);
-
-	 //TeleportToValidPosition();
-
-//	 TC_LOG_ERROR("PFThread::ThreadRun", "Path not find then tele!");
-
-//	 }
-
-	 //m_Player->NearTeleportTo(x, y, z, 0);
-
 			TC_LOG_ERROR(LOG_FILTER_PATH_GENERATOR, "Path not find1");
 
-            //pathParam->findOK = false;
-
 		}
 
-		else
-
-            //pathParam->findOK = true;
-
 	}
-
-	else
-
-            //pathParam->findOK = true;
-
-
-
-            //if (pathParam->findOK)
-
-	{
-
-            //pathParam->finishPaths.clear();
-
-		const std::vector<G3D::Vector3>& points = path.GetPath();
-
-		for (std::vector<G3D::Vector3>::const_iterator itPoints = points.begin();
-
-			itPoints != points.end();
-
-			itPoints++)
-
-		{
-
-            //pathParam->finishPaths.push_back(*itPoints);
-
-		}
-
-            //pathParam->destPosition = path.GetActualEndPosition();
-
-	}
-
-
-
-            //if (!pathParam->findOK && pathParam->finishPaths.size() > 2)
-
-            //pathParam->finishPaths.erase(pathParam->finishPaths.begin());
-
-            //ApplyFinishPath(pathParam);
-
-            //delete pathParam;
 
 }
 
@@ -710,7 +650,7 @@ void BotBGAIMovement::MovementTo(ObjectGuid guid, float offset /* = 0 */)
 
 		}
 
-		else
+		//else
 
 			return;
 
@@ -730,7 +670,7 @@ void BotBGAIMovement::MovementTo(ObjectGuid guid, float offset /* = 0 */)
 
 	}
 
-	else
+	//else
 
 	{
 
@@ -792,13 +732,13 @@ void BotBGAIMovement::MovementTo(ObjectGuid guid, float offset /* = 0 */)
 
 		}
 
-		else
+		//else
 
             //pathParam->findOK = true;
 
 	}
 
-	else
+	//else
 
             //pathParam->findOK = true;
 
@@ -810,7 +750,7 @@ void BotBGAIMovement::MovementTo(ObjectGuid guid, float offset /* = 0 */)
 
             //pathParam->finishPaths.clear();
 
-		const std::vector<G3D::Vector3>& points = path.GetPath();
+		const std::vector<G3D::Vector3> points; /*path.GetPath*/;
 
 		for (std::vector<G3D::Vector3>::const_iterator itPoints = points.begin();
 
@@ -904,13 +844,13 @@ void BotBGAIMovement::MovementToTarget()
 
 			}
 
-			else
+			//else
 
             //pathParam->findOK = true;
 
 		}
 
-		else
+		//else
 
             //pathParam->findOK = true;
 
@@ -922,7 +862,7 @@ void BotBGAIMovement::MovementToTarget()
 
             //pathParam->finishPaths.clear();
 
-			const std::vector<G3D::Vector3>& points = path.GetPath();
+			const std::vector<G3D::Vector3> points; /*path.GetPath*/;
 
 			for (std::vector<G3D::Vector3>::const_iterator itPoints = points.begin();
 
@@ -956,8 +896,7 @@ void BotBGAIMovement::MovementToTarget()
 
 
 
-            //void BotBGAIMovement::ApplyFinishPath(PathParameter* pathParam)
-
+            void BotBGAIMovement::ApplyFinishPath(PathParameter* pathParam)
 {
 
 	if (m_BGAI && m_BGAI->IsNotSelect(m_Player))
@@ -965,8 +904,7 @@ void BotBGAIMovement::MovementToTarget()
 		return;
 
             //if (!pathParam)
-
-		return;
+            //	return;
 
             //lastPathfindSure = pathParam->findOK ? 0 : lastPathfindSure + 1;
 
@@ -982,7 +920,7 @@ void BotBGAIMovement::MovementToTarget()
 
 	}
 
-	else
+	//else
 
 		m_Player->GetMotionMaster()->Clear();
 
@@ -994,7 +932,7 @@ void BotBGAIMovement::MovementToTarget()
 
 	}
 
-	else if (lastPathfindSure < 1)
+	if (lastPathfindSure < 1)
 
 	{
 
@@ -1017,60 +955,8 @@ void BotBGAIMovement::MovementToTarget()
 		return;
 
 	}
-
-	else
-
-	{
-
-		lastPathfindSure = 0;
-
-		m_MovementTick = 0;
-
-            //if (pathParam->destPosition.x == 0 && pathParam->destPosition.y == 0 && pathParam->destPosition.z == 0)
-
-		{
-
-			m_Player->StopMoving();
-
-			TeleportToValidPosition();
-
-			return;
-
-		}
-
-            //for (std::vector<G3D::Vector3>::iterator itVec3 = pathParam->finishPaths.begin();
-
-            //itVec3 != pathParam->finishPaths.end();
-
-			itVec3++)
-
-		{
-
-			float z = (*itVec3).z;
-
-			m_Player->GetMap()->GetHeight(m_Player->GetPhaseMask(), (*itVec3).x, (*itVec3).y, z);
-
-			(*itVec3).z = z;
-
-		}
-
-            //m_Player->GetMap()->GetHeight(m_Player->GetPhaseMask(), pathParam->destPosition.x, pathParam->destPosition.y, pathParam->destPosition.z);
-
 	}
 
-	if (Unit* pVehicle = m_Player->GetVehicleBase())
-
-	{
-
-            //pVehicle->GetMotionMaster()->MovePathfinding(pathParam);
-
-	}
-
-	else
-
-            //m_Player->GetMotionMaster()->MovePathfinding(pathParam);
-
-}
 
 
 
@@ -1147,7 +1033,7 @@ void BotBGAIMovement::TeleportToValidPosition()
 
 			uint32 sessionID = m_Player->GetSession()->GetAccountId();
 
-            //PathParameter pathParam(sessionID, m_Player);
+            ///*PathParametersessionID, m_Player);
 
             //pathParam.posX = targetPos.x;
 
@@ -1305,7 +1191,7 @@ bool BotBGAIMovement::IsNearToPosition(float x, float y, float z, float range)
 
 	}
 
-	else
+	//else
 
 	{
 
@@ -1461,65 +1347,8 @@ bool BotBGAIMovement::SimulationMovementTo(float x, float y, float z, Position& 
 
 
 
-	Map* pMap = m_Player->GetMap();
-
-	uint32 size = path.GetPath().size();
-
-	if (size <= 2)
-
-	{
-
-            //delete pathParam;
-
-		return false;
-
-	}
-
-	bool hasPos = false;
-
-	for (uint32 i = 0; i < size; i++)
-
-	{
-
-		if (i >= size - 1)
-
-			break;
-
-		const G3D::Vector3& p = path.GetPath()[i];
-
-		const G3D::Vector3& np = path.GetPath()[i + 1];
-
-		if (pMap->isInLineOfSight(p.x, p.y, p.z + 2.0f, np.x, np.y, np.z + 2.0f, m_Player->GetPhases()))
-
-		{
-
-			outPos.m_positionX = p.x;
-
-			outPos.m_positionY = p.y;
-
-			outPos.m_positionZ = p.z;
-
-			hasPos = true;
-
-		}
-
-	}
-
-	if (!hasPos)
-
-	{
-
-            //delete pathParam;
-
-		return false;
-
-	}
-
-	//outPos.m_positionZ = pMap->GetHeight(m_Player->GetPhaseMask(), outPos.m_positionX, outPos.m_positionY, outPos.m_positionZ);
-
-            //delete pathParam;
-
-	return true;
+	//Pathfinding disabled
+	return false;
 
 }
 
@@ -1578,18 +1407,5 @@ uint32 BotBGAIMovement::GetTargetFindpathPointCount(Player* self, Unit* pTarget)
 		return 0;
 
 	}
-
-
-
-	uint32 size = path.GetPath().size();
-
-            //delete pathParam;
-
-	if (size <= 2)
-
-		return 0;
-
-	return size;
-
-}
+	}
 

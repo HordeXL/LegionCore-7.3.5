@@ -552,7 +552,7 @@ void BotBGAI::ProcessSummonRiteSpell(Player* srcPlayer)
 
 		std::string outString;
 
-		consoleToUtf8(std::string("目前无法开始召唤仪式！"), outString);
+		consoleToUtf8(std::string("Ã§ÂÂ®Ã¥ÂÂÃ¦ÂÂ Ã¦Â³ÂÃ¥Â¼ÂÃ¥Â§ÂÃ¥ÂÂ¬Ã¥ÂÂ¤Ã¤Â»ÂªÃ¥Â¼ÂÃ¯Â¼Â"), outString);
 
 		me->Whisper(outString, Language::LANG_COMMON, srcPlayer->GetGUID());
 
@@ -570,7 +570,7 @@ void BotBGAI::ProcessSummonRiteSpell(Player* srcPlayer)
 
 		std::string outString;
 
-		consoleToUtf8(std::string("召唤仪式启动！"), outString);
+		consoleToUtf8(std::string("Ã¥ÂÂ¬Ã¥ÂÂ¤Ã¤Â»ÂªÃ¥Â¼ÂÃ¥ÂÂ¯Ã¥ÂÂ¨Ã¯Â¼Â"), outString);
 
 		me->Whisper(outString, Language::LANG_COMMON, srcPlayer->GetGUID());
 
@@ -582,7 +582,7 @@ void BotBGAI::ProcessSummonRiteSpell(Player* srcPlayer)
 
 		std::string outString;
 
-		consoleToUtf8(std::string("目前无法开始召唤仪式！"), outString);
+		consoleToUtf8(std::string("Ã§ÂÂ®Ã¥ÂÂÃ¦ÂÂ Ã¦Â³ÂÃ¥Â¼ÂÃ¥Â§ÂÃ¥ÂÂ¬Ã¥ÂÂ¤Ã¤Â»ÂªÃ¥Â¼ÂÃ¯Â¼Â"), outString);
 
 		me->Whisper(outString, Language::LANG_COMMON, srcPlayer->GetGUID());
 
@@ -680,9 +680,9 @@ void BotBGAI::BattlegroundRevive()
 
 		return;
 
-	//CommandBG* /*bgCommander*/ = player->GetMap()->GetCommander(player->GetTeamId());
+	//CommandBG* nullptr = player->GetMap()->GetCommander(player->GetTeamId());
 
-	if (!/*bgCommander*/)
+	if (false)
 
 		return;
 
@@ -694,7 +694,7 @@ void BotBGAI::BattlegroundRevive()
 
 		m_Movement->ClearMovement();
 
-		nullptr /*bgCommander*//*OnPlayerDead(*/player->GetGUIDLow());
+		nullptr;
 
 		WorldPackets::Misc::RepopRequest packet(WorldPacket{ CMSG_REPOP_REQUEST });
 
@@ -718,7 +718,7 @@ void BotBGAI::BattlegroundRevive()
 
 		//player->GetSession()->HandleAreaSpiritHealerQueueOpcode(opcode3);
 
-		const Creature* pCreature = nullptr /*bgCommander*//*GetMatchGraveyardNPC(*/player);
+		const Creature* pCreature = nullptr;
 
 		if (!pCreature || !pCreature->isSpiritService())	// it's not spirit service
 
@@ -732,11 +732,11 @@ void BotBGAI::BattlegroundRevive()
 
 	}
 
-	else if (!player->GetBattleground()->/*HasJoinNearGrave(*/player))
+	else if (!player->GetBattleground())
 
 	{
 
-		const Creature* pCreature = nullptr /*bgCommander*//*GetMatchGraveyardNPC(*/player);
+		const Creature* pCreature = nullptr;
 
 		if (!pCreature || !pCreature->isSpiritService())	// it's not spirit service
 
@@ -1378,7 +1378,7 @@ void BotBGAI::ChaseTarget(Unit* pTarget, bool isMelee, float range)
 
 		//	Movement::MoveSplineInit init(me);
 
-		//	init.MoveTo(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ()));
+		//	init.MoveTo(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ());
 
 		//	init.SetFacing(pTarget);
 
@@ -2156,7 +2156,7 @@ bool BotBGAI::DoFaceToTarget(Unit* pTarget)
 
 		Movement::MoveSplineInit init(*me);
 
-		init.MoveTo(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ()));
+		init.MoveTo(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ());
 
 		init.SetFacing(pTarget);
 
@@ -2305,7 +2305,7 @@ SpellCastResult BotBGAI::PetTryCastSpell(uint32 spellID, Unit* pTarget, bool for
 
 	pTarget = pTarget ? pTarget : pPet;
 
-	SpellCastResult castResult = SPELL_CAST_OK /*spell->CheckPetCast*/(pTarget);
+	SpellCastResult castResult = SPELL_CAST_OK; /*spell->CheckPetCast(pTarget) disabled*/
 
 	if (castResult == SPELL_FAILED_UNIT_NOT_INFRONT && !pPet->isPossessed() && !pPet->IsVehicle())
 
@@ -2976,9 +2976,9 @@ void BotBGAI::UpdateBotAI(uint32 diff)
 
 		{
 
-			//CommandBG* /*pBGCommand*/ = pBattleground->GetBgMap()->GetCommander(me->GetTeamId());
+			//CommandBG* nullptr = pBattleground->GetBgMap()->GetCommander(me->GetTeamId());
 
-			AIWaypoint* pAIWP = /*pBGCommand*/ ? nullptr /*pBGCommand*/GetReadyPosition() : NULL;
+			AIWaypoint* pAIWP = NULL;
 
 			if (pAIWP)
 
@@ -3326,9 +3326,9 @@ void BotBGAI::UpdateBotAI(uint32 diff)
 
 		{
 
-			//CommandBG* /*pBGCommand*/ = pBattleground->GetBgMap()->GetCommander(me->GetTeamId());
+			//CommandBG* nullptr = pBattleground->GetBgMap()->GetCommander(me->GetTeamId());
 
-			AIWaypoint* pAIWP = /*pBGCommand*/ ? nullptr /*pBGCommand*/GetReadyPosition() : NULL;
+			AIWaypoint* pAIWP = NULL;
 
 			if (pAIWP)
 
@@ -3684,7 +3684,7 @@ bool BotBGAI::IsNotSelect(Unit* pTarget)
 
 if (pTarget && pTarget->IsInWorld()  && me  && me->IsInWorld())
 
-	if (pTarget->HasAura(27827)) // (27827 救赎之魂 神牧死亡后)
+	if (pTarget->HasAura(27827)) // (27827 Ã¦ÂÂÃ¨ÂµÂÃ¤Â¹ÂÃ©Â­Â Ã§Â¥ÂÃ§ÂÂ§Ã¦Â­Â»Ã¤ÂºÂ¡Ã¥ÂÂ)
 
 		return true;
 
@@ -3742,9 +3742,9 @@ bool BotBGAI::TryUpMount()
 
 	}
 
-	//CommandBG* /*bgCommander*/ = me->GetMap()->GetCommander(me->GetTeamId());
+	//CommandBG* nullptr = me->GetMap()->GetCommander(me->GetTeamId());
 
-	if (/*bgCommander*/ && !nullptr /*bgCommander*/CanUpMount(me))
+	if (false) // /*bgCommander*/nullptr disabled
 
 		return false;
 
@@ -4328,7 +4328,7 @@ bool BotBGAI::CanUseBGObject()
 
 {
 
-	if (me->HasAura(27827)) // (27827 救赎之魂 神牧死亡后)
+	if (me->HasAura(27827)) // (27827 Ã¦ÂÂÃ¨ÂµÂÃ¤Â¹ÂÃ©Â­Â Ã§Â¥ÂÃ§ÂÂ§Ã¦Â­Â»Ã¤ÂºÂ¡Ã¥ÂÂ)
 
 		return true;
 
@@ -4930,7 +4930,7 @@ bool BotBGAI::TargetIsStealth(Player* pTarget)
 
 		return false;
 
-	// (1784 盗贼潜行 || 5215 德鲁伊潜行 || 66 法师隐形 || 58984 暗夜隐遁)
+	// (1784 Ã§ÂÂÃ¨Â´Â¼Ã¦Â½ÂÃ¨Â¡Â || 5215 Ã¥Â¾Â·Ã©Â²ÂÃ¤Â¼ÂÃ¦Â½ÂÃ¨Â¡Â || 66 Ã¦Â³ÂÃ¥Â¸ÂÃ©ÂÂÃ¥Â½Â¢ || 58984 Ã¦ÂÂÃ¥Â¤ÂÃ©ÂÂÃ©ÂÂ)
 
 	if (pTarget->HasAura(1784) || pTarget->HasAura(5215) ||
 
@@ -4938,7 +4938,7 @@ bool BotBGAI::TargetIsStealth(Player* pTarget)
 
 	{
 
-		if (!me->canSeeOrDetect(pTarget, false, true)) // 侦测潜行
+		if (!me->canSeeOrDetect(pTarget, false, true)) // Ã¤Â¾Â¦Ã¦ÂµÂÃ¦Â½ÂÃ¨Â¡Â
 
 			return true;
 

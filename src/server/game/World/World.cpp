@@ -1589,7 +1589,6 @@ void World::SetInitialWorldSettings()
 #ifdef PLAYERBOT
     sPlayerBotMgr->SetMax(sConfigMgr->GetIntDefault("PlayerBot.MaxOnlineCount", 10));
     sPlayerBotMgr->LoadPlayerBotBaseInfo();
-    sPlayerBotMgr->AllPlayerBotRandomLogin();
 #endif
 
 #ifdef ELUNA_TRINITY
@@ -2513,9 +2512,7 @@ void World::Update(uint32 diff)
     UpdateSessions(diff);
 
 #ifdef PLAYERBOT
-    #ifdef PLAYERBOT_AI
     sPlayerBotMgr->Update();
-#endif
 #endif
 
     /// <li> Update uptime table

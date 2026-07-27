@@ -590,7 +590,7 @@ void BotGroupAI::ProcessListEquip(Player* srcPlayer)
 
 	std::lock_guard<std::mutex> lock(m_ItemLock);
 
-	if (!srcPlayer || srcPlayer->sPlayerBotMgr->IsPlayerBot(GetSession()))
+	if (!srcPlayer || sPlayerBotMgr->IsPlayerBot(srcPlayer->GetSession()))
 
 		return;
 
@@ -750,7 +750,7 @@ void BotGroupAI::ProcessUpequip(Player* srcPlayer, std::string& equipLink)
 
 			std::string outString;
 
-			consoleToUtf8(std::string("失败装备"), outString);
+			consoleToUtf8(std::string("Ã¥Â¤Â±Ã¨Â´Â¥Ã¨Â£ÂÃ¥Â¤Â"), outString);
 
 			me->Whisper(outString, Language::LANG_COMMON, srcPlayer->GetGUID());
 
@@ -778,7 +778,7 @@ void BotGroupAI::ProcessUpequip(Player* srcPlayer, std::string& equipLink)
 
 	std::string outString;
 
-	consoleToUtf8(std::string("成功装备"), outString);
+	consoleToUtf8(std::string("Ã¦ÂÂÃ¥ÂÂÃ¨Â£ÂÃ¥Â¤Â"), outString);
 
 	me->Whisper(outString, Language::LANG_COMMON, srcPlayer->GetGUID());
 
@@ -856,7 +856,7 @@ void BotGroupAI::ProcessUnequip(Player* srcPlayer, std::string& equipLink)
 
 			std::string outString;
 
-			consoleToUtf8(std::string("取下失败"), outString);
+			consoleToUtf8(std::string("Ã¥ÂÂÃ¤Â¸ÂÃ¥Â¤Â±Ã¨Â´Â¥"), outString);
 
 			me->Whisper(outString, Language::LANG_COMMON, srcPlayer->GetGUID());
 
@@ -870,7 +870,7 @@ void BotGroupAI::ProcessUnequip(Player* srcPlayer, std::string& equipLink)
 
 		std::string outString;
 
-		consoleToUtf8(std::string("成功取下"), outString);
+		consoleToUtf8(std::string("Ã¦ÂÂÃ¥ÂÂÃ¥ÂÂÃ¤Â¸Â"), outString);
 
 		me->Whisper(outString, Language::LANG_COMMON, srcPlayer->GetGUID());
 
@@ -880,7 +880,7 @@ void BotGroupAI::ProcessUnequip(Player* srcPlayer, std::string& equipLink)
 
 	std::string outString;
 
-	consoleToUtf8(std::string("取下失败"), outString);
+	consoleToUtf8(std::string("Ã¥ÂÂÃ¤Â¸ÂÃ¥Â¤Â±Ã¨Â´Â¥"), outString);
 
 	me->Whisper(outString, Language::LANG_COMMON, srcPlayer->GetGUID());
 
@@ -918,7 +918,7 @@ void BotGroupAI::ProcessDestroyItem(Player* srcPlayer, std::string& equipLink)
 
 	std::string outString;
 
-	consoleToUtf8(std::string("成功丢掉"), outString);
+	consoleToUtf8(std::string("Ã¦ÂÂÃ¥ÂÂÃ¤Â¸Â¢Ã¦ÂÂ"), outString);
 
 	me->Whisper(outString, Language::LANG_COMMON, srcPlayer->GetGUID());
 
@@ -954,7 +954,7 @@ void BotGroupAI::ProcessTradeItem(Player* srcPlayer, std::string& equipLink)
 
 		std::string outString;
 
-		consoleToUtf8(std::string("我没有这个道具"), outString);
+		consoleToUtf8(std::string("Ã¦ÂÂÃ¦Â²Â¡Ã¦ÂÂÃ¨Â¿ÂÃ¤Â¸ÂªÃ©ÂÂÃ¥ÂÂ·"), outString);
 
 		me->Whisper(outString, Language::LANG_COMMON, srcPlayer->GetGUID());
 
@@ -970,7 +970,7 @@ void BotGroupAI::ProcessTradeItem(Player* srcPlayer, std::string& equipLink)
 
 		std::string outString;
 
-		consoleToUtf8(std::string("我没有这个道具"), outString);
+		consoleToUtf8(std::string("Ã¦ÂÂÃ¦Â²Â¡Ã¦ÂÂÃ¨Â¿ÂÃ¤Â¸ÂªÃ©ÂÂÃ¥ÂÂ·"), outString);
 
 		me->Whisper(outString, Language::LANG_COMMON, srcPlayer->GetGUID());
 
@@ -986,7 +986,7 @@ void BotGroupAI::ProcessTradeItem(Player* srcPlayer, std::string& equipLink)
 
 		std::string outString;
 
-		consoleToUtf8(std::string("没有开始交易"), outString);
+		consoleToUtf8(std::string("Ã¦Â²Â¡Ã¦ÂÂÃ¥Â¼ÂÃ¥Â§ÂÃ¤ÂºÂ¤Ã¦ÂÂ"), outString);
 
 		me->Whisper(outString, Language::LANG_COMMON, srcPlayer->GetGUID());
 
@@ -1002,7 +1002,7 @@ void BotGroupAI::ProcessTradeItem(Player* srcPlayer, std::string& equipLink)
 
 		std::string outString;
 
-		consoleToUtf8(std::string("没有开始交易"), outString);
+		consoleToUtf8(std::string("Ã¦Â²Â¡Ã¦ÂÂÃ¥Â¼ÂÃ¥Â§ÂÃ¤ÂºÂ¤Ã¦ÂÂ"), outString);
 
 		me->Whisper(outString, Language::LANG_COMMON, srcPlayer->GetGUID());
 
@@ -1028,7 +1028,7 @@ void BotGroupAI::ProcessTradeItem(Player* srcPlayer, std::string& equipLink)
 
 		std::string outString;
 
-		consoleToUtf8(std::string("这个道具已经放上去了"), outString);
+		consoleToUtf8(std::string("Ã¨Â¿ÂÃ¤Â¸ÂªÃ©ÂÂÃ¥ÂÂ·Ã¥Â·Â²Ã§Â»ÂÃ¦ÂÂ¾Ã¤Â¸ÂÃ¥ÂÂ»Ã¤ÂºÂ"), outString);
 
 		me->Whisper(outString, Language::LANG_COMMON, srcPlayer->GetGUID());
 
@@ -1042,7 +1042,7 @@ void BotGroupAI::ProcessTradeItem(Player* srcPlayer, std::string& equipLink)
 
 	//	std::string outString;
 
-	//	consoleToUtf8(std::string("无法放上这个道具"), outString);
+	//	consoleToUtf8(std::string("Ã¦ÂÂ Ã¦Â³ÂÃ¦ÂÂ¾Ã¤Â¸ÂÃ¨Â¿ÂÃ¤Â¸ÂªÃ©ÂÂÃ¥ÂÂ·"), outString);
 
 	//	me->Whisper(outString, Language::LANG_COMMON, srcPlayer);
 
@@ -1050,13 +1050,22 @@ void BotGroupAI::ProcessTradeItem(Player* srcPlayer, std::string& equipLink)
 
 	//}
 
-	if (pTrade/*->SetItemAtNullSlot(*/pItem, true))
+	int tradeSlot = 0;
+
+	for (; tradeSlot < TRADE_SLOT_TRADED_COUNT; ++tradeSlot)
+
+		if (!pTrade->GetItem(TradeSlots(tradeSlot)))
+
+			break;
+
+	if (tradeSlot < TRADE_SLOT_TRADED_COUNT)
 
 	{
 
-		std::string outString;
+		pTrade->SetItem(TradeSlots(tradeSlot), pItem);
 
-		consoleToUtf8(std::string("放上去了"), outString);
+		std::string outString;
+		consoleToUtf8(std::string("Ã¦ÂÂ¾Ã¤Â¸ÂÃ¥ÂÂ»Ã¤ÂºÂ"), outString);
 
 		me->Whisper(outString, Language::LANG_COMMON, srcPlayer->GetGUID());
 
@@ -1068,7 +1077,7 @@ void BotGroupAI::ProcessTradeItem(Player* srcPlayer, std::string& equipLink)
 
 		std::string outString;
 
-		consoleToUtf8(std::string("没法再放东西了"), outString);
+		consoleToUtf8(std::string("Ã¦Â²Â¡Ã¦Â³ÂÃ¥ÂÂÃ¦ÂÂ¾Ã¤Â¸ÂÃ¨Â¥Â¿Ã¤ÂºÂ"), outString);
 
 		me->Whisper(outString, Language::LANG_COMMON, srcPlayer->GetGUID());
 
@@ -1114,23 +1123,11 @@ void BotGroupAI::ProcessUseItem(Player* srcPlayer, std::string& equipLink)
 
 	targets.SetTargetMask(0);
 
-	if (!me->CastItemUseSpell(pItem, targets, 0, ObjectGuid::Empty))
-
-	{
-
-		std::string outString;
-
-		consoleToUtf8(std::string("失败使用"), outString);
-
-		me->Whisper(outString, Language::LANG_COMMON, srcPlayer->GetGUID());
-
-		return;
-
-	}
+	me->CastItemUseSpell(pItem, targets, 0, ObjectGuid::Empty);
 
 	std::string outString;
 
-	consoleToUtf8(std::string("成功使用"), outString);
+	consoleToUtf8(std::string("Ã¦ÂÂÃ¥ÂÂÃ¤Â½Â¿Ã§ÂÂ¨"), outString);
 
 	me->Whisper(outString, Language::LANG_COMMON, srcPlayer->GetGUID());
 
@@ -1158,7 +1155,7 @@ void BotGroupAI::ProcessTalent(Player* srcPlayer, std::string& talentText)
 
 		talentType = 3;
 
-	talentType = /*me->SwitchTalent(*/talentType);
+	me->ResetTalents(false);
 
 	OnLevelUp(talentType);
 
@@ -1168,7 +1165,7 @@ void BotGroupAI::ProcessTalent(Player* srcPlayer, std::string& talentText)
 
 	std::string outString;
 
-	consoleToUtf8(std::string("切换天赋完成"), outString);
+	consoleToUtf8(std::string("Ã¥ÂÂÃ¦ÂÂ¢Ã¥Â¤Â©Ã¨ÂµÂÃ¥Â®ÂÃ¦ÂÂ"), outString);
 
 	me->Whisper(outString, Language::LANG_COMMON, srcPlayer->GetGUID());
 
@@ -1198,7 +1195,7 @@ void BotGroupAI::ProcessSummonRiteSpell(Player* srcPlayer)
 
 		std::string outString;
 
-		consoleToUtf8(std::string("目前无法开始召唤仪式！"), outString);
+		consoleToUtf8(std::string("Ã§ÂÂ®Ã¥ÂÂÃ¦ÂÂ Ã¦Â³ÂÃ¥Â¼ÂÃ¥Â§ÂÃ¥ÂÂ¬Ã¥ÂÂ¤Ã¤Â»ÂªÃ¥Â¼ÂÃ¯Â¼Â"), outString);
 
 		me->Whisper(outString, Language::LANG_COMMON, srcPlayer->GetGUID());
 
@@ -1216,7 +1213,7 @@ void BotGroupAI::ProcessSummonRiteSpell(Player* srcPlayer)
 
 		std::string outString;
 
-		consoleToUtf8(std::string("召唤仪式启动！"), outString);
+		consoleToUtf8(std::string("Ã¥ÂÂ¬Ã¥ÂÂ¤Ã¤Â»ÂªÃ¥Â¼ÂÃ¥ÂÂ¯Ã¥ÂÂ¨Ã¯Â¼Â"), outString);
 
 		me->Whisper(outString, Language::LANG_COMMON, srcPlayer->GetGUID());
 
@@ -1228,7 +1225,7 @@ void BotGroupAI::ProcessSummonRiteSpell(Player* srcPlayer)
 
 		std::string outString;
 
-		consoleToUtf8(std::string("目前无法开始召唤仪式！"), outString);
+		consoleToUtf8(std::string("Ã§ÂÂ®Ã¥ÂÂÃ¦ÂÂ Ã¦Â³ÂÃ¥Â¼ÂÃ¥Â§ÂÃ¥ÂÂ¬Ã¥ÂÂ¤Ã¤Â»ÂªÃ¥Â¼ÂÃ¯Â¼Â"), outString);
 
 		me->Whisper(outString, Language::LANG_COMMON, srcPlayer->GetGUID());
 
@@ -2148,7 +2145,7 @@ bool BotGroupAI::IsNotSelect(Unit* pTarget)
 
 		return true;
 
-	if (pTarget->HasAura(27827)) // (27827 救赎之魂 神牧死亡后)
+	if (pTarget->HasAura(27827)) // (27827 Ã¦ÂÂÃ¨ÂµÂÃ¤Â¹ÂÃ©Â­Â Ã§Â¥ÂÃ§ÂÂ§Ã¦Â­Â»Ã¤ÂºÂ¡Ã¥ÂÂ)
 
 		return true;
 
@@ -2758,7 +2755,7 @@ Unit* BotGroupAI::GetCombatTarget(float range)
 
 	{
 
-		Unit* pTankTarget = pGroup/*->GetGroupTankTarget(*/);
+		Unit* pTankTarget = nullptr;
 
 		if (pTankTarget && pTankTarget->isAlive() && me->IsValidAttackTarget(pTankTarget) &&
 
@@ -3275,7 +3272,7 @@ SpellCastResult BotGroupAI::PetTryCastSpell(uint32 spellID, Unit* pTarget, bool 
 
 	pTarget = pTarget ? pTarget : pPet;
 
-	SpellCastResult castResult = SPELL_CAST_OK /*spell->CheckPetCast*/(pTarget);
+	SpellCastResult castResult = SPELL_CAST_OK; /*spell->CheckPetCast(pTarget) disabled*/
 
 	if (castResult == SPELL_FAILED_UNIT_NOT_INFRONT && !pPet->isPossessed() && !pPet->IsVehicle())
 
@@ -4526,7 +4523,7 @@ bool BotGroupAI::ProcessTank(Unit* pTarget)
 
 				{
 
-					if (!pUnitTarget/*IsTankPlayer*/ false || pUnitTarget->GetTargetGUID() != pUnit->GetGUID())
+					if (false || pUnitTarget->GetTargetGUID() != pUnit->GetGUID())
 
 						ProcessPullSpell(pUnit);
 
@@ -5216,7 +5213,7 @@ Unit* BotGroupAI::SearchTankTargetEnemy(float range)
 
 			}
 
-			//if (player && player/*IsTankPlayer*/ false)
+			//if (player && false)
 
 			//	continue;
 
@@ -5246,7 +5243,7 @@ Unit* BotGroupAI::SearchTankTargetEnemy(float range)
 
 	{
 
-		if (pGroup/*AllGroupIsIDLE*/ false)
+		if (false)
 
 		{
 
@@ -5278,7 +5275,7 @@ Unit* BotGroupAI::SearchTankTargetEnemy(float range)
 
 						Player* player = ObjectAccessor::FindPlayer(guid);
 
-						if (player && player/*IsTankPlayer*/ false)
+						if (player && false)
 
 							continue;
 
@@ -6022,7 +6019,7 @@ bool BotGroupAI::TargetIsStealth(Player* pTarget)
 
 		return false;
 
-	// (1784 盗贼潜行 || 5215 德鲁伊潜行 || 66 法师隐形 || 58984 暗夜隐遁)
+	// (1784 Ã§ÂÂÃ¨Â´Â¼Ã¦Â½ÂÃ¨Â¡Â || 5215 Ã¥Â¾Â·Ã©Â²ÂÃ¤Â¼ÂÃ¦Â½ÂÃ¨Â¡Â || 66 Ã¦Â³ÂÃ¥Â¸ÂÃ©ÂÂÃ¥Â½Â¢ || 58984 Ã¦ÂÂÃ¥Â¤ÂÃ©ÂÂÃ©ÂÂ)
 
 	if (pTarget->HasAura(1784) || pTarget->HasAura(5215) ||
 
@@ -6030,7 +6027,7 @@ bool BotGroupAI::TargetIsStealth(Player* pTarget)
 
 	{
 
-		if (!me->canSeeOrDetect(pTarget, false, true)) // 侦测潜行
+		if (!me->canSeeOrDetect(pTarget, false, true)) // Ã¤Â¾Â¦Ã¦ÂµÂÃ¦Â½ÂÃ¨Â¡Â
 
 			return true;
 

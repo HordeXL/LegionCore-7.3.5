@@ -34,7 +34,7 @@ public:
 
 
 
-	void ResetBotAI() override;
+	void ResetBotAI() override { }
 
 
 
@@ -42,19 +42,19 @@ protected:
 
 	uint32 GetRagePowerPer();
 
-	void EachTick() override;
+	void EachTick() override { }
 
-	void ClearMechanicAura() override;
+	void ClearMechanicAura() override { }
 
-	bool NeedWaitSpecialSpell(uint32 diff) override;
+	bool NeedWaitSpecialSpell(uint32 diff) override { return false; }
 
 	void UpdateTalentType();
 
-	void ProcessMeleeSpell(Unit* pTarget) override;
+	void ProcessMeleeSpell(Unit* pTarget) override { }
 
-	void ProcessRangeSpell(Unit* pTarget) override;
+	void ProcessRangeSpell(Unit* pTarget) override { }
 
-	void ProcessFlee() override;
+	void ProcessFlee() override { }
 
 
 
@@ -108,7 +108,7 @@ public:
 
 
 
-	void ResetBotAI() override;
+	void ResetBotAI() override { }
 
 
 
@@ -118,15 +118,15 @@ protected:
 
 	void UpdateTalentType();
 
-	void EachTick() override;
+	void EachTick() override { }
 
-	void ProcessHealthSpell(Unit* pTarget) override;
+	void ProcessHealthSpell(Unit* pTarget) override { }
 
-	void ProcessMeleeSpell(Unit* pTarget) override;
+	void ProcessMeleeSpell(Unit* pTarget) override { }
 
-	void ProcessRangeSpell(Unit* pTarget) override;
+	void ProcessRangeSpell(Unit* pTarget) override { }
 
-	void ProcessFlee() override;
+	void ProcessFlee() override { }
 
 
 
@@ -148,9 +148,9 @@ protected:
 
 	bool TargetNeedFree(Unit* player);
 
-	bool IsHealerBotAI() override;
+	bool IsHealerBotAI() override { return false; }
 
-	bool IsAttacker() override;
+	bool IsAttacker() override { return false; }
 
 	bool TargetIsCtrl(Unit* pTarget);
 
@@ -182,7 +182,7 @@ public:
 
 
 
-	void ResetBotAI() override;
+	void ResetBotAI() override { }
 
 
 
@@ -192,13 +192,13 @@ protected:
 
 	void UpdateTalentType();
 
-	void EachTick() override;
+	void EachTick() override { }
 
-	void ProcessMeleeSpell(Unit* pTarget) override;
+	void ProcessMeleeSpell(Unit* pTarget) override { }
 
-	void ProcessRangeSpell(Unit* pTarget) override;
+	void ProcessRangeSpell(Unit* pTarget) override { }
 
-	void ProcessFlee() override;
+	void ProcessFlee() override { }
 
 
 
@@ -252,7 +252,7 @@ public:
 
 
 
-	void ResetBotAI() override;
+	void ResetBotAI() override { }
 
 
 
@@ -262,13 +262,13 @@ protected:
 
 	void UpdateTalentType();
 
-	void EachTick() override;
+	void EachTick() override { }
 
-	void ProcessMeleeSpell(Unit* pTarget) override;
+	void ProcessMeleeSpell(Unit* pTarget) override { }
 
-	void ProcessRangeSpell(Unit* pTarget) override;
+	void ProcessRangeSpell(Unit* pTarget) override { }
 
-	void ProcessFlee() override;
+	void ProcessFlee() override { }
 
 	bool ProcessSneakSpell(Unit* pTarget);
 
@@ -318,7 +318,7 @@ public:
 
 
 
-	void ResetBotAI() override;
+	void ResetBotAI() override { }
 
 
 
@@ -332,17 +332,17 @@ protected:
 
 	void UpdateTalentType();
 
-	void EachTick() override;
+	void EachTick() override { }
 
-	bool NeedFlee() override;
+	bool NeedFlee() override { return false; }
 
-	void ProcessFlee() override;
+	void ProcessFlee() override { }
 
-	void ProcessHealthSpell(Unit* pTarget) override;
+	void ProcessHealthSpell(Unit* pTarget) override { }
 
-	void ProcessMeleeSpell(Unit* pTarget) override;
+	void ProcessMeleeSpell(Unit* pTarget) override { }
 
-	void ProcessRangeSpell(Unit* pTarget) override;
+	void ProcessRangeSpell(Unit* pTarget) override { }
 
 
 
@@ -364,13 +364,13 @@ protected:
 
 	bool TargetHasMechanic(Unit* pTarget);
 
-	bool IsMeleeBotAI() override;
+	bool IsMeleeBotAI() override { return false; }
 
-	bool IsRangeBotAI() override;
+	bool IsRangeBotAI() override { return false; }
 
-	bool IsHealerBotAI() override;
+	bool IsHealerBotAI() override { return false; }
 
-	bool IsAttacker() override;
+	bool IsAttacker() override { return false; }
 
 	bool HasEnergyStore();
 
@@ -418,7 +418,7 @@ public:
 
 
 
-	void ResetBotAI() override;
+	void ResetBotAI() override { }
 
 
 
@@ -428,13 +428,13 @@ protected:
 
 	void UpdateTalentType();
 
-	bool NeedFlee() override;
+	bool NeedFlee() override { return false; }
 
-	void ProcessFlee() override;
+	void ProcessFlee() override { }
 
-	void ProcessMeleeSpell(Unit* pTarget) override;
+	void ProcessMeleeSpell(Unit* pTarget) override { }
 
-	void ProcessRangeSpell(Unit* pTarget) override;
+	void ProcessRangeSpell(Unit* pTarget) override { }
 
 
 
@@ -476,7 +476,7 @@ public:
 
 
 
-	void ResetBotAI() override;
+	void ResetBotAI() override { }
 
 
 
@@ -486,17 +486,17 @@ protected:
 
 	void UpdateTalentType();
 
-	void EachTick() override;
+	void EachTick() override { }
 
-	bool NeedFlee() override;
+	bool NeedFlee() override { return false; }
 
-	void ProcessFlee() override;
+	void ProcessFlee() override { }
 
-	void ProcessHealthSpell(Unit* pTarget) override;
+	void ProcessHealthSpell(Unit* pTarget) override { }
 
-	void ProcessMeleeSpell(Unit* pTarget) override;
+	void ProcessMeleeSpell(Unit* pTarget) override { }
 
-	void ProcessRangeSpell(Unit* pTarget) override;
+	void ProcessRangeSpell(Unit* pTarget) override { }
 
 	bool ProcessDispel();
 
@@ -508,13 +508,13 @@ protected:
 
 	bool ExistTotemByType(int totemType, float range);
 
-	bool IsMeleeBotAI() override;
+	bool IsMeleeBotAI() override { return false; }
 
-	bool IsRangeBotAI() override;
+	bool IsRangeBotAI() override { return false; }
 
-	bool IsHealerBotAI() override;
+	bool IsHealerBotAI() override { return false; }
 
-	bool IsAttacker() override;
+	bool IsAttacker() override { return false; }
 
 	bool TargetIsSuppress(Unit* pTarget);
 
@@ -556,7 +556,7 @@ public:
 
 
 
-	void ResetBotAI() override;
+	void ResetBotAI() override { }
 
 
 
@@ -564,23 +564,23 @@ protected:
 
 	uint32 GetManaPowerPer();
 
-	void ClearMechanicAura() override;
+	void ClearMechanicAura() override { }
 
-	bool NeedWaitSpecialSpell(uint32 diff) override;
+	bool NeedWaitSpecialSpell(uint32 diff) override { return false; }
 
 	void UpdateTalentType();
 
 	bool TargetCanFreeze(Unit* pTarget);
 
-	void EachTick() override;
+	void EachTick() override { }
 
-	bool NeedFlee() override;
+	bool NeedFlee() override { return false; }
 
-	void ProcessFlee() override;
+	void ProcessFlee() override { }
 
-	void ProcessMeleeSpell(Unit* pTarget) override;
+	void ProcessMeleeSpell(Unit* pTarget) override { }
 
-	void ProcessRangeSpell(Unit* pTarget) override;
+	void ProcessRangeSpell(Unit* pTarget) override { }
 
 
 
@@ -662,7 +662,7 @@ public:
 
 
 
-	void ResetBotAI() override;
+	void ResetBotAI() override { }
 
 
 
@@ -674,15 +674,15 @@ protected:
 
 	void UpdateTalentType();
 
-	void EachTick() override;
+	void EachTick() override { }
 
-	bool NeedFlee() override;
+	bool NeedFlee() override { return false; }
 
-	void ProcessFlee() override;
+	void ProcessFlee() override { }
 
-	void ProcessMeleeSpell(Unit* pTarget) override;
+	void ProcessMeleeSpell(Unit* pTarget) override { }
 
-	void ProcessRangeSpell(Unit* pTarget) override;
+	void ProcessRangeSpell(Unit* pTarget) override { }
 
 	void ProcessPetSpell(Unit* pTarget, bool fleeing);
 
@@ -744,7 +744,7 @@ public:
 
 
 
-	void ResetBotAI() override;
+	void ResetBotAI() override { }
 
 
 
@@ -752,21 +752,21 @@ protected:
 
 	uint32 GetManaPowerPer();
 
-	bool HaveManaStore() override;
+	bool HaveManaStore() override { return false; }
 
 	void UpdateTalentType();
 
-	void EachTick() override;
+	void EachTick() override { }
 
-	bool NeedFlee() override;
+	bool NeedFlee() override { return false; }
 
-	void ProcessFlee() override;
+	void ProcessFlee() override { }
 
-	void ProcessHealthSpell(Unit* pTarget) override;
+	void ProcessHealthSpell(Unit* pTarget) override { }
 
-	void ProcessMeleeSpell(Unit* pTarget) override;
+	void ProcessMeleeSpell(Unit* pTarget) override { }
 
-	void ProcessRangeSpell(Unit* pTarget) override;
+	void ProcessRangeSpell(Unit* pTarget) override { }
 
 
 
@@ -782,9 +782,9 @@ protected:
 
 
 
-	bool IsHealerBotAI() override;
+	bool IsHealerBotAI() override { return false; }
 
-	bool IsAttacker() override;
+	bool IsAttacker() override { return false; }
 
 
 

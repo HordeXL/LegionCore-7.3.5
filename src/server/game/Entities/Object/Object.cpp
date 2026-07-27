@@ -4124,20 +4124,6 @@ void WorldObject::RebuildWorldMapAreaSwaps()
     }*/
 }
 
-template<class NOTIFIER>
-void WorldObject::VisitNearbyGridObject(const float &radius, NOTIFIER &notifier) const
-{
-    if (IsInWorld())
-        GetMap()->VisitGrid(GetPositionX(), GetPositionY(), radius, notifier);
-}
-
-template<class NOTIFIER>
-void WorldObject::VisitNearbyWorldObject(const float &radius, NOTIFIER &notifier) const
-{
-    if (IsInWorld())
-        GetMap()->VisitWorld(GetPositionX(), GetPositionY(), radius, notifier);
-}
-
 void WorldObject::Clear()
 {
     Object::Clear();

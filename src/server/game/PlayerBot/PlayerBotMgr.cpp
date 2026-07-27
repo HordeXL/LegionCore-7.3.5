@@ -3,18 +3,19 @@
 #include "PlayerBotSetting.h"
 #include "ObjectMgr.h"
 #include "PlayerBotTalkMgr.h"
-#include "BotAIStubs.h"
-#include "World.h"
-#include "DB2Stores.h"
-#include "Player.h"
-#include "BattlegroundMgr.h"
 #ifdef PLAYERBOT_AI
 #include "BotAI.h"
 #include "BotFieldAI.h"
 #include "BotGroupAI.h"
 #include "BotDuelAI.h"
 #include "BotArenaAI.h"
+#else
+#include "BotAIStubs.h"
 #endif
+#include "World.h"
+#include "DB2Stores.h"
+#include "Player.h"
+#include "BattlegroundMgr.h"
 #include "OnlineMgr.h"
 #include "Group.h"
 #include "SocialMgr.h"
@@ -38,43 +39,43 @@ std::string PlayerBotCharBaseInfo::GetNameANDClassesText()
     switch (profession)
     {
         case 1:
-            //clsName = "  战  士 : ";
+            //clsName = "  æ  å£« : ";
             clsEntry += 1;
             break;
         case 2:
-            //clsName = "  圣骑士 : ";
+            //clsName = "  å£éªå£« : ";
             clsEntry += 2;
             break;
         case 3:
-            //clsName = "  猎  人 : ";
+            //clsName = "  ç  äºº : ";
             clsEntry += 3;
             break;
         case 4:
-            //clsName = "  盗  贼 : ";
+            //clsName = "  ç  è´¼ : ";
             clsEntry += 4;
             break;
         case 5:
-            //clsName = "  牧  师 : ";
+            //clsName = "  ç§  å¸ : ";
             clsEntry += 5;
             break;
         case 6:
-            //clsName = "  死  骑 : ";
+            //clsName = "  æ­»  éª : ";
             clsEntry += 6;
             break;
         case 7:
-            //clsName = "  萨  满 : ";
+            //clsName = "  è¨  æ»¡ : ";
             clsEntry += 7;
             break;
         case 8:
-            //clsName = "  法  师 : ";
+            //clsName = "  æ³  å¸ : ";
             clsEntry += 8;
             break;
         case 9:
-            //clsName = "  术  士 : ";
+            //clsName = "  æ¯  å£« : ";
             clsEntry += 9;
             break;
         case 11:
-            //clsName = "  德鲁伊 : ";
+            //clsName = "  å¾·é²ä¼ : ";
             clsEntry += 10;
             break;
     }
@@ -316,12 +317,13 @@ bool PlayerBotMgr::IsPlayerBot(WorldSession* pSession)
 
 bool PlayerBotMgr::IsBotAccuntName(std::string name)
 {
-    if (name.size() < 10)
+    std::string lower = boost::algorithm::to_lower_copy(name);
+    if (lower.size() < 10)
         return false;
-    std::string head = name.substr(0, 9);
+    std::string head = lower.substr(0, 9);
     if (head != "playerbot")
         return false;
-    std::string numText = name.substr(9);
+    std::string numText = lower.substr(9);
     int num = atoi(numText.c_str());
     return num > 0;
 }
@@ -949,7 +951,7 @@ void PlayerBotMgr::OnPlayerBotLogin(WorldSession* pSession, Player* pPlayer)
     if (pSession)
     {
         std::string outString;
-        consoleToUtf8(std::string(" 上 线"), outString);
+        consoleToUtf8(std::string(" ä¸ çº¿"), outString);
         sWorld->SendGlobalText((GetPlayerLinkText(pPlayer) + outString).c_str(), NULL);
     }
     if (PlayerBotSession* pBotSession = dynamic_cast<PlayerBotSession*>(pSession))
@@ -975,7 +977,7 @@ void PlayerBotMgr::OnPlayerBotLogout(WorldSession* pSession)
     if (m_BotOnlineCount < 0) m_BotOnlineCount = 0;
 
     std::string outString;
-    consoleToUtf8(std::string("机器人下线"), outString);
+    consoleToUtf8(std::string("æºå¨äººä¸çº¿"), outString);
     sWorld->SendGlobalText(outString.c_str(), NULL);
     PlayerBotSession* pBotSession = dynamic_cast<PlayerBotSession*>(pSession);
     if (pBotSession && !pBotSession->HasScheduleByType(BotGlobleScheduleType::BGSType_Online) &&
@@ -1032,7 +1034,7 @@ void PlayerBotMgr::LoginFriendBotByPlayer(Player* pPlayer)
     //	}
     //#else
     //	std::string allonlineText;
-    //	consoleToUtf8(std::string("|cffff8800体验版无法召唤好友机器人上线。|r"), allonlineText);
+    //	consoleToUtf8(std::string("|cffff8800ä½éªçæ æ³å¬å¤å¥½åæºå¨äººä¸çº¿ã|r"), allonlineText);
     //	sWorld->SendGlobalText(allonlineText.c_str(), NULL);
     //#endif
 }
@@ -1690,7 +1692,7 @@ void PlayerBotMgr::AddNewPlayerBot(bool faction, Classes prof, uint32 count)
     if (count > 0)
     {
         std::string allonlineText;
-        consoleToUtf8(std::string("|cffff8800所有机器人账号已经全部在线，无法上线新机器人。|r"), allonlineText);
+        consoleToUtf8(std::string("|cffff8800æææºå¨äººè´¦å·å·²ç»å¨é¨å¨çº¿ï¼æ æ³ä¸çº¿æ°æºå¨äººã|r"), allonlineText);
         sWorld->SendGlobalText(allonlineText.c_str(), NULL);
     }
 }
@@ -1738,7 +1740,7 @@ void PlayerBotMgr::AddNewAccountBot(bool faction, Classes prof)
     }
     std::string allonlineText;
 #ifdef INCOMPLETE_BOT
-    consoleToUtf8(std::string("|cffff8800体验版无法召唤上线自建账号角色|r"), allonlineText);
+    consoleToUtf8(std::string("|cffff8800ä½éªçæ æ³å¬å¤ä¸çº¿èªå»ºè´¦å·è§è²|r"), allonlineText);
     sWorld->SendGlobalText(allonlineText.c_str(), NULL);
     return;
 #endif
@@ -1803,7 +1805,7 @@ void PlayerBotMgr::AddNewAccountBot(bool faction, Classes prof)
         }
     }
 
-    consoleToUtf8(std::string("|cffff8800没有找到和你相同阵营的指定职业的自建账号角色|r"), allonlineText);
+    consoleToUtf8(std::string("|cffff8800æ²¡ææ¾å°åä½ ç¸åéµè¥çæå®èä¸çèªå»ºè´¦å·è§è²|r"), allonlineText);
     sWorld->SendGlobalText(allonlineText.c_str(), NULL);
 }
 
@@ -1903,7 +1905,7 @@ void PlayerBotMgr::AddNewPlayerBotByClass(uint32 count, Classes prof)
     if (allianceCount > 0 || hordeCount > 0)
     {
         std::string allonlineText;
-        consoleToUtf8(std::string("|cffff8800所有机器人账号已经全部在线，无法上线新机器人。|r"), allonlineText);
+        consoleToUtf8(std::string("|cffff8800æææºå¨äººè´¦å·å·²ç»å¨é¨å¨çº¿ï¼æ æ³ä¸çº¿æ°æºå¨äººã|r"), allonlineText);
         sWorld->SendGlobalText(allonlineText.c_str(), NULL);
     }
 }
@@ -2029,7 +2031,7 @@ void PlayerBotMgr::AddNewPlayerBotToBG(TeamId team, uint32 minLV, uint32 maxLV, 
     }
 
     std::string allonlineText;
-    consoleToUtf8(std::string("|cffff8800所有机器人账号已经全部在线，无法加入新机器人到战场中。|r"), allonlineText);
+    consoleToUtf8(std::string("|cffff8800æææºå¨äººè´¦å·å·²ç»å¨é¨å¨çº¿ï¼æ æ³å å¥æ°æºå¨äººå°æåºä¸­ã|r"), allonlineText);
     sWorld->SendGlobalText(allonlineText.c_str(), NULL);
 }
 
@@ -2174,7 +2176,7 @@ void PlayerBotMgr::AddNewPlayerBotToBG(TeamId team, uint32 minLV, uint32 maxLV, 
 //	}
 //
 //	std::string allonlineText;
-//	consoleToUtf8(std::string("|cffff8800所有机器人账号已经全部在线，无法加入新机器人到地下城队列中。|r"), allonlineText);
+//	consoleToUtf8(std::string("|cffff8800æææºå¨äººè´¦å·å·²ç»å¨é¨å¨çº¿ï¼æ æ³å å¥æ°æºå¨äººå°å°ä¸åéåä¸­ã|r"), allonlineText);
 //	sWorld->SendGlobalText(allonlineText.c_str(), NULL);
 //}
 
@@ -2287,7 +2289,7 @@ void PlayerBotMgr::AddNewPlayerBotToAA(TeamId team, BattlegroundTypeId bgTypeID,
     }
 
     std::string allonlineText;
-    consoleToUtf8(std::string("|cffff8800所有机器人账号已经全部在线，无法加入新机器人到竞技场中。|r"), allonlineText);
+    consoleToUtf8(std::string("|cffff8800æææºå¨äººè´¦å·å·²ç»å¨é¨å¨çº¿ï¼æ æ³å å¥æ°æºå¨äººå°ç«æåºä¸­ã|r"), allonlineText);
     sWorld->SendGlobalText(allonlineText.c_str(), NULL);
 }
 
@@ -2691,7 +2693,6 @@ void PlayerBotMgr::QueryBattlegroundRequirement()
     }
 }
 
-#ifdef PLAYERBOT_AI
 void PlayerBotMgr::QueryRatedArenaRequirement()
 {
     if (m_ArenaSearchTick > 0)
@@ -2711,11 +2712,7 @@ void PlayerBotMgr::QueryRatedArenaRequirement()
     {
         uint8 bgQueueTypeID = MS::Battlegrounds::GetBgQueueTypeIdByBgTypeID(MS::Battlegrounds::BattlegroundTypeId::ArenaAll, arenaType[i]);
         BattlegroundQueue& bgQueue = sBattlegroundMgr->GetBattlegroundQueue(bgQueueTypeID);
-        if (!false)
-        {
-            /*bgQueue.AllPlayerBotLeaveQueueFromRatedArena(bracketEntry->RangeIndex);
-            continue;
-        }
+        if (false) {} // AllPlayerBotLeaveQueueFromRatedArena disabled
         uint32 allianceGroupID = 0;
         uint32 hordeGroupID = 0;
         GroupQueueInfo* allianceGroupInfo = nullptr;
@@ -2727,24 +2724,7 @@ void PlayerBotMgr::QueryRatedArenaRequirement()
             allianceGroupID = allianceGroupInfo->GroupId;
             hordeGroupID = hordeGroupInfo->GroupId;
         }
-        /*else if (allianceGroupInfo && !BotUtility::DownBotArenaTeam)
-        {
-            allianceGroupID = allianceGroupInfo->GroupId;
-            hordeGroupID = hordeGroupInfo->GroupId;
-            if (hordeGroupID == 0)
-                continue;
-            AddTeamBotToRatedArena(hordeGroupID);
-        }
-        else if (hordeGroupInfo && !BotUtility::DownBotArenaTeam)
-        {
-            hordeGroupID = hordeGroupInfo->GroupId;
-            allianceGroupID = sArenaTeamMgr->SearchEnemyArenaTeam(hordeGroupID, ALLIANCE);
-            if (allianceGroupID == 0)
-                continue;
-            AddTeamBotToRatedArena(allianceGroupID);
-        }
-        /*else
-            continue;*/
+        if (false) {} /* AI arena team matching disabled */
         m_ArenaSearchTick = 14;
         break;
     }
@@ -2798,7 +2778,7 @@ void PlayerBotMgr::QueryNonRatedArenaRequirement()
     }
 }
 
-#endif /* PLAYERBOT_AI */
+
 void PlayerBotMgr::OnlinePlayerBotByGUIDQueue()
 {
     while (!m_DelayOnlineBots.empty())
@@ -2954,7 +2934,10 @@ uint32 PlayerBotMgr::GetOnlineBotCount2(TeamId team, bool hasReal)
 
 void PlayerBotMgr::Update()
 {
-
+    PlayerBotSetting::Initialize();
+    SupplementPlayerBot();
+    CreateOncePlayerBot();
+    AllPlayerBotRandomLogin();
     OnlinePlayerBotByGUIDQueue();
 
     //if (!ExistUnBGPlayerBot())

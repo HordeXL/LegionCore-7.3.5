@@ -3077,3 +3077,37 @@ Eluna.RequireCPaths = ""
 #
 ###################################################################################################
 
+###################################################################################################
+# PLAYER BOT SETTINGS
+###################################################################################################
+
+PlayerBot.Enable = 1
+#           启用/禁用 PlayerBot 模块 (1 = 启用, 0 = 禁用)
+
+PlayerBot.MaxOnlineCount = 10
+#           最大同时在线机器人数量
+
+PlayerBot.AccountPrefix = "PLAYERBOT"
+#           机器人账号名前缀，用于识别机器人账号
+
+PlayerBot.AccountCount = 90
+#           机器人账号数量（从 1 开始编号）
+
+PlayerBot.Battleground.Enable = 1
+#           启用战场填充功能
+
+PlayerBot.Arena.Enable = 1
+#           启用竞技场填充功能
+
+PlayerBot.Field.Enable = 1
+#           启用野外机器人行为
+
+PlayerBot.Talk.Enable = 1
+#           启用机器人聊天系统
+
+PlayerBot.FieldWarfare.Enable = 1
+#           启用野外 PvP 战斗系统
+
+PlayerBot.FieldWarfare.Size = 5
+#           野外 PvP 每方最大参战人数
+

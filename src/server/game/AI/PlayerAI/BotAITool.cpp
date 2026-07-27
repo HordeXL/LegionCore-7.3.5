@@ -130,7 +130,7 @@ void BotUtility::ModifySpecialSpells(SpellInfoMap& spellMap)
 
 {
 
-	if (SpellInfo* pSpellEntry = spellMap[8690]) // 修改炉石CD
+	if (SpellInfo* pSpellEntry = spellMap[8690]) // Ã¤Â¿Â®Ã¦ÂÂ¹Ã§ÂÂÃ§ÂÂ³CD
 
 	{
 
@@ -2744,11 +2744,9 @@ bool BotAIUsePotion::TryUseLifeVial()
 
 	targets.SetTargetMask(0);
 
-	if (me->CastItemUseSpell(pItem, targets, 0, ObjectGuid::Empty))
+	me->CastItemUseSpell(pItem, targets, 0, ObjectGuid::Empty);
 
-		return true;
-
-	return false;
+	return true;
 
 }
 
@@ -2768,11 +2766,9 @@ bool BotAIUsePotion::TryUseManaVial()
 
 	targets.SetTargetMask(0);
 
-	if (me->CastItemUseSpell(pItem, targets, 0, ObjectGuid::Empty))
+	me->CastItemUseSpell(pItem, targets, 0, ObjectGuid::Empty);
 
-		return true;
-
-	return false;
+	return true;
 
 }
 
@@ -3400,7 +3396,7 @@ bool BotAITrade::ProcessTrade()
 
 			std::string outString;
 
-			consoleToUtf8(std::string("正忙呢，待会再说。"), outString);
+			consoleToUtf8(std::string("Ã¦Â­Â£Ã¥Â¿ÂÃ¥ÂÂ¢Ã¯Â¼ÂÃ¥Â¾ÂÃ¤Â¼ÂÃ¥ÂÂÃ¨Â¯Â´Ã£ÂÂ"), outString);
 
 			me->Whisper(outString, Language::LANG_COMMON, pTradePlayer->GetGUID());
 
@@ -3558,7 +3554,9 @@ void BotAIFieldRevive::UpdateRevive(uint32 diff, BotAITeleport& teleport)
 
 		{
 
-			if (Corpse* corpse = me->CreateCorpse())
+			me->CreateCorpse();
+
+			if (Corpse* corpse = sObjectAccessor->GetCorpseForPlayerGUID(me->GetGUID()))
 
 			{
 
@@ -5414,7 +5412,7 @@ void BotAICheckSetting::UpdateCheckSetting()
 
 	//	return;
 
-	me->ResetPlayerToLevel(me->getLevel(), 3);
+	me->ResetPlayerToLevel(me->getLevel(), 3, false);
 
 }
 

@@ -258,13 +258,13 @@ void BotMovementAI::MovementTo(Player* player)
 
 	}
 
-	else
+	//else
 
             /*pathParam->findOK = true;*/
 
             /*pathParam->finishPaths.clear();*/
 
-	const std::vector<G3D::Vector3>& points = path.GetPath();
+	std::vector<G3D::Vector3> points; /*path.GetPath*/
 
 	for (std::vector<G3D::Vector3>::const_iterator itPoints = points.begin();
 
@@ -324,7 +324,7 @@ void BotMovementAI::MovementTo(float x, float y, float z)
 
             /*pathParam->finishPaths.clear();*/
 
-	const std::vector<G3D::Vector3>& points = path.GetPath();
+	std::vector<G3D::Vector3> points; /*path.GetPath*/
 
 	for (std::vector<G3D::Vector3>::const_iterator itPoints = points.begin();
 
@@ -352,29 +352,20 @@ void BotMovementAI::MovementTo(float x, float y, float z)
 
 
 
-            /*void BotMovementAI::ApplyFinishPath(PathParameter* /*pathParam*/)*/
-
+            /*void BotMovementAI::ApplyFinishPath(PathParameter* pathParam)
 {
-
-            /*if (!pathParam)*/
-
-		return;
-
-            /*if (pathParam->findOK)*/
-
-	{
-
-		me->GetMotionMaster()->Clear();
-
-            /*me->GetMotionMaster()->MovePathfinding(pathParam);*/
-
-	}
-
-}
+            if (!pathParam)
+                return;
+            if (pathParam->findOK)
+        {
+                me->GetMotionMaster()->Clear();
+            //me->GetMotionMaster()->MovePathfinding(pathParam);
+        }
+}*/
 
 
 
-void BotMovementAI::MovementToPath(Player* /*player*/, uint32 /*pid*/, uint32 /*index*/)
+void BotMovementAI::MovementToPath(Player* /*player*/, uint32 pid, uint32 index)
 
 {
 
@@ -426,7 +417,7 @@ void BotMovementAI::ProcessHorror(uint32 diff)
 
 	{
 
-		if (!me->isAlive() || me->HasAura(27827)) // (27827 救赎之魂 神牧死亡后)
+		if (!me->isAlive() || me->HasAura(27827)) // (27827 ÃÂ¦ÃÂÃÂÃÂ¨ÃÂµÃÂÃÂ¤ÃÂ¹ÃÂÃÂ©ÃÂ­ÃÂ ÃÂ§ÃÂ¥ÃÂÃÂ§ÃÂÃÂ§ÃÂ¦ÃÂ­ÃÂ»ÃÂ¤ÃÂºÃÂ¡ÃÂ¥ÃÂÃÂ)
 
 		{
 

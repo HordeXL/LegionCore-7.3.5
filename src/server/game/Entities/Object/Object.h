@@ -702,8 +702,19 @@ class WorldObject : public Object, public WorldLocation
                 GetMap()->VisitAll(GetPositionX(), GetPositionY(), radius, notifier);
         }
 
-        template<class NOTIFIER> void VisitNearbyGridObject(const float &radius, NOTIFIER &notifier) const;
-        template<class NOTIFIER> void VisitNearbyWorldObject(const float &radius, NOTIFIER &notifier) const;
+        template<class NOTIFIER>
+        void VisitNearbyGridObject(const float &radius, NOTIFIER &notifier) const
+        {
+            if (IsInWorld())
+                GetMap()->VisitGrid(GetPositionX(), GetPositionY(), radius, notifier);
+        }
+
+        template<class NOTIFIER>
+        void VisitNearbyWorldObject(const float &radius, NOTIFIER &notifier) const
+        {
+            if (IsInWorld())
+                GetMap()->VisitWorld(GetPositionX(), GetPositionY(), radius, notifier);
+        }
 
         virtual uint16 GetAIAnimKitId() const { return 0; }
         virtual uint16 GetMovementAnimKitId() const { return 0; }

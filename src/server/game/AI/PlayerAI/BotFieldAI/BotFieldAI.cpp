@@ -560,7 +560,7 @@ bool BotFieldAI::IsNotSelect(Unit* pTarget)
 
 		return true;
 
-	if (pTarget->HasAura(27827)) // (27827 救赎之魂 神牧死亡后)
+	if (pTarget->HasAura(27827)) // (27827 Ã¦ÂÂÃ¨ÂµÂÃ¤Â¹ÂÃ©Â­Â Ã§Â¥ÂÃ§ÂÂ§Ã¦Â­Â»Ã¤ÂºÂ¡Ã¥ÂÂ)
 
 		return true;
 
@@ -1033,8 +1033,6 @@ SpellCastResult BotFieldAI::TryCastSpell(uint32 spellID, Unit* pTarget, bool for
 		Dismount();
 
 	SpellCastResult castResult = SPELL_CAST_OK;
-
-	SpellCastResult castResult = SPELL_CAST_OK;
 			spell->prepare(&targets);
 
 	if (castResult != SpellCastResult::SPELL_CAST_OK)
@@ -1126,8 +1124,6 @@ SpellCastResult BotFieldAI::TryCastPullSpell(uint32 spellID, Unit* pTarget)
 	//}
 
 	Dismount();
-
-	SpellCastResult castResult = SPELL_CAST_OK;
 
 	SpellCastResult castResult = SPELL_CAST_OK;
 			spell->prepare(&targets);
@@ -2894,7 +2890,7 @@ bool BotFieldAI::TargetIsStealth(Player* pTarget)
 
 		return false;
 
-	// (1784 盗贼潜行 || 5215 德鲁伊潜行 || 66 法师隐形 || 58984 暗夜隐遁)
+	// (1784 Ã§ÂÂÃ¨Â´Â¼Ã¦Â½ÂÃ¨Â¡Â || 5215 Ã¥Â¾Â·Ã©Â²ÂÃ¤Â¼ÂÃ¦Â½ÂÃ¨Â¡Â || 66 Ã¦Â³ÂÃ¥Â¸ÂÃ©ÂÂÃ¥Â½Â¢ || 58984 Ã¦ÂÂÃ¥Â¤ÂÃ©ÂÂÃ©ÂÂ)
 
 	if (pTarget->HasAura(1784) || pTarget->HasAura(5215) ||
 
@@ -2902,7 +2898,7 @@ bool BotFieldAI::TargetIsStealth(Player* pTarget)
 
 	{
 
-		if (!me->canSeeOrDetect(pTarget, false, true)) // 侦测潜行
+		if (!me->canSeeOrDetect(pTarget, false, true)) // Ã¤Â¾Â¦Ã¦ÂµÂÃ¦Â½ÂÃ¨Â¡Â
 
 			return true;
 
