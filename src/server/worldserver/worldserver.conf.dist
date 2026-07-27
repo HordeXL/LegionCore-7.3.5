@@ -3084,6 +3084,12 @@ Eluna.RequireCPaths = ""
 PlayerBot.Enable = 1
 #           启用/禁用 PlayerBot 模块 (1 = 启用, 0 = 禁用)
 
+pbot = 1
+#           代码内部使用的 PlayerBot 功能开关 (1 = 启用)
+
+pbotall = 1
+#           代码内部使用的 PlayerBot 全部功能开关 (1 = 启用)
+
 PlayerBot.MaxOnlineCount = 10
 #           最大同时在线机器人数量
 
