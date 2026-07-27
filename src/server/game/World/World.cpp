@@ -40,6 +40,7 @@
 #include "BracketMgr.h"
 #include "CalendarMgr.h"
 #include "PlayerBotMgr.h"
+#include "PlayerBotTalkMgr.h"
 #include "CellImpl.h"
 #include "ChallengeMgr.h"
 #include "Channel.h"
@@ -1589,7 +1590,9 @@ void World::SetInitialWorldSettings()
 #ifdef PLAYERBOT
     sPlayerBotMgr->SetMax(sConfigMgr->GetIntDefault("PlayerBot.MaxOnlineCount", 10));
     sPlayerBotMgr->LoadPlayerBotBaseInfo();
-    sPlayerBotMgr->UpAllPlayerBotSession();
+    sPlayerBotTalkMgr->InitializeTalkText();
+    sPlayerBotTalkMgr->InitializeStory();
+    m_timers[WUPDATE_PLAYERBOT_MGR].SetInterval(IN_MILLISECONDS * 2);
 #endif
 
 #ifdef ELUNA_TRINITY
@@ -2330,6 +2333,7 @@ void World::SetInitialWorldSettings()
     locales.join();
     uint32 startupDuration = GetMSTimeDiffToNow(startupBegin);
 
+    sPlayerBotMgr->UpAllPlayerBotSession();
     TC_LOG_INFO(LOG_FILTER_WORLDSERVER, "World initialized in %u minutes %u seconds", (startupDuration / 60000), ((startupDuration % 60000) / 1000));
     sLog->EnableDBAppenders();
 }
@@ -2513,7 +2517,11 @@ void World::Update(uint32 diff)
     UpdateSessions(diff);
 
 #ifdef PLAYERBOT
-    sPlayerBotMgr->Update();
+    if (m_timers[WUPDATE_PLAYERBOT_MGR].Passed())
+    {
+        sPlayerBotMgr->Update();
+        m_timers[WUPDATE_PLAYERBOT_MGR].Reset();
+    }
 #endif
 
     /// <li> Update uptime table
