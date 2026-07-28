@@ -22,6 +22,7 @@ m_NoWorldTick(0),
 m_AccountBot(false),
 WorldSession(id, std::move(name), nullptr, SEC_PLAYER, 6, 0, "Wn64", LOCALE_zhCN, 0, false, AT_AUTH_FLAG_NONE, {}, 0)
 {
+    _realmID = sWorld->GetRealmId();
     //SetAddress("playbot");
 }
 

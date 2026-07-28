@@ -764,12 +764,13 @@ void PlayerBotMgr::AddNewAccountBotBaseInfo(std::string name)
 void PlayerBotMgr::LoadPlayerBotBaseInfo()
 {
     uint32 oldMSTime = getMSTime();
+    TC_LOG_INFO(LOG_FILTER_GENERAL, "server.loading", ">> LoadPlayerBotBaseInfo starting...");
 
     ClearBaseInfo();
     QueryResult result = LoginDatabase.Query("SELECT id, username, sha_pass_hash FROM account");
     if (!result)
     {
-        TC_LOG_INFO(LOG_FILTER_PLAYER, "server.loading", ">> LoadPlayerBot Find 0 account!");
+        TC_LOG_INFO(LOG_FILTER_GENERAL, "server.loading", ">> LoadPlayerBot Find 0 account!");
         return;
     }
 
@@ -809,7 +810,7 @@ void PlayerBotMgr::LoadPlayerBotBaseInfo()
     if (m_idPlayerBotBase.size() > 0 || m_idAccountBotBase.size() > 0)
         LoadCharBaseInfo();
 
-    TC_LOG_INFO(LOG_FILTER_PLAYER, "server.loading", ">> Loaded %u Player bot account base info in %u ms", m_idPlayerBotBase.size(), GetMSTimeDiffToNow(oldMSTime));
+    TC_LOG_INFO(LOG_FILTER_GENERAL, "server.loading", ">> Loaded %u Player bot account base info in %u ms", m_idPlayerBotBase.size(), GetMSTimeDiffToNow(oldMSTime));
 }
 
 void PlayerBotMgr::LoadCharBaseInfo()
@@ -884,6 +885,7 @@ PlayerBotSession* PlayerBotMgr::UpPlayerBotSessionByBaseInfo(PlayerBotBaseInfo* 
         pBotSession->SetAccountBotSession();
 
     sWorld->AddSession(pBotSession);
+	sWorld->UpdateSessions(0);
     return pBotSession.get();
 }
 
@@ -1088,54 +1090,60 @@ void PlayerBotMgr::AllPlayerBotRandomLogin(const char* name)
         it++)
     {
         PlayerBotBaseInfo* pInfo = it->second;
+        if (pInfo->characters.size() <= 0)
+            continue;
         WorldSession* pSession = sWorld->FindSession(pInfo->id).get();
-        if (pSession && pSession->IsBotSession() && !pSession->PlayerLoading() && !pSession->GetPlayer())
+        if (!pSession || !pSession->IsBotSession())
         {
-            if (pInfo->characters.size() <= 0)
+            UpPlayerBotSessionByBaseInfo(pInfo, false);
+            pSession = sWorld->FindSession(pInfo->id).get();
+            if (!pSession)
                 continue;
-
-            if (name[0] != '\0')
-            {
-                for (auto i = 0; i < pInfo->characters.size(); ++i)
-                {
-                    if (strcmp(name, pInfo->characters[i].name.c_str()) == 0)
-                    {
-                        PlayerBotCharBaseInfo& charInfo = pInfo->characters[i];
-                        WorldPacket _worldPacket(CMSG_PLAYER_LOGIN);
-                        WorldPackets::Character::PlayerLogin cmd(std::move(_worldPacket));
-                        cmd.Guid = ObjectGuid::Create<HighGuid::Player>(charInfo.guid);
-                        cmd.FarClip = 0.0f;
-                        pSession->HandlePlayerLoginOpcode(cmd);
-                        pSession->HandleContinuePlayerLogin();
-                        return;
-                    }
-                }
-            }
-            else
-            {
-                int sel = irand(0, pInfo->characters.size() - 1);
-                for (auto itChar = pInfo->characters.begin();
-                    itChar != pInfo->characters.end();
-                    itChar++)
-                {
-                    if (sel <= 0)
-                    {
-                        PlayerBotCharBaseInfo& charInfo = itChar->second;
-                        WorldPacket _worldPacket(CMSG_PLAYER_LOGIN);
-                        WorldPackets::Character::PlayerLogin cmd(std::move(_worldPacket));
-                        cmd.Guid = ObjectGuid::Create<HighGuid::Player>(charInfo.guid);
-                        cmd.FarClip = 0.0f;
-                        pSession->HandlePlayerLoginOpcode(cmd);
-                        pSession->HandleContinuePlayerLogin();
-                        --needOnline;
-                        break;
-                    }
-                    --sel;
-                }
-            }
-            if (needOnline <= 0)
-                return;
         }
+        if (pSession->PlayerLoading() || pSession->GetPlayer())
+            continue;
+
+        if (name[0] != '\0')
+        {
+            for (auto& charPair : pInfo->characters)
+            {
+                if (strcmp(name, charPair.second.name.c_str()) == 0)
+                {
+                    PlayerBotCharBaseInfo& charInfo = charPair.second;
+                    WorldPacket _worldPacket(CMSG_PLAYER_LOGIN);
+                    WorldPackets::Character::PlayerLogin cmd(std::move(_worldPacket));
+                    cmd.Guid = ObjectGuid::Create<HighGuid::Player>(charInfo.guid);
+                    cmd.FarClip = 0.0f;
+                    pSession->HandlePlayerLoginOpcode(cmd);
+                    pSession->HandleContinuePlayerLogin();
+                    return;
+                }
+            }
+        }
+        else
+        {
+            int sel = irand(0, pInfo->characters.size() - 1);
+            for (auto itChar = pInfo->characters.begin();
+                itChar != pInfo->characters.end();
+                itChar++)
+            {
+                if (sel <= 0)
+                {
+                    PlayerBotCharBaseInfo& charInfo = itChar->second;
+                    WorldPacket _worldPacket(CMSG_PLAYER_LOGIN);
+                    WorldPackets::Character::PlayerLogin cmd(std::move(_worldPacket));
+                    cmd.Guid = ObjectGuid::Create<HighGuid::Player>(charInfo.guid);
+                    cmd.FarClip = 0.0f;
+                    pSession->HandlePlayerLoginOpcode(cmd);
+                    pSession->HandleContinuePlayerLogin();
+                    --needOnline;
+                    break;
+                }
+                --sel;
+            }
+        }
+        if (needOnline <= 0)
+            return;
     }
 }
 
@@ -1196,7 +1204,7 @@ void PlayerBotMgr::SupplementPlayerBot()
         WorldSession* pSession = sWorld->FindSession(pInfo->id).get();
         if (!pSession)
         {
-            TC_LOG_INFO(LOG_FILTER_PLAYER, "server.loading", ">> Create bot, but session offline.");
+            TC_LOG_INFO(LOG_FILTER_GENERAL, "server.loading", ">> Create bot, but session offline.");
             continue;
         }
         std::string firstName = pInfo->username.substr(6);

@@ -63,6 +63,7 @@ struct BotTalkText
 {
 
 	static std::string defauleText;
+	static std::string emptyText;
 
 	uint32 entry;
 
@@ -78,7 +79,7 @@ struct BotTalkText
 
 		if (texts.empty())
 
-			return defauleText;
+			return BotTalkText::emptyText;
 
 		return texts[urand(0, texts.size() - 1)];
 
@@ -134,7 +135,7 @@ struct BotTalkType
 
 		if (itTalk == talkTexts.end())
 
-			return BotTalkText::defauleText;
+			return BotTalkText::emptyText;
 
 		return itTalk->second.GetRandomText();
 
@@ -186,7 +187,7 @@ public:
 
 		if (itTalk == m_BotTalkTypes.end())
 
-			return BotTalkText::defauleText;
+			return BotTalkText::emptyText;
 
 		return itTalk->second.GetTextByType(sType);
 

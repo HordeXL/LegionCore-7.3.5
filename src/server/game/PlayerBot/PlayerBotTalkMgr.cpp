@@ -27,6 +27,7 @@
 
 
 std::string BotTalkText::defauleText = "I said a word.";
+std::string BotTalkText::emptyText = "";
 
 
 
@@ -180,11 +181,9 @@ void PlayerBotTalkMgr::InitializeTalkText()
 
 {
 
-	return;
+	uint32 oldMSTime = getMSTime();
 
-	/*uint32 oldMSTime = getMSTime();
-
-	QueryResult result = WorldDatabase.Query("SELECT entry, talktype, subtype, text FROM bottalktext");
+	QueryResult result = WorldDatabase.Query("SELECT entry, talktype, subtype, text FROM playerbot_talktext");
 
 	if (!result)
 
@@ -228,7 +227,7 @@ void PlayerBotTalkMgr::InitializeTalkText()
 
 		++talkCount;
 
-	} while (result->NextRow());*/
+	} while (result->NextRow());
 
 
 
@@ -242,9 +241,7 @@ void PlayerBotTalkMgr::InitializeStory()
 
 {
 
-	return;
-
-	/*QueryResult result = WorldDatabase.Query("SELECT entry, story FROM talkstory");
+	QueryResult result = WorldDatabase.Query("SELECT entry, story FROM playerbot_talkstory");
 
 	if (!result)
 
@@ -280,7 +277,7 @@ void PlayerBotTalkMgr::InitializeStory()
 
 			m_BotTalkStorys.erase(id);
 
-	} while (result->NextRow());*/
+	} while (result->NextRow());
 
 }
 
@@ -587,6 +584,9 @@ Player* PlayerBotTalkMgr::GetRealPlayer()
 void PlayerBotTalkMgr::NormalTalk(uint32 sType, Player* player, std::string text)
 
 {
+
+	if (text.empty())
+		return;
 
 	if (sType == 3 && !player->GetGroup() && !player->GetGuildId())
 

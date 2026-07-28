@@ -1595,8 +1595,7 @@ void World::SetInitialWorldSettings()
     sPlayerBotTalkMgr->InitializeStory();
     if (!sAIWPMgr->LoadAIWaypoints())
     {
-        exit(0);
-        return;
+        TC_LOG_ERROR(LOG_FILTER_SERVER_LOADING, ">> LoadAIWaypoints FAILED!");
     }
     m_timers[WUPDATE_PLAYERBOT_MGR].SetInterval(IN_MILLISECONDS * 2);
 #endif
