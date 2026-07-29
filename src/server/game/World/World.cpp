@@ -1588,8 +1588,12 @@ void World::SetInitialWorldSettings()
     ///- Initialize config settings
     LoadConfigSettings();
 
+    TC_LOG_INFO(LOG_FILTER_SERVER_LOADING, "PLAYERBOT CHECKPOINT 1 - before ifdef");
+
 #ifdef PLAYERBOT
+    TC_LOG_INFO(LOG_FILTER_SERVER_LOADING, "PLAYERBOT CHECKPOINT 2 - inside ifdef");
     sPlayerBotMgr->SetMax(sConfigMgr->GetIntDefault("PlayerBot.MaxOnlineCount", 10));
+    sPlayerBotMgr->SetBotAccountAmount(sConfigMgr->GetIntDefault("PlayerBot.AccountCount", 90));
     sPlayerBotMgr->LoadPlayerBotBaseInfo();
     sPlayerBotTalkMgr->InitializeTalkText();
     sPlayerBotTalkMgr->InitializeStory();
@@ -1599,6 +1603,8 @@ void World::SetInitialWorldSettings()
     }
     m_timers[WUPDATE_PLAYERBOT_MGR].SetInterval(IN_MILLISECONDS * 2);
 #endif
+
+    TC_LOG_INFO(LOG_FILTER_SERVER_LOADING, "PLAYERBOT CHECKPOINT 3 - after ifdef");
 
 #ifdef ELUNA_TRINITY
     ///- Initialize Eluna Lua Engine

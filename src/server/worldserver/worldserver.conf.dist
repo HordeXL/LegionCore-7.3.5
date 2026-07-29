@@ -46,7 +46,7 @@ RealmID = 1
 #        Example:     "C:/LegionCore/ClientData"
 #        Default:     "./ClientData"
 
-DataDir = "./ClientData"
+DataDir = "ClientData"
 
 #
 #    LogsDir
@@ -55,7 +55,7 @@ DataDir = "./ClientData"
 #                     Logs directory must exists, or log file creation will be disabled.
 #        Default:     "./Data/Logs"
 
-LogsDir = "./Data/Logs"
+LogsDir = "Logs"
 
 #
 #    LoginDatabaseInfo
@@ -70,15 +70,15 @@ LogsDir = "./Data/Logs"
 #                     ".;/path/to/unix_socket;username;password;database" - (use Unix sockets on
 #                                                                           Unix/Linux)
 #
-#        Default:     "127.0.0.1;3306;root;admin;auth"       - (LoginDatabaseInfo)
-#                     "127.0.0.1;3306;root;admin;characters" - (CharacterDatabaseInfo)
-#                     "127.0.0.1;3306;root;admin;hotfixes"   - (HotfixDatabaseInfo)
-#                     "127.0.0.1;3306;root;admin;world"      - (WorldDatabaseInfo)
+#        Default:     "127.0.0.1;3304;root;admin;auth"       - (LoginDatabaseInfo)
+#                     "127.0.0.1;3304;root;admin;characters" - (CharacterDatabaseInfo)
+#                     "127.0.0.1;3304;root;admin;hotfixes"   - (HotfixDatabaseInfo)
+#                     "127.0.0.1;3304;root;admin;world"      - (WorldDatabaseInfo)
 
-LoginDatabaseInfo     = "127.0.0.1;3306;root;admin;auth"
-CharacterDatabaseInfo = "127.0.0.1;3306;root;admin;characters"
-HotfixDatabaseInfo    = "127.0.0.1;3306;root;admin;hotfixes"
-WorldDatabaseInfo     = "127.0.0.1;3306;root;admin;world"
+LoginDatabaseInfo     = "127.0.0.1;3304;root;admin;auth"
+CharacterDatabaseInfo = "127.0.0.1;3304;root;admin;characters"
+HotfixDatabaseInfo    = "127.0.0.1;3304;root;admin;hotfixes"
+WorldDatabaseInfo     = "127.0.0.1;3304;root;admin;world"
 
 #
 #    LoginDatabase.WorkerThreads
@@ -555,7 +555,7 @@ GameType = 0
 #                     28 - (QA Server     - any language)
 #                     29 - (CN9           - basic-Latin at create, any at login)
 
-RealmZone = 1
+RealmZone = 16
 
 #
 #    StrictPlayerNames
@@ -569,7 +569,7 @@ RealmZone = 1
 #                         placed in clientdir/Fonts.
 #                     3 - (Enabled, Basic Latin characters + server timezone specific)
 
-StrictPlayerNames = 1
+StrictPlayerNames = 0
 
 #
 #    StrictCharterNames
@@ -583,7 +583,7 @@ StrictPlayerNames = 1
 #                         placed in clientdir/Fonts.
 #                     3 - (Enabled, Basic Latin characters + server timezone specific)
 
-StrictCharterNames = 1
+StrictCharterNames = 0
 
 #
 #    StrictPetNames
@@ -597,7 +597,7 @@ StrictCharterNames = 1
 #                         placed in clientdir/Fonts.
 #                     3 - (Enabled, Basic Latin characters + server timezone specific)
 
-StrictPetNames = 1
+StrictPetNames = 0
 
 #
 #    DBC.Locale
@@ -612,7 +612,7 @@ StrictPetNames = 1
 #                     7   - (Spanish Mexico)
 #                     8   - (Russian)
 
-DBC.Locale = 0
+DBC.Locale = 4
 
 #
 #    DeclinedNames
@@ -3062,7 +3062,7 @@ QuestPOI.DisableErrors = 1
 #        Default:     ""
 #
 
-Eluna.Enabled = 0
+Eluna.Enabled = 1
 Eluna.ScriptPath = "lua_scripts"
 Eluna.TraceBack = 1
 Eluna.ScriptReloader = 0
@@ -3090,13 +3090,13 @@ pbot = 1
 pbotall = 1
 #           代码内部使用的 PlayerBot 全部功能开关 (1 = 启用)
 
-PlayerBot.MaxOnlineCount = 10
+PlayerBot.MaxOnlineCount = 100
 #           最大同时在线机器人数量
 
 PlayerBot.AccountPrefix = "PLAYERBOT"
 #           机器人账号名前缀，用于识别机器人账号
 
-PlayerBot.AccountCount = 90
+PlayerBot.AccountCount = 100
 #           机器人账号数量（从 1 开始编号）
 
 PlayerBot.Battleground.Enable = 1

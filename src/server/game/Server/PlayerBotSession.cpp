@@ -47,7 +47,8 @@ bool PlayerBotSession::HasBGSchedule() const
 
 bool PlayerBotSession::Update(uint32 diff, Map *map)
 {
-	bool updateResult = WorldSession::Update(diff, map);
+	TC_LOG_DEBUG(LOG_FILTER_GENERAL, ">> BotSession Update called");
+	WorldSession::Update(diff, map);
 	ProcessNoWorld(diff);
 	m_LastCastTime -= diff;
 	if (m_LastCastTime <= 0)
@@ -56,7 +57,7 @@ bool PlayerBotSession::Update(uint32 diff, Map *map)
 		CastSchedule(CAST_SCHEDULE_TICK);
 		m_LastCastTime = CAST_SCHEDULE_TICK;
 	}
-	return updateResult;
+	return true;
 }
 
 void PlayerBotSession::PushScheduleToQueue(BotGlobleSchedule& schedule)

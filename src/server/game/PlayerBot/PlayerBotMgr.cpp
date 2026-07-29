@@ -339,7 +339,7 @@ bool PlayerBotMgr::IsIDLEPlayerBot(Player* player)
         return false;
     if (player->InBattlegroundQueue())
         return false;
-    if (!true /*IsSettingFinish*/)
+    if (!player->IsSettingFinish())
         return false;
     if (player->HasAura(26013))
         return false;
@@ -452,6 +452,18 @@ void PlayerBotMgr::InitializeCreatePlayerBotName()
                 allArenaName.push_back(dbName);
         } while (result2->NextRow());
     }
+
+    m_allCharNames.clear();
+    QueryResult charResult = CharacterDatabase.Query("SELECT name FROM characters");
+    if (charResult)
+    {
+        do
+        {
+            Field* fields = charResult->Fetch();
+            std::string name = fields[0].GetString();
+            m_allCharNames.insert(name);
+        } while (charResult->NextRow());
+    }
 }
 std::string PlayerBotMgr::RandomName()
 {
@@ -459,18 +471,30 @@ std::string PlayerBotMgr::RandomName()
         InitializeCreatePlayerBotName();
     int32 maxLoop = allName.size() / 2;
     if (maxLoop <= 0)
+    {
+        TC_LOG_ERROR(LOG_FILTER_PLAYER, ">> RandomName: playerbot_names table is EMPTY or missing! Cannot create bot characters.");
         return "";
+    }
     do
     {
         uint32 index = irand(0, allName.size() - 1);
         std::string selectName = allName[index];
-        std::string sql = "SELECT guid FROM characters WHERE name = '" + selectName + "'";
-        QueryResult result = CharacterDatabase.Query(sql.c_str());
-        if (!result)
-            return selectName;
-        --maxLoop;
-        if (maxLoop <= 0)
-            break;
+        if (m_allCharNames.find(selectName) != m_allCharNames.end())
+        {
+            --maxLoop;
+            if (maxLoop <= 0)
+                break;
+            continue;
+        }
+        if (m_batchUsedNames.find(selectName) != m_batchUsedNames.end())
+        {
+            --maxLoop;
+            if (maxLoop <= 0)
+                break;
+            continue;
+        }
+        m_batchUsedNames.insert(selectName);
+        return selectName;
     } while (true);
     return "";
 }
@@ -503,7 +527,7 @@ uint8 PlayerBotMgr::RandomRace(bool group, uint8 prof)
         }
     }
 
-    TC_LOG_INFO(LOG_FILTER_PLAYER, "server.loading", ">> Random player custom Race timeout!");
+    TC_LOG_INFO(LOG_FILTER_PLAYER, ">> Random player custom Race timeout!");
     if (group)
         return 1;
     return 2;
@@ -524,7 +548,7 @@ uint8 PlayerBotMgr::RandomSkinColor(uint8 race, uint8 gender, uint8 prof)
             return skinColor;
         }
     }
-    TC_LOG_INFO(LOG_FILTER_PLAYER, "server.loading", ">> Random player custom SkinColor timeout!");
+    TC_LOG_INFO(LOG_FILTER_PLAYER, ">> Random player custom SkinColor timeout!");
     return 1;
 }
 uint8 PlayerBotMgr::RandomFace(uint8 race, uint8 gender, uint8 skinColor, uint8 prof)
@@ -543,7 +567,7 @@ uint8 PlayerBotMgr::RandomFace(uint8 race, uint8 gender, uint8 skinColor, uint8 
             return faceID;
         }
     }
-    TC_LOG_INFO(LOG_FILTER_PLAYER, "server.loading", ">> Random player custom Face timeout!");
+    TC_LOG_INFO(LOG_FILTER_PLAYER, ">> Random player custom Face timeout!");
     return 1;
 }
 uint8 PlayerBotMgr::RandomHair(uint8 race, uint8 gender, uint8 prof)
@@ -565,7 +589,7 @@ uint8 PlayerBotMgr::RandomHair(uint8 race, uint8 gender, uint8 prof)
             }
         }
     }
-    TC_LOG_INFO(LOG_FILTER_PLAYER, "server.loading", ">> Random player custom Hair timeout!");
+    TC_LOG_INFO(LOG_FILTER_PLAYER, ">> Random player custom Hair timeout!");
     return 0;
 }
 uint8 PlayerBotMgr::RandomHairColor(uint8 race, uint8 gender, uint8 hairID, uint8 prof)
@@ -584,7 +608,7 @@ uint8 PlayerBotMgr::RandomHairColor(uint8 race, uint8 gender, uint8 hairID, uint
             return hairColor;
         }
     }
-    TC_LOG_INFO(LOG_FILTER_PLAYER, "server.loading", ">> Random player custom HairColor timeout!");
+    TC_LOG_INFO(LOG_FILTER_PLAYER, ">> Random player custom HairColor timeout!");
     return 1;
 }
 uint8 PlayerBotMgr::RandomFacialHair(uint8 race, uint8 gender, uint8 hairColor, uint8 prof)
@@ -603,33 +627,25 @@ uint8 PlayerBotMgr::RandomFacialHair(uint8 race, uint8 gender, uint8 hairColor, 
             return facialHair;
         }
     }
-    TC_LOG_INFO(LOG_FILTER_PLAYER, "server.loading", ">> Random player custom FacialHair timeout!");
+    TC_LOG_INFO(LOG_FILTER_PLAYER, ">> Random player custom FacialHair timeout!");
     return 0;
 }
 
-WorldPacket PlayerBotMgr::BuildCreatePlayerData(bool group, uint8 prof)
+WorldPackets::Character::CharacterCreateInfo PlayerBotMgr::BuildCreatePlayerData(bool group, uint8 prof)
 {
-    std::string name = RandomName();
-    uint8 race = RandomRace(group, prof);
-    uint8 gender = irand(0, 1);
-    uint8 skinColor = RandomSkinColor(race, gender, prof);
-    uint8 faceID = RandomFace(race, gender, skinColor, prof);
-    uint8 hairID = RandomHair(race, gender, prof);
-    uint8 hairColor = RandomHairColor(race, gender, hairID, prof);
-    uint8 facialHair = RandomFacialHair(race, gender, hairColor, prof);
-    WorldPacket cmd(0x36);
-    cmd << name;
-    cmd << race;
-    cmd << prof;
-    cmd << gender;
-    cmd << skinColor;
-    cmd << faceID;
-    cmd << hairID;
-    cmd << hairColor;
-    cmd << facialHair;
-    cmd << 0;//OutfitId
-
-    return cmd;
+    WorldPackets::Character::CharacterCreateInfo info;
+    info.Name = RandomName();
+    info.Race = RandomRace(group, prof);
+    info.Class = prof;
+    info.Sex = irand(0, 1);
+    info.Skin = RandomSkinColor(info.Race, info.Sex, prof);
+    info.Face = RandomFace(info.Race, info.Sex, info.Skin, prof);
+    info.HairStyle = RandomHair(info.Race, info.Sex, prof);
+    info.HairColor = RandomHairColor(info.Race, info.Sex, info.HairStyle, prof);
+    info.FacialHairStyle = RandomFacialHair(info.Race, info.Sex, info.HairColor, prof);
+    info.OutfitId = 0;
+    info.CustomDisplay.fill(0);
+    return info;
 }
 
 void PlayerBotMgr::CreateOncePlayerBot()
@@ -639,17 +655,25 @@ void PlayerBotMgr::CreateOncePlayerBot()
         it++)
     {
         PlayerBotBaseInfo* pInfo = it->second;
-        if (pInfo->needCreateBots.size() > 0)
+        while (pInfo->needCreateBots.size() > 0)
         {
-            WorldPacket& packet = pInfo->needCreateBots.front();
+            WorldPackets::Character::CharacterCreateInfo createInfo = pInfo->needCreateBots.front();
+            pInfo->needCreateBots.pop();
             WorldSession* pSession = sWorld->FindSession(pInfo->id).get();
             if (pSession)
             {
-                //std::shared_ptr<CharacterCreateInfo> CreateInfo;
-                //pSession->HandleCharCreateOpcode(packet);
+                ++pInfo->pendingCreateCount;
+                TC_LOG_INFO(LOG_FILTER_GENERAL, ">> Creating bot char: account=%u name='%s' race=%u class=%u pending=%u",
+                    pInfo->id, createInfo.Name.c_str(), createInfo.Race, createInfo.Class, (uint32)pInfo->pendingCreateCount);
+                WorldPacket dummyPacket(CMSG_CREATE_CHARACTER, 1);
+                WorldPackets::Character::CreateChar charCreate(std::move(dummyPacket));
+                charCreate.CreateInfo = std::make_shared<WorldPackets::Character::CharacterCreateInfo>(std::move(createInfo));
+                pSession->HandleCharCreateOpcode(charCreate);
             }
-            pInfo->needCreateBots.pop();
-            break;
+            else
+            {
+                TC_LOG_ERROR(LOG_FILTER_GENERAL, ">> CreateOncePlayerBot: Session NOT found for account %u!", pInfo->id);
+            }
         }
     }
 }
@@ -692,7 +716,7 @@ void PlayerBotMgr::UpdateLastAccountIndex(std::string& username)
 
 void PlayerBotMgr::SupplementAccount()
 {
-    uint32 needAccount = m_BotAccountAmount * 2 - m_idPlayerBotBase.size();
+    uint32 needAccount = m_BotAccountAmount - m_idPlayerBotBase.size();
     if (needAccount <= 0)
         return;
 
@@ -764,13 +788,13 @@ void PlayerBotMgr::AddNewAccountBotBaseInfo(std::string name)
 void PlayerBotMgr::LoadPlayerBotBaseInfo()
 {
     uint32 oldMSTime = getMSTime();
-    TC_LOG_INFO(LOG_FILTER_GENERAL, "server.loading", ">> LoadPlayerBotBaseInfo starting...");
+    TC_LOG_INFO(LOG_FILTER_GENERAL, ">> LoadPlayerBotBaseInfo starting...");
 
     ClearBaseInfo();
     QueryResult result = LoginDatabase.Query("SELECT id, username, sha_pass_hash FROM account");
     if (!result)
     {
-        TC_LOG_INFO(LOG_FILTER_GENERAL, "server.loading", ">> LoadPlayerBot Find 0 account!");
+        TC_LOG_INFO(LOG_FILTER_GENERAL, ">> LoadPlayerBot Find 0 account!");
         return;
     }
 
@@ -810,7 +834,7 @@ void PlayerBotMgr::LoadPlayerBotBaseInfo()
     if (m_idPlayerBotBase.size() > 0 || m_idAccountBotBase.size() > 0)
         LoadCharBaseInfo();
 
-    TC_LOG_INFO(LOG_FILTER_GENERAL, "server.loading", ">> Loaded %u Player bot account base info in %u ms", m_idPlayerBotBase.size(), GetMSTimeDiffToNow(oldMSTime));
+    TC_LOG_INFO(LOG_FILTER_GENERAL, ">> Loaded %u Player bot account base info in %u ms", m_idPlayerBotBase.size(), GetMSTimeDiffToNow(oldMSTime));
 }
 
 void PlayerBotMgr::LoadCharBaseInfo()
@@ -819,7 +843,7 @@ void PlayerBotMgr::LoadCharBaseInfo()
 
     if (!result)
     {
-        TC_LOG_INFO(LOG_FILTER_PLAYER, "server.loading", ">> LoadPlayerBot Find 0 characters!");
+        TC_LOG_INFO(LOG_FILTER_PLAYER, ">> LoadPlayerBot Find 0 characters!");
         return;
     }
 
@@ -897,10 +921,15 @@ void PlayerBotMgr::OnPlayerBotCreate(ObjectGuid const& guid, uint32 accountId, s
     uint32 id = guid.GetGUIDLow();
     if (pInfo->characters.find(id) != pInfo->characters.end())
     {
+        if (pInfo->pendingCreateCount > 0)
+            --pInfo->pendingCreateCount;
         return;
     }
     pInfo->characters[id] = PlayerBotCharBaseInfo(id, accountId, name, uint16(race), uint16(playerClass), uint16(gender), uint16(level));
+    m_allCharNames.insert(name);
 
+    if (pInfo->pendingCreateCount > 0)
+        --pInfo->pendingCreateCount;
     CreateOncePlayerBot();
 }
 
@@ -950,15 +979,15 @@ void PlayerBotMgr::OnPlayerBotLogin(WorldSession* pSession, Player* pPlayer)
 
     BotUtility::BotUtility::RemoveArenaBotSpellsByPlayer(pPlayer);
     sPlayerBotTalkMgr->JoinDefaultChannel(pPlayer);
-    if (pSession)
-    {
-        std::string outString;
-        consoleToUtf8(std::string(" ä¸ çº¿"), outString);
-        sWorld->SendGlobalText((GetPlayerLinkText(pPlayer) + outString).c_str(), NULL);
-    }
+    //if (pSession)
+    //{
+    //    std::string outString;
+    //    consoleToUtf8(std::string(" ä¸ çº¿"), outString);
+    //    sWorld->SendGlobalText((GetPlayerLinkText(pPlayer) + outString).c_str(), NULL);
+    //}
     if (PlayerBotSession* pBotSession = dynamic_cast<PlayerBotSession*>(pSession))
     {
-        if (!false /*HasSchedules*/ && !pPlayer->EquipIsTidiness())
+        if (!pBotSession->HasSchedules() && !pPlayer->EquipIsTidiness())
         {
             uint32 curTType = pPlayer->GetTalentType();
             uint32 newTType = curTType;
@@ -978,9 +1007,9 @@ void PlayerBotMgr::OnPlayerBotLogout(WorldSession* pSession)
     --m_BotOnlineCount;
     if (m_BotOnlineCount < 0) m_BotOnlineCount = 0;
 
-    std::string outString;
-    consoleToUtf8(std::string("æºå¨äººä¸çº¿"), outString);
-    sWorld->SendGlobalText(outString.c_str(), NULL);
+    //std::string outString;
+    //consoleToUtf8(std::string("æºå¨äººä¸çº¿"), outString);
+    //sWorld->SendGlobalText(outString.c_str(), NULL);
     PlayerBotSession* pBotSession = dynamic_cast<PlayerBotSession*>(pSession);
     if (pBotSession && !pBotSession->HasScheduleByType(BotGlobleScheduleType::BGSType_Online) &&
         !pBotSession->HasScheduleByType(BotGlobleScheduleType::BGSType_Online_GUID))
@@ -1175,12 +1204,12 @@ bool PlayerBotMgr::PlayerBotLogout(uint32 account)
     if (pSession && pSession->IsBotSession() && !pSession->PlayerLoading())
     {
         Player* pBot = pSession->GetPlayer();
-        if (!pBot || !pBot->IsPlayerBot() || !true /*IsSettingFinish*/)
+        if (!pBot || !pBot->IsPlayerBot() || !pBot->IsSettingFinish())
             return false;
         PlayerBotSession* pBotSession = dynamic_cast<PlayerBotSession*>(pSession);
         if (pBotSession)
         {
-            if (false /*HasSchedules*/)
+            if (pBotSession->HasSchedules())
                 pBotSession->ClearAllSchedule();
 
             pSession->LogoutPlayer(false);
@@ -1192,6 +1221,7 @@ bool PlayerBotMgr::PlayerBotLogout(uint32 account)
 
 void PlayerBotMgr::SupplementPlayerBot()
 {
+    m_batchUsedNames.clear();
     for (std::map<uint32, PlayerBotBaseInfo*>::iterator itInfo = m_idPlayerBotBase.begin();
         itInfo != m_idPlayerBotBase.end();
         itInfo++)
@@ -1199,44 +1229,30 @@ void PlayerBotMgr::SupplementPlayerBot()
         PlayerBotBaseInfo* pInfo = itInfo->second;
         if (pInfo->username.size() <= 0)
             continue;
-        if (pInfo->characters.size() >= 18)
+        if (pInfo->characters.size() >= 5)
             continue;
         WorldSession* pSession = sWorld->FindSession(pInfo->id).get();
         if (!pSession)
         {
-            TC_LOG_INFO(LOG_FILTER_GENERAL, "server.loading", ">> Create bot, but session offline.");
+            TC_LOG_INFO(LOG_FILTER_GENERAL, ">> Create bot, but session offline.");
             continue;
         }
-        std::string firstName = pInfo->username.substr(6);
-        char botname[30] ={ 0 };
+        if (pInfo->needCreateBots.size() > 0 || pInfo->pendingCreateCount > 0)
+            continue;
+        TC_LOG_INFO(LOG_FILTER_GENERAL, ">> SupplementPlayerBot: account=%u chars=%u queue=%u",
+            pInfo->id, (uint32)pInfo->characters.size(), (uint32)pInfo->needCreateBots.size());
         for (int i = 1; i < 10; i++)
         {
             if (i == 6) continue;
             if (!pInfo->ExistClass(true, i))
-            {
-                memset(botname, 0, 30);
-                sprintf(botname, "%sA%d", firstName.c_str(), i);
                 pInfo->needCreateBots.push(BuildCreatePlayerData(true, i));
-            }
             if (!pInfo->ExistClass(false, i))
-            {
-                memset(botname, 0, 30);
-                sprintf(botname, "%sB%d", firstName.c_str(), i);
                 pInfo->needCreateBots.push(BuildCreatePlayerData(false, i));
-            }
         }
         if (!pInfo->ExistClass(true, 11))
-        {
-            memset(botname, 0, 30);
-            sprintf(botname, "%sA11", firstName.c_str());
             pInfo->needCreateBots.push(BuildCreatePlayerData(true, 11));
-        }
         if (!pInfo->ExistClass(false, 11))
-        {
-            memset(botname, 0, 30);
-            sprintf(botname, "%sB11", firstName.c_str());
             pInfo->needCreateBots.push(BuildCreatePlayerData(false, 11));
-        }
     }
     CreateOncePlayerBot();
 }
@@ -1369,7 +1385,7 @@ bool PlayerBotMgr::LoginBotByAccountIndex(uint32 account, uint32 index)
         PlayerBotCharBaseInfo& charInfo = itChar->second;
         WorldSession* pWorldSession = sWorld->FindSession(account).get();
         PlayerBotSession* pSession = dynamic_cast<PlayerBotSession*>(pWorldSession);
-        if (!pSession || pSession->PlayerLoading() || false /*HasSchedules*/ || pSession->GetPlayer())
+        if (!pSession || pSession->PlayerLoading() || pSession->HasSchedules() || pSession->GetPlayer())
             return false;
         BotGlobleSchedule schedule1(BotGlobleScheduleType::BGSType_Online_GUID, charInfo.guid);
         pSession->PushScheduleToQueue(schedule1);
@@ -1431,7 +1447,7 @@ bool PlayerBotMgr::AddNewPlayerBotByGUID(ObjectGuid& guid)
             continue;
         WorldSession* pWorldSession = sWorld->FindSession(itInfo->first).get();
         PlayerBotSession* pSession = dynamic_cast<PlayerBotSession*>(pWorldSession);
-        if (!pSession || pSession->PlayerLoading() || false /*HasSchedules*/)
+        if (!pSession || pSession->PlayerLoading() || pSession->HasSchedules())
             return false;
         if (Player* player = pSession->GetPlayer())
         {
@@ -1458,7 +1474,7 @@ bool PlayerBotMgr::AddNewPlayerBotByGUID(ObjectGuid& guid)
         if (pWorldSession)
         {
             PlayerBotSession* pSession = dynamic_cast<PlayerBotSession*>(pWorldSession);
-            if (!pSession || pSession->PlayerLoading() || false /*HasSchedules*/)
+            if (!pSession || pSession->PlayerLoading() || pSession->HasSchedules())
                 return false;
             if (Player* player = pSession->GetPlayer())
             {
@@ -1547,7 +1563,7 @@ bool PlayerBotMgr::AddNewPlayerBotByGUID2(ObjectGuid& guid)
             continue;
         WorldSession* pWorldSession = sWorld->FindSession(itInfo->first).get();
         PlayerBotSession* pSession = dynamic_cast<PlayerBotSession*>(pWorldSession);
-        if (!pSession || pSession->PlayerLoading() || false /*HasSchedules*/)
+        if (!pSession || pSession->PlayerLoading() || pSession->HasSchedules())
             return false;
         if (Player* player = pSession->GetPlayer())
         {
@@ -1574,7 +1590,7 @@ bool PlayerBotMgr::AddNewPlayerBotByGUID2(ObjectGuid& guid)
         if (pWorldSession)
         {
             PlayerBotSession* pSession = dynamic_cast<PlayerBotSession*>(pWorldSession);
-            if (!pSession || pSession->PlayerLoading() || false /*HasSchedules*/)
+            if (!pSession || pSession->PlayerLoading() || pSession->HasSchedules())
                 return false;
             if (Player* player = pSession->GetPlayer())
             {
@@ -1678,7 +1694,7 @@ void PlayerBotMgr::AddNewPlayerBot(bool faction, Classes prof, uint32 count)
         if (!itSession->second->IsBotSession())
             continue;
         PlayerBotSession* pSession = dynamic_cast<PlayerBotSession*>((WorldSession*)itSession->second.get());
-        if (!pSession || pSession->PlayerLoading() || false /*HasSchedules*/ || false /*IsAccountBotSession*/)
+        if (!pSession || pSession->PlayerLoading() || pSession->HasSchedules() || pSession->IsAccountBotSession())
             continue;
         Player* player = pSession->GetPlayer();
         if (player)
@@ -1697,12 +1713,12 @@ void PlayerBotMgr::AddNewPlayerBot(bool faction, Classes prof, uint32 count)
         --count;
     }
 
-    if (count > 0)
-    {
-        std::string allonlineText;
-        consoleToUtf8(std::string("|cffff8800æææºå¨äººè´¦å·å·²ç»å¨é¨å¨çº¿ï¼æ æ³ä¸çº¿æ°æºå¨äººã|r"), allonlineText);
-        sWorld->SendGlobalText(allonlineText.c_str(), NULL);
-    }
+    //if (count > 0)
+    //{
+    //    std::string allonlineText;
+    //    consoleToUtf8(std::string("|cffff8800æºå¨äººè´¦å·²å¨éºï¼æ³ä¸çº¿æºå¨äººã|r"), allonlineText);
+    //    sWorld->SendGlobalText(allonlineText.c_str(), NULL);
+    //}
 }
 
 void PlayerBotMgr::AddNewAccountBot(bool faction, Classes prof)
@@ -1748,8 +1764,8 @@ void PlayerBotMgr::AddNewAccountBot(bool faction, Classes prof)
     }
     std::string allonlineText;
 #ifdef INCOMPLETE_BOT
-    consoleToUtf8(std::string("|cffff8800ä½éªçæ æ³å¬å¤ä¸çº¿èªå»ºè´¦å·è§è²|r"), allonlineText);
-    sWorld->SendGlobalText(allonlineText.c_str(), NULL);
+    //consoleToUtf8(std::string("|cffff8800ä½éªçæ³å¬å¤ä¸çº¿èªåºè´¦å·è§è²|r"), allonlineText);
+    //sWorld->SendGlobalText(allonlineText.c_str(), NULL);
     return;
 #endif
     if (prof == CLASS_NONE)
@@ -1768,7 +1784,7 @@ void PlayerBotMgr::AddNewAccountBot(bool faction, Classes prof)
         if (!itSession->second->IsBotSession())
             continue;
         PlayerBotSession* pSession = dynamic_cast<PlayerBotSession*>((WorldSession*)itSession->second.get());
-        if (!pSession || pSession->PlayerLoading() || false /*HasSchedules*/ || !false /*IsAccountBotSession*/)
+        if (!pSession || pSession->PlayerLoading() || pSession->HasSchedules() || !pSession->IsAccountBotSession())
             continue;
         //hasSessionIDs.insert(pSession->GetAccountId());
         Player* player = pSession->GetPlayer();
@@ -1813,8 +1829,8 @@ void PlayerBotMgr::AddNewAccountBot(bool faction, Classes prof)
         }
     }
 
-    consoleToUtf8(std::string("|cffff8800æ²¡ææ¾å°åä½ ç¸åéµè¥çæå®èä¸çèªå»ºè´¦å·è§è²|r"), allonlineText);
-    sWorld->SendGlobalText(allonlineText.c_str(), NULL);
+    //consoleToUtf8(std::string("|cffff8800æ²¡ææ¾å°åä½ ç¸åéµè¥çæå®èä¸çèªå»ºè´¦å·è§è²|r"), allonlineText);
+    //sWorld->SendGlobalText(allonlineText.c_str(), NULL);
 }
 
 void PlayerBotMgr::AddNewPlayerBotByClass(uint32 count, Classes prof)
@@ -1878,7 +1894,7 @@ void PlayerBotMgr::AddNewPlayerBotByClass(uint32 count, Classes prof)
         if (!itSession->second->IsBotSession())
             continue;
         PlayerBotSession* pSession = dynamic_cast<PlayerBotSession*>((WorldSession*)itSession->second.get());
-        if (!pSession || pSession->PlayerLoading() || false /*HasSchedules*/ || false /*IsAccountBotSession*/)
+        if (!pSession || pSession->PlayerLoading() || pSession->HasSchedules() || pSession->IsAccountBotSession())
             continue;
         Player* player = pSession->GetPlayer();
         if (player && player->getClass() != prof)
@@ -1912,9 +1928,9 @@ void PlayerBotMgr::AddNewPlayerBotByClass(uint32 count, Classes prof)
 
     if (allianceCount > 0 || hordeCount > 0)
     {
-        std::string allonlineText;
-        consoleToUtf8(std::string("|cffff8800æææºå¨äººè´¦å·å·²ç»å¨é¨å¨çº¿ï¼æ æ³ä¸çº¿æ°æºå¨äººã|r"), allonlineText);
-        sWorld->SendGlobalText(allonlineText.c_str(), NULL);
+        //std::string allonlineText;
+        //consoleToUtf8(std::string("|cffff8800æºå¨äººè´¦å·²å¨éºï¼æ³ä¸çº¿æºå¨äººã|r"), allonlineText);
+        //sWorld->SendGlobalText(allonlineText.c_str(), NULL);
     }
 }
 
@@ -1933,7 +1949,7 @@ bool PlayerBotMgr::ChangePlayerBotSetting(uint32 account, uint32 minLV, uint32 m
             player->GetBattleground() || player->isInCombat())
             return false;
         PlayerBotSession* pSession = dynamic_cast<PlayerBotSession*>(pWorldSession);
-        if (!pSession || false /*HasSchedules*/)
+        if (!pSession || pSession->HasSchedules())
             return false;
         BotGlobleSchedule schedule2(BotGlobleScheduleType::BGSType_Settting, 0);
         schedule2.parameter1 = minLV;
@@ -1982,7 +1998,7 @@ void PlayerBotMgr::AddNewPlayerBotToBG(TeamId team, uint32 minLV, uint32 maxLV, 
         if (!itSession->second->IsBotSession())
             continue;
         PlayerBotSession* pSession = dynamic_cast<PlayerBotSession*>((WorldSession*)itSession->second.get());
-        if (!pSession || pSession->PlayerLoading() || false /*HasSchedules*/ || false /*IsAccountBotSession*/)
+        if (!pSession || pSession->PlayerLoading() || pSession->HasSchedules() || pSession->IsAccountBotSession())
             continue;
         Player* player = pSession->GetPlayer();
         if (player)
@@ -1993,7 +2009,7 @@ void PlayerBotMgr::AddNewPlayerBotToBG(TeamId team, uint32 minLV, uint32 maxLV, 
                 continue;
             if (player->InBattlegroundQueue())
                 continue;
-            if (!true /*IsSettingFinish*/)
+            if (!player->IsSettingFinish())
                 continue;
             if (player->GetTeamId() != team)
                 continue;
@@ -2016,7 +2032,7 @@ void PlayerBotMgr::AddNewPlayerBotToBG(TeamId team, uint32 minLV, uint32 maxLV, 
         if (!itSession->second->IsBotSession())
             continue;
         PlayerBotSession* pSession = dynamic_cast<PlayerBotSession*>((WorldSession*)itSession->second.get());
-        if (!pSession || pSession->PlayerLoading() || false /*HasSchedules*/ || false /*IsAccountBotSession*/)
+        if (!pSession || pSession->PlayerLoading() || pSession->HasSchedules() || pSession->IsAccountBotSession())
             continue;
         Player* player = pSession->GetPlayer();
         if (!player)
@@ -2039,8 +2055,8 @@ void PlayerBotMgr::AddNewPlayerBotToBG(TeamId team, uint32 minLV, uint32 maxLV, 
     }
 
     std::string allonlineText;
-    consoleToUtf8(std::string("|cffff8800æææºå¨äººè´¦å·å·²ç»å¨é¨å¨çº¿ï¼æ æ³å å¥æ°æºå¨äººå°æåºä¸­ã|r"), allonlineText);
-    sWorld->SendGlobalText(allonlineText.c_str(), NULL);
+    //consoleToUtf8(std::string("|cffff8800??|? ??��?oo����|?��2?����o???3?��? ��? ??��?oo?��??o??-?|r"), allonlineText);
+    //sWorld->SendGlobalText(allonlineText.c_str(), NULL);
 }
 
 //void PlayerBotMgr::AddNewPlayerBotToLFG(lfg::LFGBotRequirement* botRequirement)
@@ -2105,7 +2121,7 @@ void PlayerBotMgr::AddNewPlayerBotToBG(TeamId team, uint32 minLV, uint32 maxLV, 
 //		if (!itSession->second->IsBotSession())
 //			continue;
 //		PlayerBotSession* pSession = dynamic_cast<PlayerBotSession*>((WorldSession*)itSession->second);
-//		if (!pSession || pSession->PlayerLoading() || false /*HasSchedules*/ || false /*IsAccountBotSession*/)
+//		if (!pSession || pSession->PlayerLoading() || pSession->HasSchedules() || pSession->IsAccountBotSession())
 //			continue;
 //		Player* player = pSession->GetPlayer();
 //		if (!player)
@@ -2235,7 +2251,7 @@ void PlayerBotMgr::AddNewPlayerBotToAA(TeamId team, BattlegroundTypeId bgTypeID,
         if (!pWorldSession || !pWorldSession->IsBotSession())
             continue;
         PlayerBotSession* pSession = dynamic_cast<PlayerBotSession*>(pWorldSession);
-        if (!pSession || pSession->PlayerLoading() || false /*HasSchedules*/ || false /*IsAccountBotSession*/)
+        if (!pSession || pSession->PlayerLoading() || pSession->HasSchedules() || pSession->IsAccountBotSession())
             continue;
         Player* player = pSession->GetPlayer();
         if (player)
@@ -2246,7 +2262,7 @@ void PlayerBotMgr::AddNewPlayerBotToAA(TeamId team, BattlegroundTypeId bgTypeID,
                 continue;
             if (player->InBattlegroundQueue())
                 continue;
-            if (!true /*IsSettingFinish*/)
+            if (!player->IsSettingFinish())
                 continue;
             if (player->GetTeamId() != team)
                 continue;
@@ -2272,7 +2288,7 @@ void PlayerBotMgr::AddNewPlayerBotToAA(TeamId team, BattlegroundTypeId bgTypeID,
         if (!pWorldSession || !pWorldSession->IsBotSession())
             continue;
         PlayerBotSession* pSession = dynamic_cast<PlayerBotSession*>(pWorldSession);
-        if (!pSession || pSession->PlayerLoading() || false /*HasSchedules*/ || false /*IsAccountBotSession*/)
+        if (!pSession || pSession->PlayerLoading() || pSession->HasSchedules() || pSession->IsAccountBotSession())
             continue;
         Player* player = pSession->GetPlayer();
         if (!player)
@@ -2297,8 +2313,8 @@ void PlayerBotMgr::AddNewPlayerBotToAA(TeamId team, BattlegroundTypeId bgTypeID,
     }
 
     std::string allonlineText;
-    consoleToUtf8(std::string("|cffff8800æææºå¨äººè´¦å·å·²ç»å¨é¨å¨çº¿ï¼æ æ³å å¥æ°æºå¨äººå°ç«æåºä¸­ã|r"), allonlineText);
-    sWorld->SendGlobalText(allonlineText.c_str(), NULL);
+    //consoleToUtf8(std::string("|cffff8800??|? ??��?oo����|?��2?����o???3?��? ��? ??��?oo?��??? o?o??-?|r"), allonlineText);
+    //sWorld->SendGlobalText(allonlineText.c_str(), NULL);
 }
 
 void PlayerBotMgr::AddTeamBotToRatedArena(uint32 arenaTeamId)
@@ -2808,7 +2824,7 @@ bool PlayerBotMgr::ExistUnBGPlayerBot()
         PlayerBotSession* pSession = dynamic_cast<PlayerBotSession*>((WorldSession*)itSession->second.get());
         if (!pSession)
             continue;
-        if (pSession->PlayerLoading() || false /*IsAccountBotSession*/)
+        if (pSession->PlayerLoading() || pSession->IsAccountBotSession())
             continue;
         Player* player = pSession->GetPlayer();
         if (!player || !player->IsInWorld())
@@ -2817,7 +2833,7 @@ bool PlayerBotMgr::ExistUnBGPlayerBot()
             continue;
         if (player->HasAura(26013))
             continue;
-        if (!false /*HasSchedules*/)
+        if (!pSession->HasSchedules())
             continue;
         return true;
     }

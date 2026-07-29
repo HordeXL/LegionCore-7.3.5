@@ -166,7 +166,7 @@ public:
 
     bool HasBGSchedule() const;
 
-    bool Update(uint32 diff, Map* map = nullptr);
+    bool Update(uint32 diff, Map* map = nullptr) override;
 
 
 

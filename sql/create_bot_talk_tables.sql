@@ -1,6 +1,6 @@
--- 机器人聊天文本表
-DROP TABLE IF EXISTS `bottalktext`;
-CREATE TABLE `bottalktext` (
+-- 机器人聊天文本表（表名与 C++ PlayerBotTalkMgr.cpp 中的查询匹配）
+DROP TABLE IF EXISTS `playerbot_talktext`;
+CREATE TABLE `playerbot_talktext` (
   `entry` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `talktype` int(10) unsigned NOT NULL DEFAULT '0',
   `subtype` int(10) unsigned NOT NULL DEFAULT '0',
@@ -9,9 +9,9 @@ CREATE TABLE `bottalktext` (
   KEY `talktype` (`talktype`,`subtype`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- 机器人故事文本表
-DROP TABLE IF EXISTS `talkstory`;
-CREATE TABLE `talkstory` (
+-- 机器人故事文本表（表名与 C++ PlayerBotTalkMgr.cpp 中的查询匹配）
+DROP TABLE IF EXISTS `playerbot_talkstory`;
+CREATE TABLE `playerbot_talkstory` (
   `entry` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `story` text NOT NULL,
   PRIMARY KEY (`entry`)
@@ -19,7 +19,7 @@ CREATE TABLE `talkstory` (
 
 -- 填充聊天文本
 -- talktype=0: 普通聊天, subtype=0: 打招呼, 1: 告别, 2: 赞美, 3: 战斗, 4: 随机
-INSERT INTO `bottalktext` (`talktype`, `subtype`, `text`) VALUES
+INSERT INTO `playerbot_talktext` (`talktype`, `subtype`, `text`) VALUES
 (0, 0, '你好啊，今天天气真好！'),
 (0, 0, '大家好，我来了！'),
 (0, 0, '嘿，很高兴见到你！'),
@@ -63,7 +63,7 @@ INSERT INTO `bottalktext` (`talktype`, `subtype`, `text`) VALUES
 (0, 4, '这个游戏真有趣！');
 
 -- 填充故事文本（使用step格式，用|分隔）
-INSERT INTO `talkstory` (`story`) VALUES
+INSERT INTO `playerbot_talkstory` (`story`) VALUES
 ('你好啊！|你也是来冒险的吗？|这里的风景真美！|我们一起探索吧！'),
 ('欢迎来到暴风城！|这里是联盟的心脏。|你可以在贸易区找到各种商人。|记得去教堂区看看！'),
 ('奥格瑞玛的大门永远向部落勇士敞开！|荣誉大厅在等待着你。|暗巷区有你需要的一切。|为了部落！'),

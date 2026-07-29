@@ -1132,7 +1132,7 @@ class WorldSession
         void SetCanLogout() { canLogout = true; }
 
         void QueuePacket(WorldPacket* new_packet);
-        bool Update(uint32 diff, Map* map = nullptr);
+        virtual bool Update(uint32 diff, Map* map = nullptr);
 
         /// Handle the authentication waiting queue (to be completed)
         void SendAuthWaitQue(uint32 position);

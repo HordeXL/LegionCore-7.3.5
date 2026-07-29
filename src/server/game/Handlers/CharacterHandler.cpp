@@ -172,6 +172,8 @@ void WorldSession::SendCharacterEnum(bool deleted /*= false*/)
 
 void WorldSession::HandleCharCreateOpcode(WorldPackets::Character::CreateChar& charCreate)
 {
+    TC_LOG_INFO(LOG_FILTER_GENERAL, ">> HandleCharCreateOpcode entered: name='%s' race=%u class=%u",
+        charCreate.CreateInfo->Name.c_str(), charCreate.CreateInfo->Race, charCreate.CreateInfo->Class);
     auto SendCharCreate = [this](ResponseCodes result) -> void
     {
         WorldPackets::Character::CharacterCreateResponse response;
@@ -204,6 +206,7 @@ void WorldSession::HandleCharCreateOpcode(WorldPackets::Character::CreateChar& c
 
             if (disabled)
             {
+                TC_LOG_INFO(LOG_FILTER_GENERAL, ">> DIAG: CHAR_CREATE_DISABLED (disabled)");
                 SendCharCreate(CHAR_CREATE_DISABLED);
                 return;
             }
@@ -213,6 +216,7 @@ void WorldSession::HandleCharCreateOpcode(WorldPackets::Character::CreateChar& c
     ChrClassesEntry const* classEntry = sChrClassesStore.LookupEntry(charCreate.CreateInfo->Class);
     if (!classEntry)
     {
+        TC_LOG_INFO(LOG_FILTER_GENERAL, ">> DIAG: CHAR_CREATE_FAILED (classEntry)");
         SendCharCreate(CHAR_CREATE_FAILED);
         TC_LOG_ERROR(LOG_FILTER_NETWORKIO, "Class (%u) not found in DBC while creating new char for account (ID: %u): wrong DBC files or cheater?", charCreate.CreateInfo->Class, GetAccountId());
         return;
@@ -221,6 +225,7 @@ void WorldSession::HandleCharCreateOpcode(WorldPackets::Character::CreateChar& c
     ChrRacesEntry const* raceEntry = sChrRacesStore.LookupEntry(charCreate.CreateInfo->Race);
     if (!raceEntry)
     {
+        TC_LOG_INFO(LOG_FILTER_GENERAL, ">> DIAG: CHAR_CREATE_FAILED (raceEntry)");
         SendCharCreate(CHAR_CREATE_FAILED);
         TC_LOG_ERROR(LOG_FILTER_NETWORKIO, "Race (%u) not found in DBC while creating new char for account (ID: %u): wrong DBC files or cheater?", charCreate.CreateInfo->Race, GetAccountId());
         return;
@@ -230,12 +235,14 @@ void WorldSession::HandleCharCreateOpcode(WorldPackets::Character::CreateChar& c
     {
         if ((1 << (charCreate.CreateInfo->Race - 1)) & uint32(sWorld->getIntConfig(CONFIG_CHARACTER_CREATING_DISABLED_RACEMASK)))
         {
+            TC_LOG_INFO(LOG_FILTER_GENERAL, ">> DIAG: CHAR_CREATE_DISABLED (racemask)");
             SendCharCreate(CHAR_CREATE_DISABLED);
             return;
         }
 
         if ((1 << (charCreate.CreateInfo->Class - 1)) & uint32(sWorld->getIntConfig(CONFIG_CHARACTER_CREATING_DISABLED_CLASSMASK)))
         {
+            TC_LOG_INFO(LOG_FILTER_GENERAL, ">> DIAG: CHAR_CREATE_DISABLED (classmask)");
             SendCharCreate(CHAR_CREATE_DISABLED);
             return;
         }
@@ -244,6 +251,7 @@ void WorldSession::HandleCharCreateOpcode(WorldPackets::Character::CreateChar& c
     // prevent character creating with invalid name
     if (!normalizePlayerName(charCreate.CreateInfo->Name))
     {
+        TC_LOG_INFO(LOG_FILTER_GENERAL, ">> DIAG: CHAR_NAME_NO_NAME (normalizePlayerName failed for '%s')", charCreate.CreateInfo->Name.c_str());
         SendCharCreate(CHAR_NAME_NO_NAME);
         TC_LOG_ERROR(LOG_FILTER_NETWORKIO, "Account:[%d] but tried to Create character with empty [name] ", GetAccountId());
         return;
@@ -253,34 +261,30 @@ void WorldSession::HandleCharCreateOpcode(WorldPackets::Character::CreateChar& c
     RaceUnlockRequirement const* raceExpansionRequirement = sObjectMgr->GetRaceUnlockRequirement(charCreate.CreateInfo->Race);
     if (!raceExpansionRequirement)
     {
+        TC_LOG_INFO(LOG_FILTER_GENERAL, ">> DIAG: CHAR_CREATE_FAILED (no raceExpansionRequirement for race %u)", charCreate.CreateInfo->Race);
         SendCharCreate(CHAR_CREATE_FAILED);
         return;
     }
 
     if (raceExpansionRequirement->Expansion > GetAccountExpansion())
     {
+        TC_LOG_INFO(LOG_FILTER_GENERAL, ">> DIAG: CHAR_CREATE_EXPANSION (need exp %u have %u)", raceExpansionRequirement->Expansion, GetAccountExpansion());
         SendCharCreate(CHAR_CREATE_EXPANSION);
         return;
     }
-
-    //if (raceExpansionRequirement->AchievementId && !)
-    //{
-    //    TC_LOG_ERROR("entities.player.cheat", "Expansion %u account:[%d] tried to Create character without achievement %u race (%u)",
-    //        GetAccountExpansion(), GetAccountId(), raceExpansionRequirement->AchievementId, charCreate.CreateInfo->Race);
-    //    SendCharCreate(CHAR_CREATE_ALLIED_RACE_ACHIEVEMENT);
-    //    return;
-    //}
 
     // check name limitations
     ResponseCodes res = sCharacterDataStore->CheckPlayerName(charCreate.CreateInfo->Name, GetSessionDbcLocale(), true);
     if (res != CHAR_NAME_SUCCESS)
     {
+        TC_LOG_INFO(LOG_FILTER_GENERAL, ">> DIAG: CheckPlayerName failed with %u", res);
         SendCharCreate(res);
         return;
     }
 
     if (AccountMgr::IsPlayerAccount(GetSecurity()) && sCharacterDataStore->IsReservedName(charCreate.CreateInfo->Name))
     {
+        TC_LOG_INFO(LOG_FILTER_GENERAL, ">> DIAG: CHAR_NAME_RESERVED");
         SendCharCreate(CHAR_NAME_RESERVED);
         return;
     }
@@ -289,6 +293,7 @@ void WorldSession::HandleCharCreateOpcode(WorldPackets::Character::CreateChar& c
     uint32 heroic_free_slots = sWorld->getIntConfig(CONFIG_HEROIC_CHARACTERS_PER_REALM);
     if (heroic_free_slots == 0 && AccountMgr::IsPlayerAccount(GetSecurity()) && charCreate.CreateInfo->Class == CLASS_DEATH_KNIGHT)
     {
+        TC_LOG_INFO(LOG_FILTER_GENERAL, ">> DIAG: CHAR_CREATE_UNIQUE_CLASS_LIMIT");
         SendCharCreate(CHAR_CREATE_UNIQUE_CLASS_LIMIT);
         return;
     }
@@ -297,12 +302,14 @@ void WorldSession::HandleCharCreateOpcode(WorldPackets::Character::CreateChar& c
     uint32 req_level_for_heroic = sWorld->getIntConfig(CONFIG_CHARACTER_CREATING_MIN_LEVEL_FOR_HEROIC_CHARACTER);
     if (AccountMgr::IsPlayerAccount(GetSecurity()) && charCreate.CreateInfo->Class == CLASS_DEATH_KNIGHT && req_level_for_heroic > sWorld->getIntConfig(CONFIG_MAX_PLAYER_LEVEL))
     {
+        TC_LOG_INFO(LOG_FILTER_GENERAL, ">> DIAG: CHAR_CREATE_LEVEL_REQUIREMENT");
         SendCharCreate(CHAR_CREATE_LEVEL_REQUIREMENT);
         return;
     }
 
     if (sWorld->GetCharacterInfo(charCreate.CreateInfo->Name))
     {
+        TC_LOG_INFO(LOG_FILTER_GENERAL, ">> DIAG: CHAR_CREATE_NAME_IN_USE (GetCharacterInfo found name)");
         SendCharCreate(CHAR_CREATE_NAME_IN_USE);
         return;
     }
@@ -311,9 +318,12 @@ void WorldSession::HandleCharCreateOpcode(WorldPackets::Character::CreateChar& c
     PreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_SEL_CHECK_NAME);
     stmt->setString(0, charCreate.CreateInfo->Name);
 
+    TC_LOG_INFO(LOG_FILTER_GENERAL, ">> HandleCharCreateOpcode adding query for name='%s'", charCreate.CreateInfo->Name.c_str());
     _queryProcessor.AddQuery(CharacterDatabase.AsyncQuery(stmt)
         .WithChainingPreparedCallback([this, SendCharCreate](QueryCallback& queryCallback, PreparedQueryResult result)
     {
+        TC_LOG_INFO(LOG_FILTER_GENERAL, ">> CharCreate callback1 triggered: result=%s",
+            result ? "FOUND (name exists)" : "null (name free)");
         if (result)
         {
             SendCharCreate(CHAR_CREATE_NAME_IN_USE);
@@ -326,27 +336,38 @@ void WorldSession::HandleCharCreateOpcode(WorldPackets::Character::CreateChar& c
     })
         .WithChainingPreparedCallback([this, SendCharCreate](QueryCallback& queryCallback, PreparedQueryResult result)
     {
+        TC_LOG_INFO(LOG_FILTER_GENERAL, ">> DIAG: callback2 triggered: account=%u result=%s",
+            GetAccountId(), result ? "has_value" : "null");
         uint64 acctCharCount = 0;
         if (result)
             acctCharCount = uint64(result->Fetch()[0].GetDouble());
 
+        TC_LOG_INFO(LOG_FILTER_GENERAL, ">> DIAG: callback2 acctCharCount=%u limit=%u",
+            (uint32)acctCharCount, sWorld->getIntConfig(CONFIG_CHARACTERS_PER_ACCOUNT));
         if (acctCharCount >= sWorld->getIntConfig(CONFIG_CHARACTERS_PER_ACCOUNT))
         {
+            TC_LOG_INFO(LOG_FILTER_GENERAL, ">> DIAG: callback2 CHAR_CREATE_ACCOUNT_LIMIT");
             SendCharCreate(CHAR_CREATE_ACCOUNT_LIMIT);
             return;
         }
 
+        TC_LOG_INFO(LOG_FILTER_GENERAL, ">> DIAG: callback2 setting next query (CHAR_SEL_SUM_CHARS)");
         PreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_SEL_SUM_CHARS);
         stmt->setUInt32(0, GetAccountId());
         queryCallback.SetNextQuery(CharacterDatabase.AsyncQuery(stmt));
     })
         .WithChainingPreparedCallback([this, createInfo, SendCharCreate](QueryCallback& queryCallback, PreparedQueryResult result)
     {
+        TC_LOG_INFO(LOG_FILTER_GENERAL, ">> DIAG: callback3 triggered: name='%s' result=%s",
+            createInfo->Name.c_str(), result ? "has_value" : "null");
         if (result)
         {
             createInfo->CharCount = uint8(result->Fetch()[0].GetUInt64()); // SQL's COUNT() returns uint64 but it will always be less than uint8.Max
+            TC_LOG_INFO(LOG_FILTER_GENERAL, ">> DIAG: callback3 charCount=%u limit=%u",
+                createInfo->CharCount, sWorld->getIntConfig(CONFIG_CHARACTERS_PER_REALM));
             if (createInfo->CharCount >= sWorld->getIntConfig(CONFIG_CHARACTERS_PER_REALM))
             {
+                TC_LOG_INFO(LOG_FILTER_GENERAL, ">> DIAG: callback3 CHAR_CREATE_SERVER_LIMIT");
                 SendCharCreate(CHAR_CREATE_SERVER_LIMIT);
                 return;
             }
@@ -354,9 +375,12 @@ void WorldSession::HandleCharCreateOpcode(WorldPackets::Character::CreateChar& c
 
         bool allowTwoSideAccounts = !sWorld->IsPvPRealm();
         uint32 skipCinematics = sWorld->getIntConfig(CONFIG_SKIP_CINEMATICS);
+        TC_LOG_INFO(LOG_FILTER_GENERAL, ">> DIAG: callback3 allowTwoSide=%d skipCinematics=%u class=%u",
+            allowTwoSideAccounts, skipCinematics, createInfo->Class);
 
         std::function<void(PreparedQueryResult)> finalizeCharacterCreation = [this, createInfo, SendCharCreate](PreparedQueryResult result)
         {
+            TC_LOG_INFO(LOG_FILTER_GENERAL, ">> finalizeCharCreate called: name='%s'", createInfo->Name.c_str());
             bool haveSameRace = false;
             uint32 heroicReqLevel = sWorld->getIntConfig(CONFIG_CHARACTER_CREATING_MIN_LEVEL_FOR_HEROIC_CHARACTER);
             uint32 demonHunterReqLevel = sWorld->getIntConfig(CONFIG_CHARACTER_CREATING_MIN_LEVEL_FOR_DEMON_HUNTER);
@@ -395,12 +419,15 @@ void WorldSession::HandleCharCreateOpcode(WorldPackets::Character::CreateChar& c
             newChar.GetMotionMaster()->Initialize();
             if (!newChar.Create(sObjectMgr->GetGenerator<HighGuid::Player>()->Generate(), createInfo.get()))
             {
-                // Player not create (race/class/etc problem?)
+                TC_LOG_INFO(LOG_FILTER_GENERAL, ">> CharCreate FAILED: name='%s' race=%u class=%u sex=%u",
+                    createInfo->Name.c_str(), createInfo->Race, createInfo->Class, createInfo->Sex);
                 newChar.CleanupsBeforeDelete();
 
                 SendCharCreate(CHAR_CREATE_ERROR);
                 return;
             }
+            TC_LOG_INFO(LOG_FILTER_GENERAL, ">> CharCreate SUCCESS: name='%s' race=%u class=%u",
+                createInfo->Name.c_str(), createInfo->Race, createInfo->Class);
 
             if ((haveSameRace && skipCinematics == 1) || skipCinematics == 2)
                 newChar.setCinematic(1);                          // not show intro
@@ -471,10 +498,12 @@ void WorldSession::HandleCharCreateOpcode(WorldPackets::Character::CreateChar& c
 
         if (allowTwoSideAccounts && !skipCinematics && createInfo->Class != CLASS_DEATH_KNIGHT && createInfo->Class != CLASS_DEMON_HUNTER)
         {
+            TC_LOG_INFO(LOG_FILTER_GENERAL, ">> DIAG: callback3 EARLY DIRECT finalize (no extra query)");
             finalizeCharacterCreation(PreparedQueryResult(nullptr));
             return;
         }
 
+        TC_LOG_INFO(LOG_FILTER_GENERAL, ">> DIAG: callback3 NORMAL PATH (extra query before finalize)");
         auto stmt = CharacterDatabase.GetPreparedStatement(CHAR_SEL_CHAR_CREATE_INFO);
         stmt->setUInt32(0, GetAccountId());
         stmt->setUInt32(1, (skipCinematics == 1 || createInfo->Class == CLASS_DEATH_KNIGHT || createInfo->Class == CLASS_DEMON_HUNTER) ? 12 : 1);

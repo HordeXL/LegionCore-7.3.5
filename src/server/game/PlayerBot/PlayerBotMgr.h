@@ -27,11 +27,13 @@
 #include "PlayerBotMgr.h"
 
 #include "LFGMgr.h"
+#include "CharacterPackets.h"
 
 //#include "ArenaTeamMgr.h"
 
 #include "Containers.h"
 
+#include <unordered_set>
 
 
 #define CONVERT_ARENAAI_TOBG
@@ -176,13 +178,15 @@ struct PlayerBotBaseInfo
 
 	CharInfoMap characters;
 
-	std::queue<WorldPacket> needCreateBots;
+	std::queue<WorldPackets::Character::CharacterCreateInfo> needCreateBots;
+
+	uint32 pendingCreateCount;
 
 
 
 	PlayerBotBaseInfo(uint32 uid, const char *name, std::string &pa, bool isAcc) :
 
-		isAccountInfo(isAcc), id(uid), pass(pa)
+		isAccountInfo(isAcc), id(uid), pass(pa), pendingCreateCount(0)
 
 	{
 
@@ -691,6 +695,7 @@ public:
 	bool CanReadyArenaByArenaTeamID(uint32 arenaTeamId);
 
     void SetMax(int max) { m_MaxOnlineBot = max; }
+    void SetBotAccountAmount(uint32 amount) { m_BotAccountAmount = amount; }
 
     int32 m_MaxOnlineBot;
 
@@ -720,7 +725,7 @@ private:
 
 	PlayerBotSession* UpPlayerBotSessionByBaseInfo(PlayerBotBaseInfo *pAcc, bool accountInfo);
 
-	WorldPacket BuildCreatePlayerData(bool group, uint8 prof);
+	WorldPackets::Character::CharacterCreateInfo BuildCreatePlayerData(bool group, uint8 prof);
 
 	void CreateOncePlayerBot();
 
@@ -787,6 +792,10 @@ private:
 	std::vector<std::string> allName;
 
 	std::vector<std::string> allArenaName;
+
+	std::unordered_set<std::string> m_allCharNames;
+
+	std::unordered_set<std::string> m_batchUsedNames;
 
 	std::queue<ObjectGuid> m_DelayOnlineBots;
 

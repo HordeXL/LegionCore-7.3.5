@@ -459,10 +459,6 @@ void PlayerBotTalkMgr::StoryActingTalk(Player* player, std::string& talkText)
 
 		return;
 
-	m_WorkTick = getMSTime();
-
-	m_NextRndTick = urand(2000, 10000);
-
 	JoinDefaultChannel(player);
 
 	m_DefaultChannel->Say(player->GetGUID(), talkText.c_str(), Language::LANG_UNIVERSAL);
@@ -641,8 +637,6 @@ void PlayerBotTalkMgr::NormalTalk(uint32 sType, Player* player, std::string text
 		break;
 
 	}
-
-	TriggerStoryTalk();
 
 }
 
