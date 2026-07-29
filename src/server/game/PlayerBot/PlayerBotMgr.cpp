@@ -903,7 +903,7 @@ PlayerBotSession* PlayerBotMgr::UpPlayerBotSessionByBaseInfo(PlayerBotBaseInfo* 
     if (pSession)
         return NULL;
     std::string name = pAcc->username.c_str();
-    auto pBotSession = std::shared_ptr<PlayerBotSession>(new PlayerBotSession{ pAcc->id, name, AccountTypes::SEC_GAMEMASTER, 2, 0, LocaleConstant::LOCALE_zhTW, 0, false });
+    auto pBotSession = std::shared_ptr<PlayerBotSession>(new PlayerBotSession{ pAcc->id, name, AccountTypes::SEC_PLAYER, 2, 0, LocaleConstant::LOCALE_zhTW, 0, false });
     //pbSession->ReadAddonsInfo("");
     if (accountInfo)
         pBotSession->SetAccountBotSession();
@@ -979,12 +979,11 @@ void PlayerBotMgr::OnPlayerBotLogin(WorldSession* pSession, Player* pPlayer)
 
     BotUtility::BotUtility::RemoveArenaBotSpellsByPlayer(pPlayer);
     sPlayerBotTalkMgr->JoinDefaultChannel(pPlayer);
-    //if (pSession)
-    //{
-    //    std::string outString;
-    //    consoleToUtf8(std::string(" ä¸ çº¿"), outString);
-    //    sWorld->SendGlobalText((GetPlayerLinkText(pPlayer) + outString).c_str(), NULL);
-    //}
+    if (pSession)
+    {
+        std::string outString = " \E4\B8\8A\E7\BA\BF"; // 上线
+        sWorld->SendGlobalText((GetPlayerLinkText(pPlayer) + outString).c_str(), NULL);
+    }
     if (PlayerBotSession* pBotSession = dynamic_cast<PlayerBotSession*>(pSession))
     {
         if (!pBotSession->HasSchedules() && !pPlayer->EquipIsTidiness())
