@@ -3314,7 +3314,7 @@ void PlayerBotSetting::Initialize()
 
 
 
-	TC_LOG_INFO(LOG_FILTER_GENERAL, "Initialize all classes trainer talent and spell and equip.");
+	TC_LOG_DEBUG(LOG_FILTER_GENERAL, "Initialize all classes trainer talent and spell and equip.");
 
 }
 

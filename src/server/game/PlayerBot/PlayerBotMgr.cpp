@@ -957,6 +957,8 @@ void PlayerBotMgr::OnAccountBotDelete(ObjectGuid& guid, uint32 accountId)
 void PlayerBotMgr::OnPlayerBotLogin(WorldSession* pSession, Player* pPlayer)
 {
     ++m_BotOnlineCount;
+    pPlayer->SetGameMaster(false);
+    pPlayer->SetGMVisible(true);
     Group* pGroup = pPlayer->GetGroup();
     if (pGroup)
     {
@@ -981,7 +983,8 @@ void PlayerBotMgr::OnPlayerBotLogin(WorldSession* pSession, Player* pPlayer)
     sPlayerBotTalkMgr->JoinDefaultChannel(pPlayer);
     if (pSession)
     {
-        std::string outString = " \E4\B8\8A\E7\BA\BF"; // 上线
+        std::string outString;
+        consoleToUtf8(std::string(" 上线"), outString);
         sWorld->SendGlobalText((GetPlayerLinkText(pPlayer) + outString).c_str(), NULL);
     }
     if (PlayerBotSession* pBotSession = dynamic_cast<PlayerBotSession*>(pSession))
@@ -1006,9 +1009,12 @@ void PlayerBotMgr::OnPlayerBotLogout(WorldSession* pSession)
     --m_BotOnlineCount;
     if (m_BotOnlineCount < 0) m_BotOnlineCount = 0;
 
-    //std::string outString;
-    //consoleToUtf8(std::string("æºå¨äººä¸çº¿"), outString);
-    //sWorld->SendGlobalText(outString.c_str(), NULL);
+    if (pSession && pSession->GetPlayer())
+    {
+        std::string outString;
+        consoleToUtf8(std::string(" 下线"), outString);
+        sWorld->SendGlobalText((GetPlayerLinkText(pSession->GetPlayer()) + outString).c_str(), NULL);
+    }
     PlayerBotSession* pBotSession = dynamic_cast<PlayerBotSession*>(pSession);
     if (pBotSession && !pBotSession->HasScheduleByType(BotGlobleScheduleType::BGSType_Online) &&
         !pBotSession->HasScheduleByType(BotGlobleScheduleType::BGSType_Online_GUID))
