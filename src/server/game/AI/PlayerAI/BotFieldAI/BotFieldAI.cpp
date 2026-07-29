@@ -1174,7 +1174,7 @@ SpellCastResult BotFieldAI::PetTryCastSpell(uint32 spellID, Unit* pTarget, bool 
 
 	SpellCastResult castResult = SPELL_CAST_OK /*spell->CheckPetCast*/(pTarget);
 
-	if (castResult == SPELL_FAILED_UNIT_NOT_INFRONT && !pPet->isPossessed() && !pPet->IsVehicle())
+	if (castResult == SPELL_FAILED_UNIT_NOT_INFRONT && !pPet->isPossessed() && !pPet->isVehicle())
 
 	{
 
@@ -1242,7 +1242,7 @@ SpellCastResult BotFieldAI::PetTryCastSpell(uint32 spellID, Unit* pTarget, bool 
 
 
 
-		if (pTarget && !pPet->isPossessed() && !pPet->IsVehicle())
+		if (pTarget && !pPet->isPossessed() && !pPet->isVehicle())
 
 		{
 
@@ -1796,7 +1796,7 @@ void BotFieldAI::ProcessCombat(Unit* pTarget)
 
 					m_Movement->MovementToTarget();
 
-				if (me->GetDistance(pTarget) < BOTAI_RANGESPELL_DISTANCE && pTarget->isAlive() && !me->IsVehicle())
+				if (me->GetDistance(pTarget) < BOTAI_RANGESPELL_DISTANCE && pTarget->isAlive() && !me->isVehicle())
 
 				{
 
@@ -1956,7 +1956,7 @@ void BotFieldAI::SearchCreatureListFromRange(Unit* center, NearCreatureVec& near
 
 	{
 
-		if (!pCreature->isAlive() || pCreature->isPet())// || pCreature->IsTotem())
+		if (!pCreature->isAlive() || pCreature->isPet())// || pCreature->isTotem())
 
 			continue;
 

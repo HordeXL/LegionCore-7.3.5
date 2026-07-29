@@ -3658,6 +3658,20 @@ void WorldObject::GetFirstCollisionPosition(Position& pos, float dist, float ang
     MovePositionToFirstCollision(pos, dist, angle);
 }
 
+Position WorldObject::GetFirstCollisionPosition(float dist, float angle)
+{
+    Position pos;
+    if (Transport* transport = GetTransport())
+    {
+        GetPosition(&pos, transport);
+        MovePositionToTransportCollision(pos, dist, angle);
+        return pos;
+    }
+    GetPosition(&pos);
+    MovePositionToFirstCollision(pos, dist, angle);
+    return pos;
+}
+
 void WorldObject::MovePositionToCollisionBetween(Position &pos, float distMin, float distMax, float angle)
 {
     angle += GetOrientation();

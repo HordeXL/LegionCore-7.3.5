@@ -908,7 +908,7 @@ void BotBGAIMovement::MovementToTarget()
 
             //lastPathfindSure = pathParam->findOK ? 0 : lastPathfindSure + 1;
 
-	if (m_Player->IsVehicle())
+	if (m_Player->isVehicle())
 
 	{
 

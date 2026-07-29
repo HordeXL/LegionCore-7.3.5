@@ -467,6 +467,7 @@ class WorldObject : public Object, public WorldLocation
         void MovePositionToFirstCollision(Position &pos, float dist, float angle);
         void MovePositionToTransportCollision(Position &pos, float dist, float angle);
         void GetFirstCollisionPosition(Position& pos, float dist, float angle);
+        Position GetFirstCollisionPosition(float dist, float angle);
         void MovePositionToCollisionBetween(Position &pos, float distMin, float distMax, float angle);
         void GetCollisionPositionBetween(Position& pos, float distMin, float distMax, float angle);
         void GetRandomNearPosition(Position& pos, float radius);

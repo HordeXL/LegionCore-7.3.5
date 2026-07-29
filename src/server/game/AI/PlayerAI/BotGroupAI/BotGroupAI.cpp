@@ -3274,7 +3274,7 @@ SpellCastResult BotGroupAI::PetTryCastSpell(uint32 spellID, Unit* pTarget, bool 
 
 	SpellCastResult castResult = SPELL_CAST_OK; /*spell->CheckPetCast(pTarget) disabled*/
 
-	if (castResult == SPELL_FAILED_UNIT_NOT_INFRONT && !pPet->isPossessed() && !pPet->IsVehicle())
+	if (castResult == SPELL_FAILED_UNIT_NOT_INFRONT && !pPet->isPossessed() && !pPet->isVehicle())
 
 	{
 
@@ -3342,7 +3342,7 @@ SpellCastResult BotGroupAI::PetTryCastSpell(uint32 spellID, Unit* pTarget, bool 
 
 
 
-		if (pTarget && !pPet->isPossessed() && !pPet->IsVehicle())
+		if (pTarget && !pPet->isPossessed() && !pPet->isVehicle())
 
 		{
 
@@ -4653,7 +4653,7 @@ void BotGroupAI::SearchCreatureListFromRange(Unit* center, NearCreatureVec& near
 
 		if (!pCreature->isAlive() || !pCreature->IsVisible() || pCreature->getLevel() <= 1 ||
 
-			m_FliterCreatures.IsFliterCreature(pCreature) || pCreature->isPet())// || pCreature->IsTotem())
+			m_FliterCreatures.IsFliterCreature(pCreature) || pCreature->isPet())// || pCreature->isTotem())
 
 			continue;
 

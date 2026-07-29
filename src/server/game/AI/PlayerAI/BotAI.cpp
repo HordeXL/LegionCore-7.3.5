@@ -934,7 +934,7 @@ void BotBGAI::UpdateAI(uint32 diff)
 
 			return;
 
-		if (IsAlive())
+		if (me->isAlive())
 
 		{
 
@@ -1218,7 +1218,7 @@ void BotBGAI::ProcessCombat(Unit* pTarget)
 
 					Dismount();
 
-				if (!me->getVictim() && !me->IsVehicle())
+				if (!me->getVictim() && !me->isVehicle())
 
 					me->Attack(pTarget, true);
 
@@ -1226,7 +1226,7 @@ void BotBGAI::ProcessCombat(Unit* pTarget)
 
 					ChaseTarget(pTarget, true);
 
-				if (!IsNotSelect(pTarget) && !me->IsVehicle())
+				if (!IsNotSelect(pTarget) && !me->isVehicle())
 
 					ProcessMeleeSpell(pTarget);
 
@@ -2307,7 +2307,7 @@ SpellCastResult BotBGAI::PetTryCastSpell(uint32 spellID, Unit* pTarget, bool for
 
 	SpellCastResult castResult = SPELL_CAST_OK; /*spell->CheckPetCast(pTarget) disabled*/
 
-	if (castResult == SPELL_FAILED_UNIT_NOT_INFRONT && !pPet->isPossessed() && !pPet->IsVehicle())
+	if (castResult == SPELL_FAILED_UNIT_NOT_INFRONT && !pPet->isPossessed() && !pPet->isVehicle())
 
 	{
 
@@ -2375,7 +2375,7 @@ SpellCastResult BotBGAI::PetTryCastSpell(uint32 spellID, Unit* pTarget, bool for
 
 
 
-		if (pTarget && !pPet->isPossessed() && !pPet->IsVehicle())
+		if (pTarget && !pPet->isPossessed() && !pPet->isVehicle())
 
 		{
 
@@ -3604,13 +3604,7 @@ void BotBGAI::ResetBotAI()
 
 
 
-bool BotBGAI::IsAlive()
 
-{
-
-	return me->isAlive();
-
-}
 
 
 

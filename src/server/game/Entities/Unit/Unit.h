@@ -1090,6 +1090,14 @@ enum class DisplayToastMethod : uint8
 typedef cds::container::FeldmanHashSet< cds::gc::HP, Unit*, UnitHashAccessor > UnitSet;
 typedef std::set<AuraEffect*> AuraEffectSet;
 
+enum PlayerTotemType
+{
+    SUMMON_TYPE_TOTEM_FIRE  = 63,
+    SUMMON_TYPE_TOTEM_EARTH = 81,
+    SUMMON_TYPE_TOTEM_WATER = 82,
+    SUMMON_TYPE_TOTEM_AIR   = 83
+};
+
 class Unit : public WorldObject
 {
     enum DamageTrackingInfo
@@ -1211,6 +1219,7 @@ class Unit : public WorldObject
         bool isHunterPet() const{ return (m_unitTypeMask & UNIT_MASK_HUNTER_PET) != 0; }
         bool isTotem() const    { return (m_unitTypeMask & UNIT_MASK_TOTEM) != 0; }
         bool IsVehicle() const  { return (m_unitTypeMask & UNIT_MASK_VEHICLE) != 0; }
+        bool isVehicle() const  { return IsVehicle(); }
         bool isMinion() const   { return (m_unitTypeMask & UNIT_MASK_MINION) != 0; }
         bool isTrainingDummy() const { return m_unitTypeMask & UNIT_MASK_TRAINING_DUMMY; }
         bool isAnySummons() const;

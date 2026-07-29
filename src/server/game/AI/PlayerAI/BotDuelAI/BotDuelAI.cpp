@@ -350,7 +350,7 @@ void BotDuelAI::ProcessCombat(Unit* pTarget)
 
 				//Dismount();
 
-				if (!me->getVictim() && !me->IsVehicle())
+				if (!me->getVictim() && !me->isVehicle())
 
 					me->Attack(pTarget, true);
 
@@ -358,7 +358,7 @@ void BotDuelAI::ProcessCombat(Unit* pTarget)
 
 					ChaseTarget(pTarget, true);
 
-				if (!IsNotSelect(pTarget) && !me->IsVehicle())
+				if (!IsNotSelect(pTarget) && !me->isVehicle())
 
 					ProcessMeleeSpell(pTarget);
 
@@ -635,7 +635,7 @@ SpellCastResult BotDuelAI::PetTryCastSpell(uint32 spellID, Unit* pTarget, bool f
 
 	SpellCastResult castResult = SPELL_CAST_OK /*spell->CheckPetCast*/(pTarget);
 
-	if (castResult == SPELL_FAILED_UNIT_NOT_INFRONT && !pPet->isPossessed() && !pPet->IsVehicle())
+	if (castResult == SPELL_FAILED_UNIT_NOT_INFRONT && !pPet->isPossessed() && !pPet->isVehicle())
 
 	{
 
@@ -703,7 +703,7 @@ SpellCastResult BotDuelAI::PetTryCastSpell(uint32 spellID, Unit* pTarget, bool f
 
 
 
-		if (pTarget && !pPet->isPossessed() && !pPet->IsVehicle())
+		if (pTarget && !pPet->isPossessed() && !pPet->isVehicle())
 
 		{
 

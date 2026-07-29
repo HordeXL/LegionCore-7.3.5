@@ -39397,3 +39397,14 @@ std::string Player::GetShortDescription() const
     oss << GetName() << ":" << GetGUIDLow() << ":" << GetSession()->GetAccountId() << "@" << GetSession()->GetRemoteAddress().c_str() << "]";
     return oss.str();
 }
+
+// PlayerBot compatibility methods
+bool Player::IsSettingFinish() { return true; }
+bool Player::CheckNeedTenacityFlush() { return false; }
+bool Player::AIEquipItem(uint32 entry) { return false; }
+uint32 Player::FindTalentType() { return 0; }
+uint32 Player::ReupdateTalents() { return 0; }
+uint32 Player::SwitchTalent(uint32 talent) { return 0; }
+void Player::SupplementAmmo() {}
+void Player::OnLevelupToBotAI() {}
+bool Player::IsTankPlayer() { return false; }

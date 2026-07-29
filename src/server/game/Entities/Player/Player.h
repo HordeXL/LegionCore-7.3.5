@@ -50,6 +50,8 @@
 class SpectatorAddonMsg;
 struct Mail;
 struct ItemExtendedCostEntry;
+class PlayerAI;
+class PlayerBotSetting;
 
 class Bracket;
 class Channel;
@@ -1459,6 +1461,24 @@ class Player : public Unit, public GridObject<Player>
     public:
         explicit Player (WorldSession* session);
         ~Player();
+
+        bool m_bot;
+        int32 FakerMoveTimer;
+        uint32 m_plguid;
+
+        int32 m_EquipCombatPower;
+        PlayerBotSetting* m_PlayerBotSetting;
+        bool IsTankPlayer();
+        uint32 FindTalentType();
+        bool AIEquipItem(uint32 entry);
+        bool CheckNeedTenacityFlush();
+        bool IsSettingFinish();
+        void SupplementAmmo();
+        void OnLevelupToBotAI();
+        uint32 ReupdateTalents();
+        uint32 SwitchTalent(uint32 talent);
+        int32 GetEquipCombatPower() { return m_EquipCombatPower; }
+        void FlushEquipCombatPower(uint8 eSlot, bool apply, const ItemTemplate* pEquipTemplate);
 
         void Clear() override;
         void PrintPlayerSize();
@@ -3790,7 +3810,7 @@ class Player : public Unit, public GridObject<Player>
     public:
         // PlayerBot compatibility
         bool EquipIsTidiness() { return true; }
-        bool ResetPlayerToLevel(uint32 a, uint32 b, uint32 c) { return true; }
+        bool ResetPlayerToLevel(uint32 level, uint32 talent = 3, bool needTenacity = false) { return true; }
 };
 
 void AddItemsSetItem(Player*player, Item* item);

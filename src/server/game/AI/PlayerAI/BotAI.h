@@ -275,6 +275,7 @@ protected:
 	virtual bool IsHealerBotAI();
 
 	virtual bool IsAttacker() { return true; }
+	bool isAlive() { return me->isAlive(); }
 
 	virtual bool TryStartControlCommand() { ClearCruxControlCommand(); return false; }
 
