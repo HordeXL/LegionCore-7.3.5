@@ -7,6 +7,7 @@
 #include "SpellMgr.h"
 #include "PlayerBotSetting.h"
 #include "GridNotifiers.h"
+#include "CellImpl.h"
 #include <mutex>
 
 class Player;

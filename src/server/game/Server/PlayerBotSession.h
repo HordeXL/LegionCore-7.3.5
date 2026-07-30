@@ -193,6 +193,9 @@ private:
 	void ProcessNoWorld(uint32 diff);
 
 	void CastSchedule(uint32 diff);
+	void ForceRefreshVisibility();
+	void SetLastVisibilityRefresh(uint32 tick) { m_LastVisibilityTick = tick; }
+	uint32 GetLastVisibilityRefresh() const { return m_LastVisibilityTick; }
 
 	bool ProcessOnline(BotGlobleSchedule& schedule);
 
@@ -235,9 +238,8 @@ private:
 	BotSchedules m_Schedules;
 
 	int m_LastCastTime;
-
+	int m_LastVisibilityTick;
 	int m_NoWorldTick;
-
 	bool m_AccountBot;
 
 	std::mutex m_optQueueLock;

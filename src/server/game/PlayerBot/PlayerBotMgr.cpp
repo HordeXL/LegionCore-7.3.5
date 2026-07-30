@@ -791,43 +791,51 @@ void PlayerBotMgr::LoadPlayerBotBaseInfo()
     TC_LOG_INFO(LOG_FILTER_GENERAL, ">> LoadPlayerBotBaseInfo starting...");
 
     ClearBaseInfo();
-    QueryResult result = LoginDatabase.Query("SELECT id, username, sha_pass_hash FROM account");
+    QueryResult result = LoginDatabase.Query("SELECT id, username, sha_pass_hash FROM account WHERE username LIKE 'playerbot%'");
     if (!result)
     {
-        TC_LOG_INFO(LOG_FILTER_GENERAL, ">> LoadPlayerBot Find 0 account!");
-        return;
+        TC_LOG_INFO(LOG_FILTER_GENERAL, ">> LoadPlayerBot Find 0 bot account!");
     }
-
-    do
+    else
     {
-        Field* fields = result->Fetch();
-
-        uint32 id = fields[0].GetUInt32();
-        std::string username = fields[1].GetString();
-        std::string pass = fields[2].GetString();
-        sOnlineMgr->AddNewAccount(id, username); // Real player acc and bot acc all in
-
-        std::string lowerName = boost::algorithm::to_lower_copy(username);
-        if (IsBotAccuntName(lowerName))
+        do
         {
+            Field* fields = result->Fetch();
+
+            uint32 id = fields[0].GetUInt32();
+            std::string username = fields[1].GetString();
+            std::string pass = fields[2].GetString();
+            sOnlineMgr->AddNewAccount(id, username);
+
             if (m_idPlayerBotBase.find(id) == m_idPlayerBotBase.end())
             {
                 PlayerBotBaseInfo* pInfo = new PlayerBotBaseInfo(id, username.c_str(), pass, false);
                 m_idPlayerBotBase[id] = pInfo;
             }
             m_LastBotAccountIndex = id;
-        }
-        else
+        } while (result->NextRow());
+    }
+
+    // 加载普通玩家账号（用于 account bot）
+    QueryResult resultAccount = LoginDatabase.Query("SELECT id, username, sha_pass_hash FROM account WHERE username NOT LIKE 'playerbot%'");
+    if (resultAccount)
+    {
+        do
         {
+            Field* fields = resultAccount->Fetch();
+
+            uint32 id = fields[0].GetUInt32();
+            std::string username = fields[1].GetString();
+            std::string pass = fields[2].GetString();
+            sOnlineMgr->AddNewAccount(id, username);
+
             if (m_idAccountBotBase.find(id) == m_idAccountBotBase.end())
             {
                 PlayerBotBaseInfo* pInfo = new PlayerBotBaseInfo(id, username.c_str(), pass, true);
                 m_idAccountBotBase[id] = pInfo;
             }
-        }
-        //if (m_idPlayerBotBase.size() >= m_BotAccountAmount * 2)
-        //	break;
-    } while (result->NextRow());
+        } while (resultAccount->NextRow());
+    }
 
     SupplementAccount();
 
@@ -957,8 +965,6 @@ void PlayerBotMgr::OnAccountBotDelete(ObjectGuid& guid, uint32 accountId)
 void PlayerBotMgr::OnPlayerBotLogin(WorldSession* pSession, Player* pPlayer)
 {
     ++m_BotOnlineCount;
-    pPlayer->SetGameMaster(false);
-    pPlayer->SetGMVisible(true);
     Group* pGroup = pPlayer->GetGroup();
     if (pGroup)
     {
@@ -981,12 +987,18 @@ void PlayerBotMgr::OnPlayerBotLogin(WorldSession* pSession, Player* pPlayer)
 
     BotUtility::BotUtility::RemoveArenaBotSpellsByPlayer(pPlayer);
     sPlayerBotTalkMgr->JoinDefaultChannel(pPlayer);
-    if (pSession)
-    {
-        std::string outString;
-        consoleToUtf8(std::string(" 上线"), outString);
-        sWorld->SendGlobalText((GetPlayerLinkText(pPlayer) + outString).c_str(), NULL);
-    }
+
+    // 清除登录状态标记。机器人不发 CMSG_LOAD_SCREEN，因此 m_playerLoading 永远不会被清除
+    pSession->ClearPlayerLoading();
+
+    // 强制确保机器人对其他玩家可见
+    pPlayer->RemoveAurasByType(SPELL_AURA_MOD_STEALTH);
+    pPlayer->RemoveAurasByType(SPELL_AURA_MOD_INVISIBILITY);
+    pPlayer->SetPlayerExtraFlag(PLAYER_EXTRA_INVISIBLE_STATUS, false);
+    pPlayer->m_serverSideVisibility.SetValue(SERVERSIDE_VISIBILITY_GM, SEC_PLAYER);
+    pPlayer->m_serverSideVisibilityDetect.SetValue(SERVERSIDE_VISIBILITY_GM, SEC_PLAYER);
+    pPlayer->UpdateObjectVisibility(true);
+
     if (PlayerBotSession* pBotSession = dynamic_cast<PlayerBotSession*>(pSession))
     {
         if (!pBotSession->HasSchedules() && !pPlayer->EquipIsTidiness())
@@ -1009,12 +1021,6 @@ void PlayerBotMgr::OnPlayerBotLogout(WorldSession* pSession)
     --m_BotOnlineCount;
     if (m_BotOnlineCount < 0) m_BotOnlineCount = 0;
 
-    if (pSession && pSession->GetPlayer())
-    {
-        std::string outString;
-        consoleToUtf8(std::string(" 下线"), outString);
-        sWorld->SendGlobalText((GetPlayerLinkText(pSession->GetPlayer()) + outString).c_str(), NULL);
-    }
     PlayerBotSession* pBotSession = dynamic_cast<PlayerBotSession*>(pSession);
     if (pBotSession && !pBotSession->HasScheduleByType(BotGlobleScheduleType::BGSType_Online) &&
         !pBotSession->HasScheduleByType(BotGlobleScheduleType::BGSType_Online_GUID))
@@ -1239,11 +1245,19 @@ void PlayerBotMgr::SupplementPlayerBot()
         WorldSession* pSession = sWorld->FindSession(pInfo->id).get();
         if (!pSession)
         {
-            TC_LOG_INFO(LOG_FILTER_GENERAL, ">> Create bot, but session offline.");
+            TC_LOG_INFO(LOG_FILTER_GENERAL, ">> SupplementPlayerBot: account=%u session offline, retrying later.", pInfo->id);
             continue;
         }
-        if (pInfo->needCreateBots.size() > 0 || pInfo->pendingCreateCount > 0)
+        if (pInfo->needCreateBots.size() > 0)
+        {
+            TC_LOG_INFO(LOG_FILTER_GENERAL, ">> SupplementPlayerBot: account=%u has %u pending creations, skipping.", pInfo->id, (uint32)pInfo->needCreateBots.size());
             continue;
+        }
+        if (pInfo->pendingCreateCount > 0)
+        {
+            TC_LOG_INFO(LOG_FILTER_GENERAL, ">> SupplementPlayerBot: account=%u has %u pending create count, skipping.", pInfo->id, (uint32)pInfo->pendingCreateCount);
+            continue;
+        }
         TC_LOG_INFO(LOG_FILTER_GENERAL, ">> SupplementPlayerBot: account=%u chars=%u queue=%u",
             pInfo->id, (uint32)pInfo->characters.size(), (uint32)pInfo->needCreateBots.size());
         for (int i = 1; i < 10; i++)
@@ -1260,6 +1274,47 @@ void PlayerBotMgr::SupplementPlayerBot()
             pInfo->needCreateBots.push(BuildCreatePlayerData(false, 11));
     }
     CreateOncePlayerBot();
+}
+
+void PlayerBotMgr::SupplementOneRandomPlayerBotPerAccount()
+{
+    TC_LOG_INFO(LOG_FILTER_GENERAL, ">> SupplementOneRandomPlayerBotPerAccount START");
+
+    static uint8 const botClasses[] = { 1, 2, 3, 4, 5, 7, 8, 9, 11 };
+
+    uint32 queuedCreateCount = 0;
+
+    for (std::map<uint32, PlayerBotBaseInfo*>::iterator itInfo = m_idPlayerBotBase.begin();
+        itInfo != m_idPlayerBotBase.end(); ++itInfo)
+    {
+        PlayerBotBaseInfo* pInfo = itInfo->second;
+        if (!pInfo)
+            continue;
+
+        if (!pInfo->characters.empty())
+            continue;
+
+        WorldSession* pSession = sWorld->FindSession(pInfo->id).get();
+        if (!pSession)
+            pSession = UpPlayerBotSessionByBaseInfo(pInfo, false);
+
+        if (!pSession)
+        {
+            TC_LOG_ERROR(LOG_FILTER_GENERAL, ">> Could not create startup bot for account %u: no session", pInfo->id);
+            continue;
+        }
+
+        uint8 playerClass = botClasses[urand(0, (sizeof(botClasses) / sizeof(uint8)) - 1)];
+        bool alliance = urand(0, 1) == 0;
+
+        pInfo->needCreateBots.push(BuildCreatePlayerData(alliance, playerClass));
+        ++queuedCreateCount;
+        TC_LOG_INFO(LOG_FILTER_GENERAL, ">> Created one random startup bot for account %u", pInfo->id);
+    }
+
+    CreateOncePlayerBot();
+
+    TC_LOG_INFO(LOG_FILTER_GENERAL, ">> SupplementOneRandomPlayerBotPerAccount END - created %u bots", queuedCreateCount);
 }
 
 void PlayerBotMgr::OnRealPlayerJoinBattlegroundQueue(uint32 bgTypeId, uint32 level)

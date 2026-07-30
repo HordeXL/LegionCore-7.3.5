@@ -8,6 +8,7 @@
 #include "SpellMgr.h"
 #include "PlayerBotSetting.h"
 #include "GridNotifiers.h"
+#include "CellImpl.h"
 #include <mutex>
 
 class Player;
@@ -114,7 +115,7 @@ protected:
 	bool m_IsRangeBot;
 	bool m_IsHealerBot;
 
-	uint32 BotCommon_ClearAllCtrl;// = 59752;		// ×ÔÀû
+	uint32 BotCommon_ClearAllCtrl;// = 59752;		// ï¿½ï¿½ï¿½ï¿½
 	uint32 m_lastClearCtrlTick;
 };
 

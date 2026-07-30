@@ -18,6 +18,7 @@
 
 PlayerBotSession::PlayerBotSession(uint32 id, std::string &name, AccountTypes sec, uint8 expansion, time_t mute_time, LocaleConstant locale, uint32 recruiter, bool isARecruiter) :
 m_LastCastTime(CAST_SCHEDULE_TICK),
+m_LastVisibilityTick(0),
 m_NoWorldTick(0),
 m_AccountBot(false),
 WorldSession(id, std::move(name), nullptr, SEC_PLAYER, 6, 0, "Wn64", LOCALE_zhCN, 0, false, AT_AUTH_FLAG_NONE, {}, 0)
@@ -133,7 +134,7 @@ bool PlayerBotSession::PlayerIsReady()
 	Player* player = GetPlayer();
 	if (!player)
 		return true;
-	if (!true)
+	if (!player->IsSettingFinish())
 		return false;
 	BotFieldAI* pFieldAI = dynamic_cast<BotFieldAI*>(player->GetAI());
 	if (!pFieldAI)
@@ -155,13 +156,6 @@ void PlayerBotSession::ProcessNoWorld(uint32 diff)
 	if (player->IsInWorld())
 	{
 		m_NoWorldTick = 0;
-		return;
-	}
-
-	if (player->IsBeingTeleported())
-	{
-        HandleWorldPortAck();
-        m_NoWorldTick = 1000;
 		return;
 	}
 
@@ -276,6 +270,27 @@ void PlayerBotSession::CastSchedule(uint32 diff)
 	{
 		m_Schedules.erase(m_Schedules.begin());
 	}
+	ForceRefreshVisibility();
+}
+
+void PlayerBotSession::ForceRefreshVisibility()
+{
+	Player* player = GetPlayer();
+	if (!player || !player->IsInWorld())
+		return;
+
+	// 限频：每 3 秒最多刷新一次，避免频繁广播导致性能损耗
+	uint32 now = getMSTime();
+	if (now - GetLastVisibilityRefresh() < 3000)
+		return;
+	SetLastVisibilityRefresh(now);
+
+	player->RemoveAurasByType(SPELL_AURA_MOD_STEALTH);
+	player->RemoveAurasByType(SPELL_AURA_MOD_INVISIBILITY);
+	player->SetPlayerExtraFlag(PLAYER_EXTRA_INVISIBLE_STATUS, false);
+	player->m_serverSideVisibility.SetValue(SERVERSIDE_VISIBILITY_GM, SEC_PLAYER);
+	player->m_serverSideVisibilityDetect.SetValue(SERVERSIDE_VISIBILITY_GM, SEC_PLAYER);
+	player->UpdateObjectVisibility(true);
 }
 
 bool PlayerBotSession::ProcessOnline(BotGlobleSchedule& schedule)
@@ -373,7 +388,7 @@ bool PlayerBotSession::ProcessSetting(BotGlobleSchedule& schedule)
 		ClearAllSchedule();
 		return false;
 	}
-	if (!player->IsInWorld() || !true)
+	if (!player->IsInWorld() || !player->IsSettingFinish())
 		return false;
 	if (schedule.scheduleState != 0)
 		return true;
@@ -382,9 +397,9 @@ bool PlayerBotSession::ProcessSetting(BotGlobleSchedule& schedule)
 		needTenacity = PlayerBotSetting(player).CheckNeedTenacityFlush();
 	if (!needTenacity && player->CalculateTalentsPoints() < 10)
 	{
-		if (true && player->getLevel() >= schedule.parameter1 && player->getLevel() <= schedule.parameter2)
+		if (player->IsSettingFinish() && player->getLevel() >= schedule.parameter1 && player->getLevel() <= schedule.parameter2)
 		{
-			if (schedule.parameter3 >= 4 || (0 + 1 == schedule.parameter3))
+			if (schedule.parameter3 >= 4 || (player->FindTalentType() + 1 == schedule.parameter3))
 				return true;
 		}
 	}
@@ -626,7 +641,7 @@ bool PlayerBotSession::ProcessEnterAA(BotGlobleSchedule& schedule)
 					continue;
 				BattlegroundQueue& bgQueue = sBattlegroundMgr->GetBattlegroundQueue(bgQueueTypeId);
 				PVPDifficultyEntry const* bracketEntry = DB2Manager::GetBattlegroundBracketById(bg_template->GetMapId(), uint8(schedule.parameter2));
-				if (false) // bgQueue.ExistRealPlayer disabled
+				if (false) // bgQueue.ExistRealPlayer disabled in LegionCore
 					continue;
 				BotGlobleSchedule schedule1(BotGlobleScheduleType::BGSType_OutAAQueue, 0);
 				schedule1.parameter1 = schedule.parameter1;
@@ -681,7 +696,7 @@ bool PlayerBotSession::ProcessDelayLevelup(BotGlobleSchedule& schedule)
 		ClearAllSchedule();
 		return false;
 	}
-	// PlayerBot levelup
+	player->OnLevelupToBotAI();
 	return true;
 }
 

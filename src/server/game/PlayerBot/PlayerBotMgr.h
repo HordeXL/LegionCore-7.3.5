@@ -647,6 +647,7 @@ public:
 	bool AllPlayerLeaveBG(uint32 account);
 
 	void SupplementPlayerBot();
+	void SupplementOneRandomPlayerBotPerAccount();
 
 
 
