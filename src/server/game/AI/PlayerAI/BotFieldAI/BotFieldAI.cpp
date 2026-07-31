@@ -208,7 +208,7 @@ void BotFieldAI::UpdateAI(uint32 diff)
 
 
 
-	if (!true /*IsSettingFinish*/)
+	if (!me->IsSettingFinish())
 
 		return;
 

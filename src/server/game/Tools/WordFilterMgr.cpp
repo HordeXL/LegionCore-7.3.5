@@ -376,7 +376,7 @@ void WordFilterMgr::GeneralFilterWstring(std::wstring& _text, LocaleConstant loc
     if (_text.empty())
         return;
 
-    std::transform(_text.begin(), _text.end(), _text.begin(), ::tolower);
+    std::transform(_text.begin(), _text.end(), _text.begin(), [](unsigned char c) { return std::tolower(c); });
 
     std::wstring letters = boost::locale::conv::utf_to_utf<wchar_t>(sObjectMgr->GetTrinityString(20087, LOCALE_ruRU)); // all eng + all rus chars
     for (uint16 i = 0; i < _text.size(); ++i)

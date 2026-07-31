@@ -149,6 +149,7 @@ void PlayerBotMgr::SwitchPlayerBotAI(Player* player, PlayerBotAIType aiType, boo
         return;
     if (force && player->isInCombat())
         player->ClearInCombat();
+    ObjectGuid oldSelection = player->GetSelectedUnit() ? player->GetSelectedUnit()->GetGUID() : ObjectGuid::Empty;
     player->SetSelection(ObjectGuid::Empty);
     UnitAI* pAI = player->GetAI();
     player->IsAIEnabled = false;
@@ -259,6 +260,16 @@ void PlayerBotMgr::SwitchPlayerBotAI(Player* player, PlayerBotAIType aiType, boo
                 player->SetAI(NULL);
             }
             break;
+    }
+
+    // 恢复切换 AI 前的选中目标
+    if (!oldSelection.IsEmpty())
+    {
+        if (Unit* oldTarget = ObjectAccessor::FindUnit(oldSelection))
+        {
+            if (oldTarget->isAlive() && player->IsValidAttackTarget(oldTarget))
+                player->SetSelection(oldSelection);
+        }
     }
 #else
     return;

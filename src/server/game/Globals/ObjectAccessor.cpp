@@ -276,7 +276,7 @@ Creature* ObjectAccessor::FindCreature(ObjectGuid const& guid)
 Player* ObjectAccessor::FindPlayerByName(std::string name)
 {
     name = sObjectMgr->GetRealCharName(name);
-    std::transform(name.begin(), name.end(), name.begin(), ::tolower);
+    std::transform(name.begin(), name.end(), name.begin(), [](unsigned char c) { return std::tolower(c); });
 
     return HashMapHolder<Player>::FindStr(name);
 }

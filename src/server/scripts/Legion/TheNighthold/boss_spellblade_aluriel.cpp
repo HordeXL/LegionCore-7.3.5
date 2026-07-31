@@ -821,6 +821,13 @@ public:
 
         void UpdateAI(uint32 diff) override
         {
+            Unit* owner = me->GetAnyOwner();
+            if (!owner || !owner->IsInWorld() || owner->IsDuringRemoveFromWorld())
+            {
+                me->DespawnOrUnsummon();
+                return;
+            }
+
             events.Update(diff);
 
             if (uint32 eventId = events.ExecuteEvent())
@@ -842,8 +849,13 @@ public:
                         break;
                     }
                     case EVENT_2:
-                        if (Unit* owner = me->GetAnyOwner())
+                        if (owner = me->GetAnyOwner()) // refresh owner pointer (may have been deleted)
                         {
+                            if (!owner->IsInWorld() || owner->IsDuringRemoveFromWorld())
+                            {
+                                me->DespawnOrUnsummon();
+                                return;
+                            }
                             if (Unit* target = owner->GetAI()->SelectTarget(SELECT_TARGET_RANDOM, 0, 80.0f, true))
                             {
                                 if (target->GetDistance(centerPos) > 95.0f)
