@@ -200,8 +200,6 @@ m_FullDispel(0),
 
 m_MeleeFleeTick(0),
 
-m_DpsEngageDelay(0),
-
 bothp(0),
 
 m_ForceFlee(false),
@@ -1807,8 +1805,6 @@ me->SetPower(POWER_MANA, (me->GetMaxPower(POWER_MANA)));
 
 			m_FullDispel = 0;
 
-			m_DpsEngageDelay = 0;
-
 			m_MovetoHaltPos.ClearMoveto();
 
 			if (ProcessNormalSpell())
@@ -1929,8 +1925,6 @@ me->SetPower(POWER_MANA, (me->GetMaxPower(POWER_MANA)));
 
 			me->SetSelection(pTarget->GetGUID());
 
-			CheckSetDpsEngageDelay(pTarget);
-
 			ProcessFullDispel();
 
 		}
@@ -1947,7 +1941,6 @@ me->SetPower(POWER_MANA, (me->GetMaxPower(POWER_MANA)));
 					if (masterTarget->isAlive() && me->IsValidAttackTarget(masterTarget))
 					{
 						me->SetSelection(masterTarget->GetGUID());
-						CheckSetDpsEngageDelay(masterTarget);
 						m_ForceFlee = false;
 						m_StopFollow = false;
 						return;
@@ -2777,48 +2770,13 @@ Unit* BotGroupAI::GetCombatTarget(float range)
 
 	{
 
-		// DPS 集火：优先攻击队长目标，其次队伍坦克当前目标，最后回退随机选择
-		// 一级：队长当前选中目标
-		if (m_MasterPlayer)
+		Unit* pTankTarget = nullptr;
 
-		{
+		if (pTankTarget && pTankTarget->isAlive() && me->IsValidAttackTarget(pTankTarget) &&
 
-			if (Unit* masterTarget = m_MasterPlayer->GetSelectedUnit())
+			pTankTarget->IsVisible() && !m_FliterCreatures.IsFliterCreature(pTankTarget->ToCreature()))
 
-			{
-
-				if (masterTarget->isAlive() && me->IsValidAttackTarget(masterTarget) &&
-
-					masterTarget->IsVisible() && !m_FliterCreatures.IsFliterCreature(masterTarget->ToCreature()) &&
-
-					me->GetDistance(masterTarget) <= range)
-
-					return masterTarget;
-
-			}
-
-		}
-
-		// 二级：队伍坦克当前选中目标
-		if (Unit* tank = FindGroupTank())
-
-		{
-
-			if (Unit* tankTarget = tank->ToPlayer()->GetSelectedUnit())
-
-			{
-
-				if (tankTarget->isAlive() && me->IsValidAttackTarget(tankTarget) &&
-
-					tankTarget->IsVisible() && !m_FliterCreatures.IsFliterCreature(tankTarget->ToCreature()) &&
-
-					me->GetDistance(tankTarget) <= range)
-
-					return tankTarget;
-
-			}
-
-		}
+			return pTankTarget;
 
 	}
 
@@ -4168,46 +4126,7 @@ void BotGroupAI::ProcessHealth(bool canMove)
 
 	if (needHealth.size() > 0 && (!healthPlayer || cruxRate <= 60))
 
-	{
-
-		// 治疗优先：坦克血量危急时优先治疗坦克
-		Unit* groupTank = NULL;
-
-		if (Unit* tank = FindGroupTank())
-
-		{
-
-			for (Unit* u : needHealth)
-
-			{
-
-				if (u == tank)
-
-				{
-
-					groupTank = tank;
-
-					break;
-
-				}
-
-			}
-
-		}
-
-		if (groupTank && groupTank->GetHealthPct() < 35.0f)
-
-			healthPlayer = groupTank;
-
-		else if (groupTank && groupTank->GetHealthPct() < 60.0f && urand(0, 99) < 70)
-
-			healthPlayer = groupTank;
-
-		else
-
-			healthPlayer = needHealth[urand(0, needHealth.size() - 1)];
-
-	}
+		healthPlayer = needHealth[urand(0, needHealth.size() - 1)];
 
 	if (!healthPlayer)
 
@@ -4294,54 +4213,6 @@ void BotGroupAI::ProcessCombat(Unit* pTarget)
 	if (!pTarget || !pTarget->isAlive())
 
 		return;
-
-	// DPS 等待坦克接怪防 OT：延时未到且坦克未接怪时暂缓出手
-	if (!IsTankBotAI() && m_DpsEngageDelay > 0)
-
-	{
-
-		if (getMSTime() >= m_DpsEngageDelay)
-
-			m_DpsEngageDelay = 0;
-
-		else
-
-		{
-
-			Unit* tank = FindGroupTank();
-
-			if (tank && pTarget->ToCreature())
-
-			{
-
-				if (pTarget->GetTargetGUID() == tank->GetGUID())
-
-					m_DpsEngageDelay = 0;
-
-				else
-
-				{
-
-					// 等待坦克接怪：停止攻击、面向目标但不施法
-					me->AttackStop();
-
-					me->SetInFront(pTarget);
-
-					me->SetFacingToObject(pTarget);
-
-					return;
-
-				}
-
-			}
-
-			else
-
-				m_DpsEngageDelay = 0;
-
-		}
-
-	}
 
 	if (TargetIsStealth(pTarget->ToPlayer()))
 
@@ -5494,89 +5365,6 @@ Unit* BotGroupAI::SearchTankTargetEnemy(float range)
 	}
 
 	return NULL;
-
-}
-
-
-
-Unit* BotGroupAI::FindGroupTank()
-
-{
-
-	Group* pGroup = me->GetGroup();
-
-	if (!pGroup || pGroup->isBGGroup())
-
-		return NULL;
-
-	Group::MemberSlotList const& memList = pGroup->GetMemberSlots();
-
-	for (Group::MemberSlot const& slot : memList)
-
-	{
-
-		Player* member = ObjectAccessor::FindPlayer(slot.Guid);
-
-		if (!member || !member->IsInWorld() || !member->isAlive() || member->GetMap() != me->GetMap())
-
-			continue;
-
-		if (BotGroupAI* groupAI = dynamic_cast<BotGroupAI*>(member->GetAI()))
-
-		{
-
-			if (groupAI->IsTankBotAI())
-
-				return member;
-
-		}
-
-		else if (member->isInTankSpec())
-
-		{
-
-			return member;
-
-		}
-
-	}
-
-	return NULL;
-
-}
-
-
-
-void BotGroupAI::CheckSetDpsEngageDelay(Unit* pTarget)
-
-{
-
-	// 只有非坦克机器人在 PvE 生物目标时才需要等待坦克接怪
-	if (IsTankBotAI() || !pTarget || !pTarget->ToCreature())
-
-	{
-
-		m_DpsEngageDelay = 0;
-
-		return;
-
-	}
-
-	Unit* tank = FindGroupTank();
-
-	if (!tank)
-
-	{
-
-		m_DpsEngageDelay = 0;
-
-		return;
-
-	}
-
-	ObjectGuid targetGuid = pTarget->GetTargetGUID();
-
-	m_DpsEngageDelay = (targetGuid == tank->GetGUID()) ? 0 : getMSTime() + 3000;
 
 }
 

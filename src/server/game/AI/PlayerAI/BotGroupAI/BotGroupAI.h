@@ -144,8 +144,6 @@ protected:
 	NearUnitVec SearchLifePctByFriendRange(Unit* pTarget, float lifePct, float range = NEEDFLEE_CHECKRANGE);
 	Unit* RandomRangeEnemyByCasting(float range);
 	Unit* SearchTankTargetEnemy(float range = BOTAI_SEARCH_RANGE);
-	Unit* FindGroupTank();
-	void CheckSetDpsEngageDelay(Unit* pTarget);
 	NearUnitVec RangeEnemyListByHasAura(uint32 aura, float range);
 	NearUnitVec RangeEnemyListByNonAura(uint32 aura, float range);
 	NearUnitVec RangeEnemyListByTargetIsMe(float range);
@@ -206,7 +204,6 @@ protected:
 	Player* m_MasterPlayer;
 	uint32 m_FullDispel;
 	uint32 m_MeleeFleeTick;
-	uint32 m_DpsEngageDelay;
 	uint32 bothp;
 	bool m_ForceFlee;
 	bool m_StopFollow;
