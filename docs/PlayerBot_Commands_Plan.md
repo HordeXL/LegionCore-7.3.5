@@ -24,8 +24,8 @@
 
 | 命令 | 功能 | 实现（复用已有函数） |
 |------|------|------|
-| `.bot on [数量]` | 上线机器人到指定数量（无参数 = 补满上限） | `SetMax(n)` + `AllPlayerBotRandomLogin()` |
-| `.bot off` | **全部机器人下线** | `AllPlayerBotLogout()` |
+| `.bot login [数量]` | 上线机器人到指定数量（无参数 = 补满上限） | `SetMax(n)` + `AllPlayerBotRandomLogin()` |
+| `.bot logout` | **全部机器人下线** | `AllPlayerBotLogout()` |
 | `.bot info` | 查看在线统计（各阵营数量、当前/上限） | `GetOnlineBotCount(team, true)` |
 | `.bot max <数量>` | 设置在线 bot 上限 | `SetMax(n)`（改 `m_MaxOnlineBot`，配置 `PlayerBot.MaxOnlineCount`） |
 | `.bot spawn <职业>` | 按职业创建新 bot 角色 | `AddNewPlayerBotByClass(count, Classes)` |
