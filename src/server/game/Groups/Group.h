@@ -493,7 +493,7 @@ class Group
     public:
         // PlayerBot compatibility
         Player* GetCommander() const { return nullptr; }
-        bool GroupExistRealPlayer() const { return false; }
+        bool GroupExistRealPlayer() const;
         bool GiveAtGroupPos(ObjectGuid& guid, uint32& index, uint32& count) { return true; }
         bool AllGroupNotCombat() { return true; }
         std::vector<ObjectGuid> GetGroupMemberFromNeedRevivePlayer(uint32 forMap) { return std::vector<ObjectGuid>(); }

@@ -18,23 +18,4 @@
 
 #include "CellImpl.h"
 
-Cell::Cell(CellCoord const& p)
-{
-    data.Part.grid_x = p.x_coord / MAX_NUMBER_OF_CELLS;
-    data.Part.grid_y = p.y_coord / MAX_NUMBER_OF_CELLS;
-    data.Part.cell_x = p.x_coord % MAX_NUMBER_OF_CELLS;
-    data.Part.cell_y = p.y_coord % MAX_NUMBER_OF_CELLS;
-    data.Part.nocreate = 0;
-    data.Part.reserved = 0;
-}
 
-Cell::Cell(float x, float y)
-{
-    CellCoord p = Trinity::ComputeCellCoord(x, y);
-    data.Part.grid_x = p.x_coord / MAX_NUMBER_OF_CELLS;
-    data.Part.grid_y = p.y_coord / MAX_NUMBER_OF_CELLS;
-    data.Part.cell_x = p.x_coord % MAX_NUMBER_OF_CELLS;
-    data.Part.cell_y = p.y_coord % MAX_NUMBER_OF_CELLS;
-    data.Part.nocreate = 0;
-    data.Part.reserved = 0;
-}

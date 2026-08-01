@@ -550,7 +550,7 @@ void BotBGAIMovement::MovementTo(float x, float y, float z, float offset /* = 0 
 
 	}
 
-	m_MovementTick = 3;
+	m_MovementTick = 1;
 
 	if (IsNearToPosition(x, y, z, (offset == 0) ? 0.8f : offset * 0.9f))
 
@@ -566,46 +566,16 @@ void BotBGAIMovement::MovementTo(float x, float y, float z, float offset /* = 0 
 
 	Unit* pVehicle = m_Player->GetVehicleBase();
 
-            //PathParameter* pathParam = new PathParameter(sessionID, pVehicle ? pVehicle : m_Player);
-
-            //pathParam->targetPosX = x;
-
-            //pathParam->targetPosY = y;
-
-            //pathParam->targetPosZ = z;
-
-            //pathParam->offset = offset;
-
-
-
-            bool pathResult = false; /*Pathfinding disabled*/
-
-            //if (pathParam->offset < 0)
-
-            //pathParam->offset *= -1;
-
-            //float posx = pathParam->targetPosX + ((pathParam->offset != 0) ? frand(pathParam->offset * (-1), pathParam->offset) : 0);
-
-            //float posy = pathParam->targetPosY + ((pathParam->offset != 0) ? frand(pathParam->offset * (-1), pathParam->offset) : 0);
-
-            //float posz = pathParam->targetPosZ;
-
-            /*path.UpdateAllowedPositionZ disabled*/
-
-            /*path.CalculatePath disabled*/
-
-            /*path.GetPathType disabled*/
-
+	// Pathfinding disabled, use MovePoint as fallback
+	if (pVehicle)
 	{
-
-		if (m_BGAI)
-
-		{
-
-			TC_LOG_ERROR(LOG_FILTER_PATH_GENERATOR, "Path not find1");
-
-		}
-
+		pVehicle->GetMotionMaster()->Clear();
+		pVehicle->GetMotionMaster()->MovePoint(1, x, y, z);
+	}
+	else
+	{
+		m_Player->GetMotionMaster()->Clear();
+		m_Player->GetMotionMaster()->MovePoint(1, x, y, z);
 	}
 
 }
@@ -690,93 +660,17 @@ void BotBGAIMovement::MovementTo(ObjectGuid guid, float offset /* = 0 */)
 
 	Unit* pVehicle = m_Player->GetVehicleBase();
 
-            //PathParameter* pathParam = new PathParameter(sessionID, pVehicle ? pVehicle : m_Player);
-
-            //pathParam->targetPosX = pos.GetPositionX();
-
-            //pathParam->targetPosY = pos.GetPositionY();
-
-            //pathParam->targetPosZ = pos.GetPositionZ();
-
-            //pathParam->offset = offset;
-
-
-
-            bool pathResult = false; /*Pathfinding disabled*/
-
-            //if (pathParam->offset < 0)
-
-            //pathParam->offset *= -1;
-
-            //float posx = pathParam->targetPosX + ((pathParam->offset != 0) ? frand(pathParam->offset * (-1), pathParam->offset) : 0);
-
-            //float posy = pathParam->targetPosY + ((pathParam->offset != 0) ? frand(pathParam->offset * (-1), pathParam->offset) : 0);
-
-            //float posz = pathParam->targetPosZ;
-
-            /*path.UpdateAllowedPositionZ disabled*/
-
-            /*path.CalculatePath disabled*/
-
-            /*path.GetPathType disabled*/
-
+	// Pathfinding disabled, use MovePoint as fallback
+	if (pVehicle)
 	{
-
-		if (m_BGAI)
-
-		{
-
-			TC_LOG_ERROR(LOG_FILTER_PATH_GENERATOR, "Path not find2.");
-
-            //pathParam->findOK = false;
-
-		}
-
-		//else
-
-            //pathParam->findOK = true;
-
+		pVehicle->GetMotionMaster()->Clear();
+		pVehicle->GetMotionMaster()->MovePoint(1, pos.GetPositionX(), pos.GetPositionY(), pos.GetPositionZ());
 	}
-
-	//else
-
-            //pathParam->findOK = true;
-
-
-
-            //if (pathParam->findOK)
-
+	else
 	{
-
-            //pathParam->finishPaths.clear();
-
-		const std::vector<G3D::Vector3> points; /*path.GetPath*/;
-
-		for (std::vector<G3D::Vector3>::const_iterator itPoints = points.begin();
-
-			itPoints != points.end();
-
-			itPoints++)
-
-		{
-
-            //pathParam->finishPaths.push_back(*itPoints);
-
-		}
-
-            //pathParam->destPosition = path.GetActualEndPosition();
-
+		m_Player->GetMotionMaster()->Clear();
+		m_Player->GetMotionMaster()->MovePoint(1, pos.GetPositionX(), pos.GetPositionY(), pos.GetPositionZ());
 	}
-
-
-
-            //if (!pathParam->findOK && pathParam->finishPaths.size() > 2)
-
-            //pathParam->finishPaths.erase(pathParam->finishPaths.begin());
-
-            //ApplyFinishPath(pathParam);
-
-            //delete pathParam;
 
 }
 
@@ -802,94 +696,9 @@ void BotBGAIMovement::MovementToTarget()
 
 		Unit* pVehicle = m_Player->GetVehicleBase();
 
-            //PathParameter* pathParam = new PathParameter(m_Player->GetSession()->GetAccountId(), pVehicle ? pVehicle : m_Player);
-
-            //pathParam->targetPosX = pSelect->GetPositionX();
-
-            //pathParam->targetPosY = pSelect->GetPositionY();
-
-            //pathParam->targetPosZ = pSelect->GetPositionZ();
-
-            //pathParam->offset = 2.0f;
-
-
-
-            bool pathResult = false; /*Pathfinding disabled*/
-
-            //if (pathParam->offset < 0)
-
-            //pathParam->offset *= -1;
-
-            //float posx = pathParam->targetPosX + ((pathParam->offset != 0) ? frand(pathParam->offset * (-1), pathParam->offset) : 0);
-
-            //float posy = pathParam->targetPosY + ((pathParam->offset != 0) ? frand(pathParam->offset * (-1), pathParam->offset) : 0);
-
-            //float posz = pathParam->targetPosZ;
-
-            /*path.UpdateAllowedPositionZ disabled*/
-
-            /*path.CalculatePath disabled*/
-
-            /*path.GetPathType disabled*/
-
-		{
-
-			if (m_BGAI)
-
-			{
-
-				TC_LOG_ERROR(LOG_FILTER_PATH_GENERATOR, "Path not find3.");
-
-            //pathParam->findOK = false;
-
-			}
-
-			//else
-
-            //pathParam->findOK = true;
-
-		}
-
-		//else
-
-            //pathParam->findOK = true;
-
-
-
-            //if (pathParam->findOK)
-
-		{
-
-            //pathParam->finishPaths.clear();
-
-			const std::vector<G3D::Vector3> points; /*path.GetPath*/;
-
-			for (std::vector<G3D::Vector3>::const_iterator itPoints = points.begin();
-
-				itPoints != points.end();
-
-				itPoints++)
-
-			{
-
-            //pathParam->finishPaths.push_back(*itPoints);
-
-			}
-
-            //pathParam->destPosition = path.GetActualEndPosition();
-
-		}
-
-
-
-            //if (!pathParam->findOK && pathParam->finishPaths.size() > 2)
-
-            //pathParam->finishPaths.erase(pathParam->finishPaths.begin());
-
-            //ApplyFinishPath(pathParam);
-
-            //delete pathParam;
-
+		// Pathfinding disabled, use MoveChase as fallback
+		m_Player->GetMotionMaster()->Clear();
+		m_Player->GetMotionMaster()->MoveChase(pSelect);
 	}
 
 }

@@ -1041,6 +1041,10 @@ void Group::Disband(bool hideDestroy /* = false */)
                 player->SetOriginalGroup(nullptr);
             else
                 player->SetGroup(nullptr);
+#ifdef PLAYERBOT
+            if (player->IsPlayerBot())
+                sPlayerBotMgr->OnPlayerBotLeaveOriginalGroup(player);
+#endif
         }
 
         player->SetPartyType(m_groupCategory, GROUP_TYPE_NONE);
@@ -3107,3 +3111,17 @@ bool Group::GetMaxCountOfRolesForArenaQueue(uint8 role)
     }
     return true;
 }
+
+bool Group::GroupExistRealPlayer() const
+{
+    for (MemberSlot const& slot : m_memberSlots)
+    {
+        if (Player* player = ObjectAccessor::FindPlayer(slot.Guid))
+        {
+            if (player->GetSession() && !sPlayerBotMgr->IsPlayerBot(player->GetSession()))
+                return true;
+        }
+    }
+    return false;
+}
+

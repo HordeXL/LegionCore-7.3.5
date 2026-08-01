@@ -756,13 +756,14 @@ public:
 
     struct npc_aluriel_arcane_orbAI : public ScriptedAI
     {
-        npc_aluriel_arcane_orbAI(Creature* creature) : ScriptedAI(creature)
+        npc_aluriel_arcane_orbAI(Creature* creature) : ScriptedAI(creature), _eventsReset(false)
         {
             me->SetReactState(REACT_PASSIVE);
             me->SetSpeed(MOVE_FLIGHT, 0.2f);
         }
 
         EventMap events;
+        bool _eventsReset;
 
         void Reset() override {}
 
@@ -778,7 +779,7 @@ public:
             switch (spell->Id)
             {
                 case SPELL_DETONATE_ARCANE_ORB:
-                    events.Reset();
+                    _eventsReset = true;
                     me->GetMotionMaster()->Clear();
                     me->RemoveAurasDueToSpell(SPELL_BURST_ARCANE_ORB);
                     me->SetSpeed(MOVE_FLIGHT, 0.4f);
@@ -821,7 +822,16 @@ public:
 
         void UpdateAI(uint32 diff) override
         {
+            if (_eventsReset)
+            {
+                events.Reset();
+                _eventsReset = false;
+            }
+
             events.Update(diff);
+
+            if (events.Empty())
+                return;
 
             if (uint32 eventId = events.ExecuteEvent())
             {

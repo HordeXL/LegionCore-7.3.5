@@ -11457,6 +11457,13 @@ void Player::CastItemUseSpell(Item* item, SpellCastTargets const& targets, int32
     volatile uint32 itemEntry = item->GetEntry();
     volatile uint32 itemGuidLow = item->GetGUIDLow();
 
+    int32 miscData[2] = { 0, 0 };
+    if (misc)
+    {
+        miscData[0] = misc[0];
+        miscData[1] = misc[1];
+    }
+
     // special learning case
     if (proto->Effects.size() >= 2 && !proto->Effects.empty())
     {
@@ -11500,8 +11507,8 @@ void Player::CastItemUseSpell(Item* item, SpellCastTargets const& targets, int32
         TriggerCastData triggerData;
         triggerData.triggerFlags = (count > 0) ? TriggerCastFlags(TRIGGERED_FULL_MASK &~ (TRIGGERED_CAST_DIRECTLY | TRIGGERED_IGNORE_SPELL_AND_CATEGORY_CD)) : TRIGGERED_NONE;
         triggerData.castItem = item;
-        triggerData.miscData0 = misc[0];
-        triggerData.miscData1 = misc[1];
+        triggerData.miscData0 = miscData[0];
+        triggerData.miscData1 = miscData[1];
         triggerData.spellGuid = SpellGuid;
         triggerData.SubType = SPELL_CAST_TYPE_ITEM;
 
@@ -11536,8 +11543,8 @@ void Player::CastItemUseSpell(Item* item, SpellCastTargets const& targets, int32
             TriggerCastData triggerData;
             triggerData.triggerFlags = (count > 0) ? TriggerCastFlags(TRIGGERED_FULL_MASK &~ (TRIGGERED_CAST_DIRECTLY | TRIGGERED_IGNORE_SPELL_AND_CATEGORY_CD)) : TRIGGERED_NONE;
             triggerData.castItem = item;
-            triggerData.miscData0 = misc[0];
-            triggerData.miscData1 = misc[1];
+            triggerData.miscData0 = miscData[0];
+            triggerData.miscData1 = miscData[1];
             triggerData.spellGuid = SpellGuid;
             triggerData.SubType = SPELL_CAST_TYPE_ITEM;
 
