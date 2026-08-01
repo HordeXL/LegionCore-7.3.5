@@ -38,12 +38,6 @@
 #include "ObjectVisitors.hpp"
 #include "GlobalFunctional.h"
 
-#ifdef PLAYERBOT_AI
-#include "PlayerBotMgr.h"
-#include "BotGroupAI.h"
-#include "BotAI.h"
-#endif
-
 #ifdef ELUNA_TRINITY
 #include "ElunaMgr.h"
 #include "LuaEngine.h"
@@ -169,7 +163,7 @@ bool ChatHandler::hasStringAbbr(const char* name, const char* part)
                 return true;
             if (!*name)
                 return false;
-            if (std::tolower((unsigned char)*name) != std::tolower((unsigned char)*part))
+            if (tolower(*name) != tolower(*part))
                 return false;
             ++name; ++part;
         }
@@ -702,48 +696,6 @@ bool ChatHandler::PlayerExtraCommand(const char * text)
             }
         }
     }
-    #ifdef PLAYERBOT_AI
-    // PlayerBot 命令处理：@attack, @follow, @stop, @flee, @summon, @setting, @talent 等
-    if (fullcmd[0] == '@' && fullcmd.size() > 1)
-    {
-        if (!m_session)
-            return false;
-
-        Player* player = m_session->GetPlayer();
-        if (!player)
-            return false;
-
-        Group* group = player->GetGroup();
-        if (!group)
-            return false;
-
-        std::string cmd = fullcmd.substr(1); // 去掉 @ 前缀
-        if (cmd.empty())
-            return false;
-
-        Group::MemberSlotList const& members = group->GetMemberSlots();
-        for (Group::MemberSlot const& slot : members)
-        {
-            if (slot.Guid == player->GetGUID())
-                continue;
-
-            Player* member = ObjectAccessor::FindPlayer(slot.Guid);
-            if (!member || !member->GetSession())
-                continue;
-
-            if (!sPlayerBotMgr->IsPlayerBot(member->GetSession()))
-                continue;
-
-            UnitAI* ai = member->GetAI();
-            if (BotGroupAI* groupAI = dynamic_cast<BotGroupAI*>(ai))
-                groupAI->ProcessBotCommand(player, cmd);
-            else if (BotBGAI* bgAI = dynamic_cast<BotBGAI*>(ai))
-                bgAI->ProcessBotCommand(player, cmd);
-        }
-        return true;
-    }
-#endif
-
     return false;
 }
 

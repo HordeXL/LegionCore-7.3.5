@@ -23,8 +23,26 @@
 #include "Map.h"
 #include "Object.h"
 
-// 构造函数移至 Cell.cpp 以避免 Release 链接错误
-// inline Cell::Cell(CellCoord const& p)
+inline Cell::Cell(CellCoord const& p)
+{
+    data.Part.grid_x = p.x_coord / MAX_NUMBER_OF_CELLS;
+    data.Part.grid_y = p.y_coord / MAX_NUMBER_OF_CELLS;
+    data.Part.cell_x = p.x_coord % MAX_NUMBER_OF_CELLS;
+    data.Part.cell_y = p.y_coord % MAX_NUMBER_OF_CELLS;
+    data.Part.nocreate = 0;
+    data.Part.reserved = 0;
+}
+
+inline Cell::Cell(float x, float y)
+{
+    CellCoord p = Trinity::ComputeCellCoord(x, y);
+    data.Part.grid_x = p.x_coord / MAX_NUMBER_OF_CELLS;
+    data.Part.grid_y = p.y_coord / MAX_NUMBER_OF_CELLS;
+    data.Part.cell_x = p.x_coord % MAX_NUMBER_OF_CELLS;
+    data.Part.cell_y = p.y_coord % MAX_NUMBER_OF_CELLS;
+    data.Part.nocreate = 0;
+    data.Part.reserved = 0;
+}
 
 inline CellArea Cell::CalculateCellArea(float x, float y, float radius)
 {

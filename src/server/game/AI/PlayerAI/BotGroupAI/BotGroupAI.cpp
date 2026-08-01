@@ -1933,21 +1933,6 @@ me->SetPower(POWER_MANA, (me->GetMaxPower(POWER_MANA)));
 
 		{
 
-			// 自动跟随队长目标：如果队长选中了有效目标，机器人自动同步
-			if (m_MasterPlayer && !me->GetSelectedUnit())
-			{
-				if (Unit* masterTarget = m_MasterPlayer->GetSelectedUnit())
-				{
-					if (masterTarget->isAlive() && me->IsValidAttackTarget(masterTarget))
-					{
-						me->SetSelection(masterTarget->GetGUID());
-						m_ForceFlee = false;
-						m_StopFollow = false;
-						return;
-					}
-				}
-			}
-
 			me->SetSelection(ObjectGuid::Empty);
 
 			ClearTankTarget();

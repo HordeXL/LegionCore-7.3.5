@@ -3107,16 +3107,3 @@ bool Group::GetMaxCountOfRolesForArenaQueue(uint8 role)
     }
     return true;
 }
-
-bool Group::GroupExistRealPlayer() const
-{
-    for (MemberSlot const& slot : m_memberSlots)
-    {
-        if (Player* player = ObjectAccessor::FindPlayer(slot.Guid))
-        {
-            if (player->GetSession() && !sPlayerBotMgr->IsPlayerBot(player->GetSession()))
-                return true;
-        }
-    }
-    return false;
-}

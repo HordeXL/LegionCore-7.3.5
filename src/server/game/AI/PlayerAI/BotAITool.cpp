@@ -2546,8 +2546,7 @@ bool BotAIUseFood::UpdateBotFood(uint32 diff, uint32 downMountID)
 
 			targets.SetTargetMask(0);
 
-			int32 misc[2] = { 0, 0 };
-		me->CastItemUseSpell(pItem, targets, misc, ObjectGuid::Empty);// == SpellCastResult::SPELL_CAST_OK)
+			me->CastItemUseSpell(pItem, targets, 0, ObjectGuid::Empty);// == SpellCastResult::SPELL_CAST_OK)
 
 			m_LastFoodAura = pInfo->foodBuff;
 
@@ -2579,8 +2578,7 @@ bool BotAIUseFood::UpdateBotFood(uint32 diff, uint32 downMountID)
 
 			targets.SetTargetMask(0);
 
-			int32 misc[2] = { 0, 0 };
-		me->CastItemUseSpell(pItem, targets, misc, ObjectGuid::Empty);// == SpellCastResult::SPELL_CAST_OK)
+			me->CastItemUseSpell(pItem, targets, 0, ObjectGuid::Empty);// == SpellCastResult::SPELL_CAST_OK)
 
 			m_LastWaterAura = pInfo->waterBuff;
 
@@ -2746,8 +2744,7 @@ bool BotAIUsePotion::TryUseLifeVial()
 
 	targets.SetTargetMask(0);
 
-	int32 misc[2] = { 0, 0 };
-	me->CastItemUseSpell(pItem, targets, misc, ObjectGuid::Empty);
+	me->CastItemUseSpell(pItem, targets, 0, ObjectGuid::Empty);
 
 	return true;
 
@@ -2769,8 +2766,7 @@ bool BotAIUsePotion::TryUseManaVial()
 
 	targets.SetTargetMask(0);
 
-	int32 misc[2] = { 0, 0 };
-	me->CastItemUseSpell(pItem, targets, misc, ObjectGuid::Empty);
+	me->CastItemUseSpell(pItem, targets, 0, ObjectGuid::Empty);
 
 	return true;
 
@@ -4634,7 +4630,7 @@ void BotAIIDLEMovement::UpdateIDLEMovement(BotBGAIMovement* pMovement)
 
 		return;
 
-	if (m_IDLETick > 10 || me->IsFlying())
+	if (m_IDLETick > 20 || me->IsFlying())
 
 	{
 
