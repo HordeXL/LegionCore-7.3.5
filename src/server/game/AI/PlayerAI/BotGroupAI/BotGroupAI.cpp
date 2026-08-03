@@ -2880,7 +2880,22 @@ void BotGroupAI::ProcessFollowToMaster()
 	if (distance > 0.1f)
 	{
 		me->GetMotionMaster()->Clear();
-		me->GetMotionMaster()->MoveFollow(m_MasterPlayer, 1.0f, m_MasterPlayer->GetOrientation());
+		uint32 memberIndex = 0;
+		uint32 botCount = 0;
+		if (Group* group = me->GetGroup())
+		{
+			for (Group::MemberSlot const& slot : group->GetMemberSlots())
+			{
+				if (slot.Guid == m_MasterPlayer->GetGUID())
+					continue;
+				++botCount;
+				if (slot.Guid == me->GetGUID())
+					memberIndex = botCount;
+			}
+		}
+		if (botCount == 0) botCount = 1;
+		float followAngle = m_MasterPlayer->GetOrientation() + ((memberIndex % botCount) * (2 * M_PI / botCount));
+		me->GetMotionMaster()->MoveFollow(m_MasterPlayer, 1.0f, followAngle);
 	}
 
 }
@@ -4246,7 +4261,7 @@ void BotGroupAI::ProcessCombat(Unit* pTarget)
 
 			{
 
-				m_Movement->MovementToTarget();
+				ChaseTarget(pTarget, false, BOTAI_RANGESPELL_DISTANCE);
 
 			}
 
@@ -4320,7 +4335,7 @@ void BotGroupAI::ProcessCombat(Unit* pTarget)
 
 				if (!IsNotMovement())
 
-					m_Movement->MovementToTarget();
+					ChaseTarget(pTarget, true);
 
 				if (me->GetDistance(pTarget) < BOTAI_RANGESPELL_DISTANCE)
 
@@ -4580,7 +4595,28 @@ void BotGroupAI::ChaseTarget(Unit* pTarget, bool isMelee, float range)
 
 			me->GetMotionMaster()->Clear();
 
-			me->GetMotionMaster()->MoveChase(pTarget, range);
+			uint32 memberIndex = 0;
+			uint32 botCount = 0;
+			if (Group* group = me->GetGroup())
+			{
+				for (Group::MemberSlot const& slot : group->GetMemberSlots())
+				{
+					if (slot.Guid == m_MasterPlayer->GetGUID())
+						continue;
+					++botCount;
+					if (slot.Guid == me->GetGUID())
+						memberIndex = botCount;
+				}
+			}
+			if (botCount == 0) botCount = 1;
+			// MT在目标正面(0°)，近战DPS在目标背面(180°)，其他均匀分布
+			float chaseAngle;
+			if (IsTankBotAI())
+				chaseAngle = 0.0f;
+			else
+				chaseAngle = (memberIndex % botCount) * (2 * M_PI / botCount);
+
+			me->GetMotionMaster()->MoveChase(pTarget, range, chaseAngle);
 
 		}
 

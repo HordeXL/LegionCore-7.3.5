@@ -490,19 +490,6 @@ void FieldWarfare::TeleportToTargetVisible(Player* pBot, Player* pTarget)
 	BotFieldAI* pFieldAI = dynamic_cast<BotFieldAI*>(pBot->GetAI());
 	if (!pFieldAI)
 		return;
-	int8 minLevel = (pTarget->getLevel() <= 4) ? 1 : pTarget->getLevel() - 3;
-	int8 maxLevel = (pTarget->getLevel() >= 75) ? 80 : pTarget->getLevel() + 5;
-	if (pBot->getLevel() < minLevel || pBot->getLevel() > maxLevel)
-	{
-		PlayerBotSession* pSession = dynamic_cast<PlayerBotSession*>(pBot->GetSession());
-		if (!pSession || pSession->HasSchedules() || pSession->IsAccountBotSession())
-			return;
-		BotGlobleSchedule schedule2(BotGlobleScheduleType::BGSType_Settting, 0);
-		schedule2.parameter1 = minLevel;
-		schedule2.parameter2 = maxLevel;
-		schedule2.parameter3 = pBot->GetTalentType() + 1;
-		pSession->PushScheduleToQueue(schedule2);
-	}
 
 	float distX = pTarget->GetPositionX();
 	float distY = pTarget->GetPositionY();
@@ -738,21 +725,6 @@ void FieldBotMgr::TeleportToTargetVisible(BotFieldAI* pFieldAI, Player* pTarget)
 {
 	if (!pFieldAI || !pTarget || pFieldAI->HasTeleport() || !pFieldAI->GetAIPayer()->IsSettingFinish())
 		return;
-	bool needResetAI = false;
-	int8 levelGap = (int8)pFieldAI->GetAIPayer()->getLevel() - (int8)pTarget->getLevel();
-	if (levelGap < 0) levelGap *= (-1);
-	if (levelGap > 2)
-	{
-		PlayerBotSession* pSession = dynamic_cast<PlayerBotSession*>(pFieldAI->GetAIPayer()->GetSession());
-		if (!pSession || pSession->HasSchedules() || pSession->IsAccountBotSession())
-			return;
-		BotGlobleSchedule schedule2(BotGlobleScheduleType::BGSType_Settting, 0);
-		schedule2.parameter1 = pTarget->getLevel();
-		schedule2.parameter2 = pTarget->getLevel();
-		schedule2.parameter3 = pFieldAI->GetAIPayer()->GetTalentType() + 1;
-		pSession->PushScheduleToQueue(schedule2);
-		needResetAI = true;
-	}
 
 	float distX = pTarget->GetPositionX();
 	float distY = pTarget->GetPositionY();
@@ -814,7 +786,6 @@ return;
 	pFieldAI->GetAIPayer()->CombatStop(true);
 	pFieldAI->GetAIPayer()->SetSelection(ObjectGuid::Empty);
 	pFieldAI->SetTeleport(pTarget->GetMapId(), resultPos);
-	if (needResetAI)
 		pFieldAI->SetResetAI();
 }
 

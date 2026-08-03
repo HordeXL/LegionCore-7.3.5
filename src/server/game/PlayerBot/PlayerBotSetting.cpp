@@ -2728,71 +2728,31 @@ uint32 PlayerBotSetting::FindPlayerTalentType(Player* player)
 
 		return 0;
 
-	uint32 spec = player->GetLastActiveSpec();
+	uint32 specId = player->GetSpecializationId();
+
+	if (!specId)
+
+		return 0;
 
 	uint32 cls = player->getClass();
 
-	uint32 pageTalents[3] = { 0 };
-
-	for (uint32 page = 0; page < 3; page++)
+	for (uint32 i = 0; i < MAX_SPECIALIZATIONS; ++i)
 
 	{
 
-		BotTalentPage& botPage = classesTalents[cls][page];
-
-		for (BotTalentPage::iterator itPage = botPage.begin();
-
-			itPage != botPage.end();
-
-			itPage++)
+		if (ChrSpecializationEntry const* spec = sDB2Manager.GetChrSpecializationByIndex(cls, i))
 
 		{
 
-			const TalentEntry* botTEntry = (*itPage).talentEntry;
+			if (spec->ID == uint32(specId))
 
-			if (!botTEntry) continue;
-
-			//for (int8 rank = MAX_TALENT_RANK - 1; rank >= 0; --rank)
-
-			//{
-
-			//	if (botTEntry->RankID[rank] == 0)
-
-			//		continue;
-
-			//	if (player->HasTalent(botTEntry->RankID[rank], spec))
-
-			//		++pageTalents[page];
-
-			//}
+				return i;
 
 		}
 
 	}
 
-
-
-	uint32 maxPageIndex = 0;
-
-	uint32 maxPagePoint = 0;
-
-	for (uint32 page = 0; page < 3; page++)
-
-	{
-
-		if (pageTalents[page] > maxPagePoint)
-
-		{
-
-			maxPageIndex = page;
-
-			maxPagePoint = pageTalents[page];
-
-		}
-
-	}
-
-	return maxPageIndex;
+	return 0;
 
 }
 
@@ -3826,6 +3786,7 @@ void PlayerBotSetting::LearnSpells()
 
 	// DBC-based fallback: learn the bot's class spells directly even when
 	// playercreateinfo_spell / npc_trainer data is missing from the DB.
+	UpdateTalentType();
 	uint32 talent = (m_ActiveTalentType < 3) ? m_ActiveTalentType : 0;
 
 	if (ChrSpecializationEntry const* spec = sDB2Manager.GetChrSpecializationByIndex(m_Player->getClass(), talent))
