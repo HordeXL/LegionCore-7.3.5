@@ -118,7 +118,7 @@ void FieldStory::Update()
 		m_StoryStep = -1;
 		return;
 	}
-	//sPlayerBotTalkMgr->StoryActingTalk(player, talkText);
+	sPlayerBotTalkMgr->StoryActingTalk(player, talkText);
 	++m_StoryStep;
 }
 
@@ -278,7 +278,7 @@ void FieldWarfare::ProcessStart()
 		OverFieldActing();
 		return;
 	}
-	//sPlayerBotTalkMgr->WarfareActingTalk(0, triggerPlayer);
+	sPlayerBotTalkMgr->WarfareActingTalk(0, triggerPlayer);
 }
 
 void FieldWarfare::ProcessWarrfare(Player* targetPlayer)
@@ -331,7 +331,7 @@ void FieldWarfare::ProcessWarrfare(Player* targetPlayer)
 			if (talkRate < 1)
 			{
 				talkRate = maxCount;
-				//sPlayerBotTalkMgr->WarfareActingTalk(1, player);
+				sPlayerBotTalkMgr->WarfareActingTalk(1, player);
 			}
 		}
 	}
@@ -398,7 +398,7 @@ void FieldWarfare::ProcessEpilog(Player* targetPlayer)
 				if (nearPlayer->GetTeamId() == weaknessTeam || urand(0, 99) > 75)
 				{
 					talkRate = playersNearby.size();
-					//sPlayerBotTalkMgr->WarfareActingTalk((nearPlayer->GetTeamId() == weaknessTeam) ? 2 : 1, nearPlayer);
+					sPlayerBotTalkMgr->WarfareActingTalk((nearPlayer->GetTeamId() == weaknessTeam) ? 2 : 1, nearPlayer);
 				}
 			}
 			if (BotFieldAI* pFieldAI = dynamic_cast<BotFieldAI*>(nearPlayer->GetAI()))
@@ -671,7 +671,7 @@ void FieldBotMgr::Update(ObjectGuid workGUID)
 	{
 		UpdateInitOnline();
 		UpdateTeleport();
-		//RandomPlayerBotNormalTalk();
+		RandomPlayerBotNormalTalk();
 	}
 }
 

@@ -203,10 +203,6 @@ public:
 
 	bool IsValidStoryStep(uint32 id, uint32 step);
 
-	std::string GetDefaultChannelName();
-
-	void SetDefaultChannel(Channel* pChannel) { m_DefaultChannel = pChannel; }
-
 	void JoinDefaultChannel(Player* player);
 
 	bool CanNextTalk() { return ((m_WorkTick + m_NextRndTick) <= getMSTime()); }
@@ -221,6 +217,8 @@ public:
 
 private:
 
+	Channel* GetChannel(Player* player);
+
 	bool MatchTalkTick();
 
 	void TriggerStoryTalk();
@@ -234,10 +232,6 @@ private:
 
 
 private:
-
-	ChannelMgr* m_CommonChannelMgr;
-
-	Channel* m_DefaultChannel;
 
 	uint32 m_WorkTick;
 

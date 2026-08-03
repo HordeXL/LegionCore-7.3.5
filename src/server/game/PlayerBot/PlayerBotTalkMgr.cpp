@@ -1,5 +1,3 @@
-
-
 #include "PlayerBotTalkMgr.h"
 
 #include "PlayerBotMgr.h"
@@ -141,17 +139,11 @@ bool BotTalkStory::IsValidStep(uint32 step)
 
 PlayerBotTalkMgr::PlayerBotTalkMgr() :
 
-m_CommonChannelMgr(nullptr),
+	m_WorkTick(getMSTime()),
 
-m_DefaultChannel(0),
-
-m_WorkTick(getMSTime()),
-
-m_NextRndTick(urand(2000, 10000))
+	m_NextRndTick(urand(2000, 10000))
 
 {
-
-
 
 }
 
@@ -172,6 +164,26 @@ PlayerBotTalkMgr* PlayerBotTalkMgr::instance()
 	static PlayerBotTalkMgr instance;
 
 	return &instance;
+
+}
+
+
+
+Channel* PlayerBotTalkMgr::GetChannel(Player* player)
+
+{
+
+	if (!player)
+
+		return nullptr;
+
+	ChannelMgr* cMgr = channelMgr(player->GetTeam());
+
+	if (!cMgr)
+
+		return nullptr;
+
+	return cMgr->GetJoinChannel("world", 0);
 
 }
 
@@ -393,29 +405,21 @@ bool PlayerBotTalkMgr::IsValidStoryStep(uint32 id, uint32 step)
 
 
 
-std::string PlayerBotTalkMgr::GetDefaultChannelName()
-
-{
-
-	std::string defaultChannelName;
-
-	consoleToUtf8(std::string("世界频道"), defaultChannelName);
-
-	return defaultChannelName;
-
-}
-
-
-
 void PlayerBotTalkMgr::JoinDefaultChannel(Player* player)
 
 {
 
-	if (!m_DefaultChannel || false)
+	if (!player)
 
 		return;
 
-	m_DefaultChannel->JoinChannel(player, "");
+	Channel* channel = GetChannel(player);
+
+	if (!channel)
+
+		return;
+
+	channel->JoinChannel(player, "");
 
 }
 
@@ -441,9 +445,11 @@ void PlayerBotTalkMgr::WarfareActingTalk(uint32 sType, Player* player)
 
 	{
 
-		JoinDefaultChannel(player);
+		Channel* channel = GetChannel(player);
 
-		m_DefaultChannel->Say(player->GetGUID(), talkText.c_str(), Language::LANG_UNIVERSAL);
+		if (channel)
+
+			channel->Say(player->GetGUID(), talkText.c_str(), Language::LANG_UNIVERSAL);
 
 	}
 
@@ -459,9 +465,11 @@ void PlayerBotTalkMgr::StoryActingTalk(Player* player, std::string& talkText)
 
 		return;
 
-	JoinDefaultChannel(player);
+	Channel* channel = GetChannel(player);
 
-	m_DefaultChannel->Say(player->GetGUID(), talkText.c_str(), Language::LANG_UNIVERSAL);
+	if (channel)
+
+		channel->Say(player->GetGUID(), talkText.c_str(), Language::LANG_UNIVERSAL);
 
 }
 
@@ -502,10 +510,6 @@ void PlayerBotTalkMgr::PlayerBotTalkByType(TALK_TTYPE tType, uint32 sType, Playe
 bool PlayerBotTalkMgr::MatchTalkTick()
 
 {
-
-	if (!m_DefaultChannel)
-
-		return false;
 
 	uint32 currentTick = getMSTime();
 
@@ -594,9 +598,17 @@ void PlayerBotTalkMgr::NormalTalk(uint32 sType, Player* player, std::string text
 
 	case 0:
 
-		m_DefaultChannel->Say(player->GetGUID(), text.c_str(), Language::LANG_UNIVERSAL);
+	{
+
+		Channel* channel = GetChannel(player);
+
+		if (channel)
+
+			channel->Say(player->GetGUID(), text.c_str(), Language::LANG_UNIVERSAL);
 
 		break;
+
+	}
 
 	case 1:
 
@@ -657,4 +669,3 @@ void PlayerBotTalkMgr::TriggerStoryTalk()
 #endif
 
 }
-
