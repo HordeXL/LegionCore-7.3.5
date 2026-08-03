@@ -1032,46 +1032,7 @@ SpellCastResult BotFieldAI::TryCastSpell(uint32 spellID, Unit* pTarget, bool for
 
 		Dismount();
 
-	SpellCastResult castResult = SPELL_CAST_OK;
-			spell->prepare(&targets);
-
-	if (castResult != SpellCastResult::SPELL_CAST_OK)
-
-	{
-
-		if (castResult == SpellCastResult::SPELL_FAILED_NOT_MOUNTED)
-
-			PlayerBotSetting::ClearUnknowMount(me);
-
-		else if (castResult == SpellCastResult::SPELL_FAILED_BAD_TARGETS)
-
-		{
-
-			if (pTarget && me->GetTargetGUID() == pTarget->GetGUID())
-
-				me->SetTarget(ObjectGuid::Empty);
-
-			if (pTarget && pTarget->ToPlayer() && (!pTarget->ToPlayer()->GetSession() || !sPlayerBotMgr->IsPlayerBot(pTarget->ToPlayer()->GetSession())) && !pTarget->IsPvP())
-
-			{
-
-				WorldPacket opcode(CMSG_TOGGLE_PVP);
-
-				WorldPackets::Misc::TogglePvP packet(std::move(opcode));
-
-				pTarget->ToPlayer()->GetSession()->HandleTogglePvP(packet);
-
-			}
-
-		}
-
-		//spell->finish(false);
-
-		//delete spell;
-
-		return castResult;
-
-	}
+	spell->prepare(&targets);
 
 	m_WishStore.TryWishStore(spellID, pTarget);
 
@@ -1125,20 +1086,7 @@ SpellCastResult BotFieldAI::TryCastPullSpell(uint32 spellID, Unit* pTarget)
 
 	Dismount();
 
-	SpellCastResult castResult = SPELL_CAST_OK;
-			spell->prepare(&targets);
-
-	if (castResult != SpellCastResult::SPELL_CAST_OK)
-
-	{
-
-		//spell->finish(false);
-
-		//delete spell;
-
-		return castResult;
-
-	}
+	spell->prepare(&targets);
 
 	return SpellCastResult::SPELL_CAST_OK;
 

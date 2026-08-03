@@ -10,6 +10,8 @@
 
 #include "PlayerBotSession.h"
 
+#include "DB2Stores.h"
+
 #include "OnlineMgr.h"
 
 #include "MapManager.h"
@@ -3012,7 +3014,7 @@ void PlayerBotSetting::Initialize()
 
 		//	continue;
 
-		if (item.GetBaseRequiredLevel() <= 0 || item.ExtendedData->InventoryType <= InventoryType::INVTYPE_NON_EQUIP || item.ExtendedData->InventoryType > InventoryType::INVTYPE_RELIC)
+		if (item.ExtendedData->InventoryType <= InventoryType::INVTYPE_NON_EQUIP || item.ExtendedData->InventoryType > InventoryType::INVTYPE_RELIC)
 
 			continue;
 
@@ -3038,9 +3040,15 @@ void PlayerBotSetting::Initialize()
 
 				BotEquips& equips = classesEquips[i][iType];
 
-				BotEquips::iterator itEquip = equips.find(item.GetBaseRequiredLevel());
+				uint32 levelKey = item.GetBaseRequiredLevel();
 
-				ItemsForLevel& forLevel = (itEquip == equips.end()) ? equips[item.GetBaseRequiredLevel()] : itEquip->second;
+				if (levelKey == 0)
+
+					levelKey = 110;
+
+				BotEquips::iterator itEquip = equips.find(levelKey);
+
+				ItemsForLevel& forLevel = (itEquip == equips.end()) ? equips[levelKey] : itEquip->second;
 
 				forLevel.AddItem(&item);
 
@@ -3432,6 +3440,12 @@ bool PlayerBotSetting::ResetPlayerToLevel(uint32 level, uint32 talent, bool tena
 
 	//TC_LOG_INFO("server.reset", ">> Reset player level to %d !", level);
 
+	m_ResetStep = 1;
+
+	m_Finish = false;
+
+	m_TenacitySetting = tenacity;
+
 	if (m_Player->getLevel() != level)
 
 	{
@@ -3441,12 +3455,6 @@ bool PlayerBotSetting::ResetPlayerToLevel(uint32 level, uint32 talent, bool tena
 		m_Player->SetUInt32Value(PLAYER_FIELD_XP, 0);
 
 	}
-
-	m_ResetStep = 1;
-
-	m_Finish = false;
-
-	m_TenacitySetting = tenacity;
 
 	return true;
 
@@ -3770,49 +3778,75 @@ void PlayerBotSetting::LearnSpells()
 
 	const TrainerSpellData* spellData = sObjectMgr->GetNpcTrainerSpells(classesTrainersGUID[m_Player->getClass()][(m_Player->GetTeamId() == TeamId::TEAM_ALLIANCE) ? 0 : 1]);
 
-	if (!spellData)
-
-		return;
-
-	for (TrainerSpellMap::const_iterator itBTS = spellData->spellList.begin();
-
-		itBTS != spellData->spellList.end();
-
-		itBTS++)
+	if (spellData)
 
 	{
 
-		const TrainerSpell& tSpell = itBTS->second;
+		for (TrainerSpellMap::const_iterator itBTS = spellData->spellList.begin();
 
-		uint32 spellID = tSpell.spell;
+			itBTS != spellData->spellList.end();
 
-		if (tSpell.reqLevel > level)
-
-		{
-
-			continue;
-
-		}
-
-		if (m_Player->HasSpell(spellID))
-
-			continue;
-
-		if (tSpell.IsCastable())
+			itBTS++)
 
 		{
 
-			m_Player->CastSpell(m_Player, spellID, true);
+			const TrainerSpell& tSpell = itBTS->second;
 
-			//TC_LOG_WARN("PlayerBotSetting", "Player %s Learn spell %d, spell is castable, do cast.", m_Player->GetName().c_str(), spellID);
+			uint32 spellID = tSpell.spell;
+
+			if (tSpell.reqLevel > level)
+
+			{
+
+				continue;
+
+			}
+
+			if (m_Player->HasSpell(spellID))
+
+				continue;
+
+			if (tSpell.IsCastable())
+
+			{
+
+				m_Player->CastSpell(m_Player, spellID, true);
+
+				//TC_LOG_WARN("PlayerBotSetting", "Player %s Learn spell %d, spell is castable, do cast.", m_Player->GetName().c_str(), spellID);
+
+			}
+
+			else
+
+				m_Player->learnSpell(spellID, false);
 
 		}
-
-		else
-
-			m_Player->learnSpell(spellID, false);
 
 	}
+
+	// DBC-based fallback: learn the bot's class spells directly even when
+	// playercreateinfo_spell / npc_trainer data is missing from the DB.
+	uint32 talent = (m_ActiveTalentType < 3) ? m_ActiveTalentType : 0;
+
+	if (ChrSpecializationEntry const* spec = sDB2Manager.GetChrSpecializationByIndex(m_Player->getClass(), talent))
+
+	{
+
+		if (m_Player->GetUInt32Value(PLAYER_FIELD_CURRENT_SPEC_ID) != spec->ID)
+
+		{
+
+			m_Player->SetUInt32Value(PLAYER_FIELD_CURRENT_SPEC_ID, spec->ID);
+
+			m_Player->SetActiveTalentGroup(spec->OrderIndex);
+
+		}
+
+	}
+
+	m_Player->LearnDefaultSpells();
+
+	m_Player->LearnSpecializationSpells();
 
 }
 

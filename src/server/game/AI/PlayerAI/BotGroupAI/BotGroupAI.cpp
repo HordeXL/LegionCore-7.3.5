@@ -2625,13 +2625,15 @@ bool BotGroupAI::TrySettingToMaster()
 
 	int32 masterLV = m_MasterPlayer->getLevel();
 
+	int32 worldMaxLevel = sWorld->getIntConfig(CONFIG_MAX_PLAYER_LEVEL);
+
 	int32 minLV = (masterLV <= gapLV) ? 1 : masterLV - gapLV;
 
-	int32 maxLV = ((masterLV + gapLV) >= 80) ? 80 : masterLV + gapLV;
+	int32 maxLV = ((masterLV + gapLV) >= worldMaxLevel) ? worldMaxLevel : masterLV + gapLV;
 
-	if (masterLV >= 80)
+	if (masterLV >= worldMaxLevel)
 
-		minLV = 80;
+		minLV = worldMaxLevel;
 
 	maxLV = PlayerBotSetting::CheckMaxLevel(maxLV);
 
@@ -2645,7 +2647,7 @@ bool BotGroupAI::TrySettingToMaster()
 
 		return false;
 
-	if (masterLV == sWorld->getIntConfig(CONFIG_MAX_PLAYER_LEVEL))
+	if (masterLV == worldMaxLevel)
 
 	{
 
@@ -3065,20 +3067,7 @@ SpellCastResult BotGroupAI::TryCastSpell(uint32 spellID, Unit* pTarget, bool for
 
 		Dismount();
 
-	SpellCastResult castResult = SPELL_CAST_OK;
-			spell->prepare(&targets);
-
-	if (castResult != SpellCastResult::SPELL_CAST_OK)
-
-	{
-
-		if (castResult == SpellCastResult::SPELL_FAILED_NOT_MOUNTED)
-
-			PlayerBotSetting::ClearUnknowMount(me);
-
-		return castResult;
-
-	}
+	spell->prepare(&targets);
 
 	m_WishStore.TryWishStore(spellID, pTarget);
 

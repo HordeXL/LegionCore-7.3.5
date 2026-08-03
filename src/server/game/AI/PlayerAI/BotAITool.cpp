@@ -478,35 +478,9 @@ void BotUtility::UpdatePlayerBotRoll(Player* player)
 
 		return;
 
-	/*Rolls& rolls = pGroup->GetAllRolls();
+	if (pGroup->RollIsActive())
 
-	for (Rolls::iterator iter = rolls.begin(); iter != rolls.end(); ++iter)
-
-	{
-
-		Roll* roll = (*iter);
-
-		if (!roll->isValid())
-
-			continue;
-
-		if (roll->rolledPlayers.find(player->GetGUID()) != roll->rolledPlayers.end())
-
-			continue;
-
-		if (roll->totalPass > 0 || roll->totalNeed > 0 || roll->totalGreed > 0)
-
-		{
-
-			roll->rolledPlayers.insert(player->GetGUID());
-
-			pGroup->PlayerBotRoll(player, *roll);
-
-			break;
-
-		}
-
-	}*/
+		pGroup->PlayerBotRoll(player);
 
 }
 

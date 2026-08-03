@@ -19,6 +19,9 @@
 #include "AccountMgr.h"
 #include "AchievementMgr.h"
 #include "PlayerBotMgr.h"
+#ifdef PLAYERBOT
+#include "PlayerBotSetting.h"
+#endif
 #include "Anticheat.h"
 #include "AreaTriggerData.h"
 #include "ArtifactPackets.h"
@@ -194,6 +197,9 @@ m_achievementMgr(sf::safe_ptr<AchievementMgr<Player>>(this))
     _dynamicValuesCount = PLAYER_DYNAMIC_END;
 
     m_session = session;
+
+    m_PlayerBotSetting = nullptr;
+    m_botSettingTimer = 0;
 
     m_divider.Clear();
 
@@ -502,6 +508,11 @@ Player::~Player()
     delete m_vis;
 
     delete _wargameRequest;
+
+#ifdef PLAYERBOT
+    delete m_PlayerBotSetting;
+    m_PlayerBotSetting = nullptr;
+#endif
 
     sWorld->DecreasePlayerCount();
 
@@ -1482,6 +1493,18 @@ void Player::Update(uint32 p_time)
     UpdateDuelFlag(p_time);
 
     CheckDuelDistance();
+
+#ifdef PLAYERBOT
+    if (IsPlayerBot() && m_PlayerBotSetting && !m_PlayerBotSetting->IsFinish())
+    {
+        m_botSettingTimer += p_time;
+        if (m_botSettingTimer >= 500)
+        {
+            m_botSettingTimer = 0;
+            m_PlayerBotSetting->UpdateReset();
+        }
+    }
+#endif
 
     UpdateAfkReport(now);
 
@@ -3975,6 +3998,27 @@ void Player::GiveLevel(uint8 level)
     UpdateAchievementCriteria(CRITERIA_TYPE_PLAYER_LEVEL_UP, level);
 
     sScriptMgr->OnPlayerLevelChanged(this, oldLevel);
+
+#ifdef PLAYERBOT
+    if (IsPlayerBot() && m_PlayerBotSetting && m_PlayerBotSetting->IsFinish())
+        m_PlayerBotSetting->ResetPlayerToLevel(getLevel(), m_PlayerBotSetting->GetTalentType(), false);
+    else if (!IsPlayerBot())
+    {
+        // 真人玩家升级：同步队伍内机器人等级与配装
+        if (Group* grp = GetGroup())
+        {
+            for (Group::MemberSlot const& slot : grp->GetMemberSlots())
+            {
+                if (slot.Guid == GetGUID())
+                    continue;
+                Player* member = ObjectAccessor::FindPlayer(slot.Guid);
+                if (!member || !member->IsPlayerBot())
+                    continue;
+                member->ResetPlayerToLevel(getLevel(), member->GetTalentType(), false);
+            }
+        }
+    }
+#endif
 
     for (uint8 i = 0; i < INVENTORY_SLOT_BAG_END; ++i)
         if (Item* item = m_items[i])
@@ -39406,6 +39450,132 @@ std::string Player::GetShortDescription() const
 }
 
 // PlayerBot compatibility methods
+#ifdef PLAYERBOT
+bool Player::IsSettingFinish()
+{
+    if (!IsPlayerBot())
+        return true;
+    if (!m_PlayerBotSetting)
+        m_PlayerBotSetting = new PlayerBotSetting(this);
+    return m_PlayerBotSetting->IsFinish();
+}
+
+bool Player::CheckNeedTenacityFlush()
+{
+    if (!IsPlayerBot() || !m_PlayerBotSetting)
+        return false;
+    return m_PlayerBotSetting->CheckNeedTenacityFlush();
+}
+
+bool Player::AIEquipItem(uint32 entry)
+{
+    if (!IsPlayerBot() || !m_PlayerBotSetting)
+        return false;
+    Item* pItem = nullptr;
+    uint8 bag = 0;
+    uint8 index = 0;
+    for (uint8 slot = InventoryPackSlots::INVENTORY_SLOT_ITEM_START; slot < InventoryPackSlots::INVENTORY_SLOT_ITEM_END; ++slot)
+    {
+        if (Item* item = GetItemByPos(255, slot))
+            if (item->GetEntry() == entry)
+            {
+                pItem = item;
+                bag = 255;
+                index = slot;
+                break;
+            }
+    }
+    if (!pItem)
+        for (uint8 i = INVENTORY_SLOT_BAG_START; i < INVENTORY_SLOT_BAG_END; ++i)
+        {
+            if (Bag* pBag = GetBagByPos(i))
+            {
+                for (uint32 j = 0; j < pBag->GetBagSize(); ++j)
+                {
+                    if (Item* item = pBag->GetItemByPos(uint8(j)))
+                        if (item->GetEntry() == entry)
+                        {
+                            pItem = item;
+                            bag = i;
+                            index = uint8(j);
+                            break;
+                        }
+                }
+                if (pItem)
+                    break;
+            }
+        }
+    if (!pItem)
+        return false;
+    return m_PlayerBotSetting->EquipItem(pItem);
+}
+
+uint32 Player::FindTalentType()
+{
+    if (!IsPlayerBot() || !m_PlayerBotSetting)
+        return 0;
+    return m_PlayerBotSetting->GetTalentType();
+}
+
+uint32 Player::ReupdateTalents()
+{
+    if (!IsPlayerBot() || !m_PlayerBotSetting)
+        return 0;
+    return m_PlayerBotSetting->UpdateTalentType();
+}
+
+uint32 Player::SwitchTalent(uint32 talent)
+{
+    if (!IsPlayerBot() || !m_PlayerBotSetting)
+        return 0;
+    return m_PlayerBotSetting->SwitchPlayerTalent(talent);
+}
+
+void Player::SupplementAmmo()
+{
+    if (IsPlayerBot() && m_PlayerBotSetting)
+        m_PlayerBotSetting->SupplementAmmo();
+}
+
+void Player::OnLevelupToBotAI()
+{
+    if (!IsPlayerBot() || !m_PlayerBotSetting)
+        return;
+    m_PlayerBotSetting->UpdateReset();
+}
+
+bool Player::IsTankPlayer()
+{
+    if (!IsPlayerBot() || !m_PlayerBotSetting)
+        return false;
+    return PlayerBotSetting::FindPlayerTalentType(this) == 0;
+}
+
+uint8 Player::GetTalentType() const
+{
+    if (IsPlayerBot() && m_PlayerBotSetting)
+        return uint8(m_PlayerBotSetting->GetTalentType());
+    return 0;
+}
+
+bool Player::EquipIsTidiness()
+{
+    if (!IsPlayerBot())
+        return true;
+    if (!m_PlayerBotSetting)
+        m_PlayerBotSetting = new PlayerBotSetting(this);
+    return m_PlayerBotSetting->EquipIsTidiness();
+}
+
+bool Player::ResetPlayerToLevel(uint32 level, uint32 talent, bool needTenacity)
+{
+    if (!IsPlayerBot())
+        return true;
+    if (!m_PlayerBotSetting)
+        m_PlayerBotSetting = new PlayerBotSetting(this);
+    return m_PlayerBotSetting->ResetPlayerToLevel(level, talent, needTenacity);
+}
+#else
 bool Player::IsSettingFinish() { return true; }
 bool Player::CheckNeedTenacityFlush() { return false; }
 bool Player::AIEquipItem(uint32 entry) { return false; }
@@ -39415,3 +39585,7 @@ uint32 Player::SwitchTalent(uint32 talent) { return 0; }
 void Player::SupplementAmmo() {}
 void Player::OnLevelupToBotAI() {}
 bool Player::IsTankPlayer() { return false; }
+uint8 Player::GetTalentType() const { return 0; }
+bool Player::EquipIsTidiness() { return true; }
+bool Player::ResetPlayerToLevel(uint32 level, uint32 talent, bool needTenacity) { return true; }
+#endif

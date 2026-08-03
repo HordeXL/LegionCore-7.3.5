@@ -1468,6 +1468,7 @@ class Player : public Unit, public GridObject<Player>
 
         int32 m_EquipCombatPower;
         PlayerBotSetting* m_PlayerBotSetting;
+        uint32 m_botSettingTimer;
         bool IsTankPlayer();
         uint32 FindTalentType();
         bool AIEquipItem(uint32 entry);
@@ -3803,14 +3804,13 @@ class Player : public Unit, public GridObject<Player>
     public:
         // PlayerBot compatibility (added by migration)
         bool IsPlayerBot() const { return GetSession() && GetSession()->IsBotSession(); }
-        uint8 GetTalentType() const { return 0; }
-        bool IsSettingFinish() const { return true; }
+        uint8 GetTalentType() const;
 
 
     public:
         // PlayerBot compatibility
-        bool EquipIsTidiness() { return true; }
-        bool ResetPlayerToLevel(uint32 level, uint32 talent = 3, bool needTenacity = false) { return true; }
+        bool EquipIsTidiness();
+        bool ResetPlayerToLevel(uint32 level, uint32 talent = 3, bool needTenacity = false);
 };
 
 void AddItemsSetItem(Player*player, Item* item);

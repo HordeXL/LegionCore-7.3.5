@@ -65,6 +65,13 @@ target_include_directories(scripts
   PRIVATE
     ${CMAKE_CURRENT_BINARY_DIR})
 
+if (PLAYERBOT)
+  target_compile_definitions(scripts PRIVATE PLAYERBOT)
+  if (PLAYERBOT_AI)
+    target_compile_definitions(scripts PRIVATE PLAYERBOT_AI)
+  endif()
+endif()
+
 target_link_libraries(scripts
     PRIVATE
       trinity-core-interface

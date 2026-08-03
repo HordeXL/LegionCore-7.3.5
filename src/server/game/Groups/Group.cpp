@@ -46,6 +46,9 @@
 #include "FunctionProcessor.h"
 #include "DatabaseEnv.h"
 #include "PlayerDefines.h"
+#ifdef PLAYERBOT
+#include "PlayerBotSetting.h"
+#endif
 
 Roll::Roll(ObjectGuid _guid, LootItem const& li) : itemCount(li.count), totalPlayersRolling(0), totalNeed(0), totalGreed(0), totalPass(0), itemSlot(0), aoeSlot(0), rollVoteMask(ROLL_ALL_TYPE_NO_DISENCHANT)
 {
@@ -1544,6 +1547,41 @@ bool Group::RollIsActive()
 {
     return !RollId.empty();
 }
+
+#ifdef PLAYERBOT
+void Group::PlayerBotRoll(Player* player)
+{
+    if (!player || RollId.empty())
+        return;
+
+    for (auto rollI = RollId.begin(); rollI != RollId.end(); ++rollI)
+    {
+        Roll* roll = *rollI;
+        if (!roll || !roll->isValid())
+            continue;
+
+        auto itr = roll->playerVote.find(player->GetGUID());
+        if (itr == roll->playerVote.end() || itr->second != NOT_EMITED_YET)
+            continue;
+
+        uint8 choice = ROLL_PASS;
+        ItemTemplate const* itemTemplate = sObjectMgr->GetItemTemplate(roll->item.ItemID);
+        if (itemTemplate)
+        {
+            if (itemTemplate->GetClass() == ItemClass::ITEM_CLASS_WEAPON ||
+                itemTemplate->GetClass() == ItemClass::ITEM_CLASS_ARMOR)
+            {
+                if (player->CanUseItem(itemTemplate) == EQUIP_ERR_OK)
+                    choice = PlayerBotSetting::IsBetterEquip(player, itemTemplate, roll->item.RandomPropertiesID.Id) ? ROLL_NEED : ROLL_GREED;
+            }
+            else
+                choice = ROLL_GREED;
+        }
+
+        CountRollVote(player->GetGUID(), roll->aoeSlot, choice);
+    }
+}
+#endif
 
 void Group::CountTheRoll(Rolls::iterator rollI)
 {

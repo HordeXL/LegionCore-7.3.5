@@ -405,6 +405,10 @@ class Group
         bool isRolledSlot(uint8 _slot);
         bool RollIsActive();
 
+#ifdef PLAYERBOT
+        void PlayerBotRoll(Player* player);
+#endif
+
         void ResetMaxEnchantingLevel();
 
         void LinkMember(GroupReference* pRef);
