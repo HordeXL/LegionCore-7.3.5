@@ -355,16 +355,32 @@ void WorldSession::HandleGossipSelectOption(WorldPackets::NPC::GossipSelectOptio
             uint32 sender = player->PlayerTalkClass->GetGossipOptionSender(packet.GossipIndex);
             uint32 action = player->PlayerTalkClass->GetGossipOptionAction(packet.GossipIndex);
 
+            bool handled = false;
             if (!packet.PromotionCode.empty())
             {
-                if (!sScriptMgr->OnGossipSelectCode(player, item, sender, action, packet.PromotionCode.c_str()))
-                    player->PlayerTalkClass->SendCloseGossip();
+                if (sScriptMgr->OnGossipSelectCode(player, item, sender, action, packet.PromotionCode.c_str()))
+                    handled = true;
             }
             else
             {
-                if (!sScriptMgr->OnGossipSelect(player, item, sender, action))
-                    player->PlayerTalkClass->SendCloseGossip();
+                if (sScriptMgr->OnGossipSelect(player, item, sender, action))
+                    handled = true;
             }
+
+            if (!handled)
+            {
+#ifdef ELUNA_TRINITY
+                if (Eluna* e = sElunaMgr->Get(ElunaInfoKey(player->GetMapId(), player->GetInstanceId())))
+                {
+                    e->HandleGossipSelectOption(player, item, sender, action,
+                        packet.PromotionCode.empty() ? "" : packet.PromotionCode.c_str());
+                    handled = true;
+                }
+#endif
+            }
+
+            if (!handled)
+                player->PlayerTalkClass->SendCloseGossip();
         }
         return;
     }
