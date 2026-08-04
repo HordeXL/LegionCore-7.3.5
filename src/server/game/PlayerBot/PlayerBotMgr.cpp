@@ -709,16 +709,23 @@ void PlayerBotMgr::UpdateLastAccountIndex(std::string& username)
         if (fields)
         {
             uint32 id = fields[0].GetUInt32();
-            m_LastBotAccountIndex = id;
+            std::string numStr = username.substr(9);
+            if (!numStr.empty())
+            {
+                uint32 nameIndex = (uint32)atol(numStr.c_str());
+                if (nameIndex > m_LastBotAccountIndex)
+                    m_LastBotAccountIndex = nameIndex;
+            }
         }
     }
 }
 
 void PlayerBotMgr::SupplementAccount()
 {
-    uint32 needAccount = m_BotAccountAmount - m_idPlayerBotBase.size();
-    if (needAccount <= 0)
+    if (m_idPlayerBotBase.size() >= m_BotAccountAmount)
         return;
+
+    uint32 needAccount = m_BotAccountAmount - m_idPlayerBotBase.size();
 
     for (uint32 i = 0; i < needAccount; i++)
     {
@@ -747,7 +754,6 @@ void PlayerBotMgr::SupplementAccount()
                         PlayerBotBaseInfo* pInfo = new PlayerBotBaseInfo(id, username.c_str(), pass, false);
                         m_idPlayerBotBase[id] = pInfo;
                     }
-                    m_LastBotAccountIndex = id;
                 }
             }
         }
@@ -812,7 +818,12 @@ void PlayerBotMgr::LoadPlayerBotBaseInfo()
                 PlayerBotBaseInfo* pInfo = new PlayerBotBaseInfo(id, username.c_str(), pass, false);
                 m_idPlayerBotBase[id] = pInfo;
             }
-            m_LastBotAccountIndex = id;
+            uint32 nameIndex = 0;
+            std::string numStr = username.substr(9); // "playerbot" length = 9
+            if (!numStr.empty())
+                nameIndex = (uint32)atol(numStr.c_str());
+            if (nameIndex > m_LastBotAccountIndex)
+                m_LastBotAccountIndex = nameIndex;
         } while (result->NextRow());
     }
 
@@ -1232,6 +1243,9 @@ bool PlayerBotMgr::PlayerBotLogout(uint32 account)
 
 void PlayerBotMgr::SupplementPlayerBot()
 {
+    if (m_idPlayerBotBase.size() > m_BotAccountAmount)
+        return;
+
     m_batchUsedNames.clear();
     for (std::map<uint32, PlayerBotBaseInfo*>::iterator itInfo = m_idPlayerBotBase.begin();
         itInfo != m_idPlayerBotBase.end();
