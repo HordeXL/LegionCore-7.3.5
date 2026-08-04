@@ -1314,5 +1314,47 @@ protected:
 
 
 
+class BotDemonHunterSpells
+	{
+	public:
+		void InitializeSpells(Player* player);
+
+	protected:
+		uint32 DemonHunterCommon_ThrowGlaive = 185123;
+		uint32 DemonHunterCommon_ImmolationAura = 178740;
+		uint32 DemonHunterCommon_ChaosNova = 179057;
+		uint32 DemonHunterCommon_Netherwalk = 196555;
+		uint32 DemonHunterCommon_Disrupt = 183752;
+		uint32 DemonHunterCommon_VengefulRetreat = 198793;
+
+		uint32 DemonHunterHavoc_DemonsBite = 162243;
+		uint32 DemonHunterHavoc_ChaosStrike = 162794;
+		uint32 DemonHunterHavoc_Annihilation = 201427;
+		uint32 DemonHunterHavoc_BladeDance = 188499;
+		uint32 DemonHunterHavoc_DeathSweep = 210152;
+		uint32 DemonHunterHavoc_EyeBeam = 198013;
+		uint32 DemonHunterHavoc_FelRush = 195072;
+		uint32 DemonHunterHavoc_Metamorphosis = 191427;
+	};
+
+	class BotMonkSpells
+	{
+	public:
+		void InitializeSpells(Player* player);
+
+	protected:
+		uint32 MonkCommon_TigerPalm = 100780;
+		uint32 MonkCommon_BlackoutKick = 100784;
+		uint32 MonkCommon_RisingSunKick = 107428;
+		uint32 MonkCommon_SpinningCraneKick = 101546;
+		uint32 MonkCommon_FistsOfFury = 113656;
+		uint32 MonkCommon_TouchOfDeath = 115080;
+		uint32 MonkCommon_FlyingSerpentKick = 101545;
+		uint32 MonkCommon_Roll = 109132;
+		uint32 MonkCommon_FortifyingBrew = 120954;
+		uint32 MonkCommon_TouchOfKarma = 122470;
+		uint32 MonkCommon_SpearHandStrike = 116705;
+	};
+
 #endif // !_BOT_AI_SPELLS_H_
 

@@ -78,6 +78,12 @@ BotDuelAI* BotDuelAI::CreateBotDuelAIByPlayerClass(Player* player)
 
 		return new DuelPriestAI(player);
 
+		case CLASS_DEMON_HUNTER:
+			return new DuelDemonHunterAI(player);
+
+		case CLASS_MONK:
+			return new DuelMonkAI(player);
+
 	}
 
 	return new BotDuelAI(player);

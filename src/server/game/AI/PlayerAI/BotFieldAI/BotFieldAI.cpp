@@ -108,6 +108,14 @@ BotFieldAI* BotFieldAI::CreateBotFieldAIByPlayerClass(Player* player)
 
 		break;
 
+		case CLASS_DEMON_HUNTER:
+			pAI = new FieldDemonHunterAI(player);
+			break;
+
+		case CLASS_MONK:
+			pAI = new FieldMonkAI(player);
+			break;
+
 	}
 
 	if (!pAI)
@@ -206,7 +214,8 @@ void BotFieldAI::UpdateAI(uint32 diff)
 
 	m_UpdateTick = BOTAI_UPDATE_TICK;
 
-
+	if (!m_HasReset)
+		ResetBotAI();
 
 	if (!true /*IsSettingFinish*/)
 
@@ -237,10 +246,6 @@ void BotFieldAI::UpdateAI(uint32 diff)
 	}
 
 
-
-	if (!m_HasReset)
-
-		ResetBotAI();
 
 	if (me->isAlive())
 

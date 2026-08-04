@@ -114,6 +114,14 @@ BotGroupAI* BotGroupAI::CreateBotGroupAIByPlayerClass(Player* player)
 
 		break;
 
+		case CLASS_DEMON_HUNTER:
+			pAI = new GroupDemonHunterAI(player);
+			break;
+
+		case CLASS_MONK:
+			pAI = new GroupMonkAI(player);
+			break;
+
 	}
 
 	if (!pAI)

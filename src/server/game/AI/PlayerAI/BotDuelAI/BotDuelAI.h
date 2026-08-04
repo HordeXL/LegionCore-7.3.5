@@ -115,7 +115,7 @@ protected:
 	bool m_IsRangeBot;
 	bool m_IsHealerBot;
 
-	uint32 BotCommon_ClearAllCtrl;// = 59752;		// ����
+	uint32 BotCommon_ClearAllCtrl = 0;// = 59752;		// 自利 ����
 	uint32 m_lastClearCtrlTick;
 };
 

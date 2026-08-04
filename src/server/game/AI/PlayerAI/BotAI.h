@@ -397,7 +397,7 @@ protected:
 
 
 
-	uint32 BotCommon_ClearAllCtrl;// = 59752;		// 自利
+	uint32 BotCommon_ClearAllCtrl = 0;// = 59752;		// 自利
 
 	uint32 m_lastClearCtrlTick;
 
