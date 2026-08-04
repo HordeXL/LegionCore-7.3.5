@@ -99,8 +99,10 @@ class ChatHandler
 
         void SendGlobalGMSysMessage(const char *str);
         Player*   getSelectedPlayer();
+        Player*   getSelectedPlayerOrSelf();
         Creature* getSelectedCreature();
         Unit*     getSelectedUnit();
+        Unit*     getSelectedUnitOrPlayerOrSelf();
         WorldObject* getSelectedObject();
 
         char*     extractKeyFromLink(char* text, char const* linkType, char** something1 = nullptr);

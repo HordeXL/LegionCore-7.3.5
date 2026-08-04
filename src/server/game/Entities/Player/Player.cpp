@@ -32681,6 +32681,17 @@ void Player::StoreLootItem(uint8 lootSlot, Loot* loot)
 
     //AddTrackingQuestIfNeeded(loot->LootSourceGuid);
 	sScriptMgr->OnLootItem(this, newitem, item->count);
+
+    // Auto-sell poor quality items
+    if (sWorld->getBoolConfig(CONFIG_SELL_JUNK_WHEN_LOOTED))
+    {
+        if (newitem && newitem->GetTemplate() && newitem->GetTemplate()->GetQuality() == ITEM_QUALITY_POOR)
+        {
+            uint32 money = newitem->GetTemplate()->GetSellPrice() * item->count;
+            ModifyMoney(money);
+            DestroyItem(newitem->GetBagSlot(), newitem->GetSlot(), true);
+        }
+    }
 }
 
 uint8 Player::CalculateTalentsPoints() const
