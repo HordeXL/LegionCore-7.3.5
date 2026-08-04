@@ -16321,7 +16321,7 @@ void Player::DestroyItem(uint8 bag, uint8 slot, bool update)
     }
 }
 
-void Player::DestroyItemCount(uint32 item, uint32 count, bool update, bool unequip_check, bool remove_all = false)
+void Player::DestroyItemCount(uint32 item, uint32 count, bool update, bool unequip_check, bool remove_all)
 {
     TC_LOG_DEBUG(LOG_FILTER_PLAYER_ITEMS, "STORAGE: DestroyItemCount item = %u, count = %u", item, count);
     uint32 remcount = 0;
@@ -28394,8 +28394,8 @@ bool Player::BuyItemFromVendorSlot(ObjectGuid vendorguid, uint32 vendorslot, uin
         uint64 maxCount = MAX_MONEY_AMOUNT / buyPricePerItem;
         if ((uint64)count > maxCount)
         {
-            TC_LOG_ERROR("entities.player.cheat", "Player::BuyItemFromVendorSlot: Player '{}' ({}) tried to buy item (ItemID: {}, Count: {}), causing overflow",
-                GetName(), GetGUID().ToString(), pProto->GetId(), (uint32)count);
+            TC_LOG_ERROR(LOG_FILTER_UNITS, "Player::BuyItemFromVendorSlot: Player '%s' (%s) tried to buy item (ItemID: %u, Count: %u), causing overflow",
+                GetName(), GetGUID().ToString().c_str(), pProto->GetId(), (uint32)count);
             count = (uint8)maxCount;
         }
         price = uint64(buyPricePerItem * count); // it should not exceed MAX_MONEY_AMOUNT
@@ -30781,7 +30781,7 @@ float Player::GetReputationPriceDiscount(Creature const* creature) const
 
     ReputationRank rank = GetReputationRank(vendor_faction->Faction);
 
-    if (HasSpell(69044))
+    if (const_cast<Player*>(this)->HasSpell(69044))
         rank = REP_EXALTED;
 
     if (rank <= REP_NEUTRAL)
